@@ -603,59 +603,92 @@
             width: 80mm; /* Standard label width */
             height: 40mm; /* Standard label height */
             background: white;
-            /* border: 2px solid #000;  Çerçeve kaldırıldı */
+            border: none; /* Çerçeve kaldırıldı */
             box-sizing: border-box;
-            padding: 8mm; /* İç boşluk ayarlandı */
+            padding: 2mm 3mm; /* İç boşluk ayarlandı */
             font-family: Arial, sans-serif;
-            font-size: 11px; /* Genel font boyutu biraz büyütüldü */
-            line-height: 1.4; /* Satır aralığı ayarlandı */
+            line-height: 1.1; /* Satır aralığı ayarlandı */
             display: none; /* Initially hidden, shown by print logic */
+            overflow: hidden; /* İçeriğin taşmasını engeller */
         }
 
-        .label-header {
-            text-align: center;
+        .label-top-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1mm;
+        }
+
+        .label-logo-section {
+            text-align: left;
+        }
+
+        .label-logo-text {
+            font-size: 10px; /* "THE" font boyutu */
             font-weight: bold;
-            font-size: 14px; /* Başlık font boyutu büyütüldü */
-            margin-bottom: 3mm; /* Başlık alt boşluğu ayarlandı */
-            border-bottom: 1px solid #000;
-            padding-bottom: 1.5mm; /* Başlık alt boşluğu ayarlandı */
+            line-height: 0.9;
+        }
+
+        .label-icone-text {
+            font-size: 18px; /* "ICONE" font boyutu */
+            font-weight: bold;
+            line-height: 0.9;
+        }
+
+        .label-beauty-text {
+            font-size: 8px; /* "hair extensions & beauty" font boyutu */
+            line-height: 0.9;
+        }
+
+        .label-main-title {
+            font-size: 18px; /* "KAYNAK TAMİR" font boyutu */
+            font-weight: bold;
+            text-align: right; /* Sağa hizalı */
+            flex-grow: 1; /* Kalan alanı doldurur */
         }
 
         .label-content {
-            display: flex; /* Grid yerine flexbox kullanıldı */
-            flex-direction: column; /* Dikey sıralama */
-            gap: 2mm; /* Alanlar arası boşluk azaltıldı */
-            font-size: 11px; /* İçerik font boyutu ayarlandı */
+            display: flex;
+            flex-direction: column;
+            gap: 0.5mm; /* Alanlar arası boşluk azaltıldı */
+            font-size: 10px; /* İçerik font boyutu ayarlandı */
         }
 
-        .label-field, .label-field-full {
+        .label-field {
             display: flex;
             justify-content: space-between; /* Etiket ve değer arasında boşluk bırakır */
             align-items: baseline; /* Metin taban çizgisine hizalama */
             width: 100%; /* Tam genişlik */
         }
         
-        .label-field .label-bold, .label-field-full .label-bold {
+        .label-field .label-bold {
             flex-shrink: 0; /* Etiketin küçülmesini engeller */
-            margin-right: 2mm; /* Etiket ile değer arasına boşluk ekler */
+            margin-right: 1mm; /* Etiket ile değer arasına boşluk ekler */
+            font-size: 10px; /* Etiket font boyutu */
         }
 
-        .label-field span:not(.label-bold), .label-field-full span:not(.label-bold) {
+        .label-field span:not(.label-bold) {
             flex-grow: 1; /* Değerin kalan alanı doldurmasını sağlar */
             text-align: right; /* Değeri sağa hizalar */
             word-break: break-word; /* Uzun kelimeleri kırar */
+            font-size: 12px; /* Değer font boyutu */
         }
         
         #print-customer { /* Müşteri adı için büyük font */
-            font-size: 1.8em; /* Önemli ölçüde büyütüldü */
+            font-size: 16px; 
             font-weight: bold;
-            line-height: 1.2; /* Satır aralığı ayarlandı */
+            line-height: 1.2; 
         }
 
         #print-phone { /* Telefon numarası için büyük font */
-            font-size: 1.5em; /* Büyütüldü */
+            font-size: 14px; 
             font-weight: bold;
-            line-height: 1.2; /* Satır aralığı ayarlandı */
+            line-height: 1.2; 
+        }
+
+        #print-quantity, #print-delivery {
+            font-size: 12px; /* Adet ve Teslim Tarihi için font boyutu */
+            font-weight: bold;
         }
 
         .label-bold {
@@ -956,11 +989,18 @@
     </div>
 
     <div id="print-label" class="print-label">
-        <div class="label-header">KAYNAK SAÇ TAMİR</div>
+        <div class="label-top-section">
+            <div class="label-logo-section">
+                <div class="label-logo-text">THE</div>
+                <div class="label-icone-text">ICONE</div>
+                <div class="label-beauty-text">hair extensions & beauty</div>
+            </div>
+            <div class="label-main-title">KAYNAK TAMİR</div>
+        </div>
         <div class="label-content">
-            <div class="label-field-full">
+            <div class="label-field">
                 <span class="label-bold">MÜŞTERİ:</span>
-                <span id="print-customer" class="label-customer"></span>
+                <span id="print-customer"></span>
             </div>
             <div class="label-field">
                 <span class="label-bold">TELEFON:</span>
@@ -971,15 +1011,7 @@
                 <span id="print-quantity"></span>
             </div>
             <div class="label-field">
-                <span class="label-bold">TAKIM:</span>
-                <span id="print-set"></span>
-            </div>
-            <div class="label-field">
-                <span class="label-bold">FİYAT:</span>
-                <span id="print-total"></span>
-            </div>
-            <div class="label-field-full">
-                <span class="label-bold">TESLİM:</span>
+                <span class="label-bold">TESLİM TAR:</span>
                 <span id="print-delivery"></span>
             </div>
         </div>
@@ -995,7 +1027,7 @@
         let currentRecordForPrint = null; // To hold the record to be printed
         let isFirebaseInitialized = false;
 
-        // 🔥🔥🔥 USER-PROVIDED FIREBASE PROJECT CONFIGURATION DETAILS 🔥�🔥
+        // 🔥🔥🔥 USER-PROVIDED FIREBASE PROJECT CONFIGURATION DETAILS 🔥🔥🔥
         const firebaseConfig = {
              apiKey: "AIzaSyCsy1AAiRE8HCCt4HEAcz7Sh9AM6sQt4FQ",
              authDomain: "kaynak-sac-tamir.firebaseapp.com",
@@ -1005,7 +1037,7 @@
              measurementId: "G-N8B2V6RQET" 
         };
 
-        // 🔥🔥 YOUR IMGUR CLIENT ID AND SECRET HERE 🔥🔥🔥
+        // 🔥🔥 YOUR IMGUR CLIENT ID AND SECRET HERE 🔥�🔥
         // You need to obtain a valid Client ID and Client Secret for the Imgur API.
         // Get them from: https://api.imgur.com/oauth2/addclient
         const IMGUR_CLIENT_ID = '82ab37b38a1850a'; 
@@ -1696,8 +1728,9 @@
             document.getElementById('print-customer').textContent = `${record.firstName || ''} ${record.lastName || ''}`;
             document.getElementById('print-phone').textContent = formatPhoneNumber(record.phone);
             document.getElementById('print-quantity').textContent = record.quantity || '-';
-            document.getElementById('print-set').textContent = record.hasSet === 'evet' ? 'EVET' : (record.hasSet === 'hayır' ? 'HAYIR' : '-');
-            document.getElementById('print-total').textContent = typeof record.totalPrice === 'number' ? record.totalPrice.toFixed(2) + ' TL' : '-';
+            // "TAKIM" ve "FİYAT" alanları görselde olmadığı için kaldırıldı.
+            // document.getElementById('print-set').textContent = record.hasSet === 'evet' ? 'EVET' : (record.hasSet === 'hayır' ? 'HAYIR' : '-');
+            // document.getElementById('print-total').textContent = typeof record.totalPrice === 'number' ? record.totalPrice.toFixed(2) + ' TL' : '-';
             document.getElementById('print-delivery').textContent = record.returnDate ? new Date(record.returnDate).toLocaleDateString('tr-TR', { day: '2-digit', month: '2-digit', year: 'numeric' }) : '-';
             
             const labelElement = document.getElementById('print-label');
