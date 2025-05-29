@@ -62,6 +62,28 @@
             100% { transform: translateX(50px); }
         }
 
+        /* Logo Styling */
+        #app-logo {
+            width: 180px; /* Lütfen logo.svg dosyanızın genişliğine göre ayarlayın */
+            height: 60px;  /* Lütfen logo.svg dosyanızın yüksekliğine göre ayarlayın */
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); /* Sayfa arka plan gradient'i */
+            position: relative;
+            z-index: 1;
+            display: inline-block; /* Ortalamak için ve boyutların geçerli olması için */
+            
+            /* logo.svg dosyasını maske olarak kullanma */
+            /* logo.svg dosyasının HTML ile aynı dizinde olduğundan emin olun veya yolu güncelleyin */
+            -webkit-mask-image: url(logo.svg);
+            mask-image: url(logo.svg);
+            -webkit-mask-size: contain; /* Logonun tamamının görünmesini sağlar */
+            mask-size: contain;
+            -webkit-mask-repeat: no-repeat;
+            mask-repeat: no-repeat;
+            -webkit-mask-position: center;
+            mask-position: center;
+        }
+
         .header h1 {
             position: relative;
             z-index: 1;
@@ -363,7 +385,7 @@
         /* Always visible details */
         .record-details-always-visible {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Adjusted for better spacing */
             gap: 15px;
             margin-bottom: 15px;
         }
@@ -384,6 +406,7 @@
             justify-content: center;
             color: white;
             font-size: 18px;
+            flex-shrink: 0; /* Prevent icon from shrinking */
         }
 
         .record-detail-text {
@@ -701,11 +724,63 @@
             }
         }
 
+        /* Filter controls specific styling */
+        .filter-controls {
+            margin-bottom: 20px; 
+            border: 1px solid #e9ecef; 
+            border-radius: 10px; 
+            background: #f8f9fa;
+            overflow: hidden; /* Important for max-height transition */
+        }
+
+        .filter-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: linear-gradient(45deg, #e0e0e0, #f0f0f0);
+            border-bottom: 1px solid #dee2e6;
+            cursor: pointer;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .filter-header .expand-icon {
+            font-size: 1.2em;
+            transition: transform 0.3s ease;
+        }
+
+        .filter-header.expanded .expand-icon {
+            transform: rotate(180deg);
+        }
+
+        .filter-collapsible-content {
+            max-height: 0;
+            padding: 0 15px; /* Initial padding, will be adjusted */
+            transition: max-height 0.4s ease-out, padding 0.4s ease-out;
+            overflow: hidden;
+        }
+
+        .filter-collapsible-content.expanded {
+            max-height: 300px; /* Adjust based on content height */
+            padding: 15px;
+        }
+
+        .filter-collapsible-content .form-group {
+            margin-bottom: 15px;
+        }
+
+        .filter-collapsible-content .form-group:last-child {
+            margin-bottom: 0;
+        }
+
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
+            <div id="app-logo" title="Kaynak Saç Tamir Takip Logosu">
+                </div>
             <div class="connection-status" id="connection-status">
                 <span id="status-text">🔄 Bağlanıyor...</span>
             </div>
@@ -799,6 +874,30 @@
             </div>
             
             <div id="list-section" class="section">
+                <div class="filter-controls">
+                    <div class="filter-header" onclick="toggleFilterControls()">
+                        <span>Filtreleme Seçenekleri</span>
+                        <span class="expand-icon">🔍</span>
+                    </div>
+                    <div id="filter-collapsible-content" class="filter-collapsible-content">
+                        <div class="form-row" style="margin-bottom: 15px;">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label for="startDateFilter">Başlangıç Tarihi</label>
+                                <input type="date" id="startDateFilter">
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label for="endDateFilter">Bitiş Tarihi</label>
+                                <input type="date" id="endDateFilter">
+                            </div>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 15px;">
+                            <label for="searchFilter">İsim veya Telefon Ara</label>
+                            <input type="text" id="searchFilter" placeholder="İsim veya telefon numarası...">
+                        </div>
+                        <button class="btn" onclick="applyFilters()" style="width: 100%;">Filtrele</button>
+                    </div>
+                </div>
+
                 <div id="records-container">
                     <div class="empty-state">
                         <div class="empty-state-icon">📝</div>
@@ -863,12 +962,12 @@
     <script>
         // Global variables
         let db = null;
-        let records = []; // To store records
+        let records = []; // To store all fetched records
         let currentPhotoFile = null; // To hold the photo file to be uploaded
         let currentRecordForPrint = null; // To hold the record to be printed
         let isFirebaseInitialized = false;
 
-        // 🔥🔥🔥 USER-PROVIDED FIREBASE PROJECT CONFIGURATION DETAILS 🔥�🔥
+        // 🔥🔥🔥 USER-PROVIDED FIREBASE PROJECT CONFIGURATION DETAILS 🔥🔥🔥
         const firebaseConfig = {
              apiKey: "AIzaSyCsy1AAiRE8HCCt4HEAcz7Sh9AM6sQt4FQ",
              authDomain: "kaynak-sac-tamir.firebaseapp.com",
@@ -878,7 +977,7 @@
              measurementId: "G-N8B2V6RQET" 
         };
 
-        // 🔥🔥🔥 YOUR IMGUR CLIENT ID AND SECRET HERE 🔥🔥🔥
+        // 🔥🔥 YOUR IMGUR CLIENT ID AND SECRET HERE 🔥🔥🔥
         // You need to obtain a valid Client ID and Client Secret for the Imgur API.
         // Get them from: https://api.imgur.com/oauth2/addclient
         const IMGUR_CLIENT_ID = '82ab37b38a1850a'; 
@@ -983,6 +1082,7 @@
                     addNavButton.classList.add('active');
                 }
                 
+                // Initial load of records without filters
                 loadRecords();
 
             } catch (error) {
@@ -1070,7 +1170,7 @@
                     const previewImg = document.getElementById('photo-preview-img');
                     previewImg.src = e.target.result;
                     previewImg.style.display = 'block';
-                    document.getElementById('photo-placeholder').style.display = 'none';
+                    document.getElementById('photo-placeholder').style.display = 'block'; // Keep placeholder visible for drag/drop hint
                 }
                 reader.readAsDataURL(file);
             } else {
@@ -1142,9 +1242,6 @@
                 return;
             }
 
-            // Phone number formatting is handled by formatPhoneNumber function before display/save
-            // No strict pattern validation here, as formatPhoneNumber will normalize it.
-
             const record = {
                 firstName: document.getElementById('firstName').value.trim(),
                 lastName: document.getElementById('lastName').value.trim(),
@@ -1202,31 +1299,73 @@
             }
         }
 
-        function loadRecords() {
+        /**
+         * Applies filters and reloads records.
+         */
+        function applyFilters() {
+            const startDate = document.getElementById('startDateFilter').value;
+            const endDate = document.getElementById('endDateFilter').value;
+            const searchTerm = document.getElementById('searchFilter').value.toLowerCase().trim();
+            loadRecords(startDate, endDate, searchTerm);
+        }
+
+        /**
+         * Loads records from Firestore and applies client-side filters.
+         * @param {string} [startDateFilter] Optional start date string (YYYY-MM-DD).
+         * @param {string} [endDateFilter] Optional end date string (YYYY-MM-DD).
+         * @param {string} [searchTerm] Optional search term for name or phone.
+         */
+        function loadRecords(startDateFilter = '', endDateFilter = '', searchTerm = '') {
             if (!isFirebaseInitialized) return;
 
             const recordsContainer = document.getElementById('records-container');
             recordsContainer.innerHTML = '<div class="empty-state"><div class="loading"></div> Kayıtlar yükleniyor...</div>'; 
 
             db.collection('repairs').orderBy('createdAt', 'desc').onSnapshot(snapshot => {
-                records = []; 
-                if (snapshot.empty) {
-                    recordsContainer.innerHTML = `
-                        <div class="empty-state">
-                            <div class="empty-state-icon">📝</div>
-                            <h3>Henüz kayıt bulunmuyor.</h3>
-                            <p>"Yeni Kayıt" sekmesinden ilk tamirinizi ekleyebilirsiniz.</p>
-                        </div>`;
-                    return;
-                }
-                
-                recordsContainer.innerHTML = ''; 
+                let allRecords = []; 
                 snapshot.forEach(doc => {
-                    const record = { id: doc.id, ...doc.data() };
-                    records.push(record); 
-                    const card = createRecordCard(record);
-                    recordsContainer.appendChild(card);
+                    allRecords.push({ id: doc.id, ...doc.data() });
                 });
+
+                let filteredRecords = allRecords.filter(record => {
+                    const recordDate = new Date(record.repairDate); // Assuming repairDate is the relevant date for filtering
+
+                    // Date range filter
+                    let passesDateFilter = true;
+                    if (startDateFilter) {
+                        const start = new Date(startDateFilter);
+                        start.setHours(0, 0, 0, 0); // Normalize to start of day
+                        if (recordDate < start) {
+                            passesDateFilter = false;
+                        }
+                    }
+                    if (endDateFilter) {
+                        const end = new Date(endDateFilter);
+                        end.setHours(23, 59, 59, 999); // Normalize to end of day
+                        if (recordDate > end) {
+                            passesDateFilter = false;
+                        }
+                    }
+
+                    // Search term filter (case-insensitive)
+                    let passesSearchFilter = true;
+                    if (searchTerm) {
+                        const firstName = (record.firstName || '').toLowerCase();
+                        const lastName = (record.lastName || '').toLowerCase();
+                        const phone = (record.phone || '').toLowerCase();
+                        
+                        if (!firstName.includes(searchTerm) && 
+                            !lastName.includes(searchTerm) && 
+                            !phone.includes(searchTerm)) {
+                            passesSearchFilter = false;
+                        }
+                    }
+                    return passesDateFilter && passesSearchFilter;
+                });
+
+                records = filteredRecords; // Update global records with filtered set
+                displayRecords(records);
+
             }, error => {
                 console.error("Error loading records:", error);
                 recordsContainer.innerHTML = `
@@ -1238,6 +1377,31 @@
                 showMessage(`Kayıtlar yüklenemedi: ${error.message}`, 'error');
             });
         }
+
+        /**
+         * Displays the given records in the records container.
+         * @param {Array} recordsToDisplay The array of records to display.
+         */
+        function displayRecords(recordsToDisplay) {
+            const recordsContainer = document.getElementById('records-container');
+            recordsContainer.innerHTML = ''; // Clear previous records
+
+            if (recordsToDisplay.length === 0) {
+                recordsContainer.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🔍</div>
+                        <h3>Filtrelerinize uygun kayıt bulunamadı.</h3>
+                        <p>Filtreleri temizleyip tekrar deneyin veya yeni bir kayıt ekleyin.</p>
+                    </div>`;
+                return;
+            }
+
+            recordsToDisplay.forEach(record => {
+                const card = createRecordCard(record);
+                recordsContainer.appendChild(card);
+            });
+        }
+
 
         /**
          * Formats a phone number to +90 XXX XXX XX XX format.
@@ -1310,7 +1474,8 @@
                 <div class="record-collapsible-content">
                     <div class="record-details-hidden-part">
                         <div class="record-detail">
-                            <div class="record-detail-icon">🔧</div> <div class="record-detail-text">
+                            <div class="record-detail-icon">🔧</div> 
+                            <div class="record-detail-text">
                                 <span class="record-detail-label">Takım</span>
                                 <span class="record-detail-value">${hasSetText}</span>
                             </div>
@@ -1365,6 +1530,17 @@
             }
             cardElement.classList.toggle('expanded');
         }
+
+        /**
+         * Toggles the visibility of the filter controls section.
+         */
+        function toggleFilterControls() {
+            const filterHeader = document.querySelector('.filter-header');
+            const filterContent = document.getElementById('filter-collapsible-content');
+            filterHeader.classList.toggle('expanded');
+            filterContent.classList.toggle('expanded');
+        }
+
 
         function openPhotoModal(imageURL) {
             if(imageURL) {
@@ -1508,4 +1684,3 @@
     </script>
 </body>
 </html>
-�
