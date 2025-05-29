@@ -64,8 +64,8 @@
 
         /* Logo Styling */
         #app-logo {
-            width: 180px; /* Lütfen logo.svg dosyanızın genişliğine göre ayarlayın */
-            height: 60px;  /* Lütfen logo.svg dosyanızın yüksekliğine göre ayarlayın */
+            width: 720px; /* %300 büyütüldü (180px * 4) */
+            height: 240px;  /* %300 büyütüldü (60px * 4) */
             margin-bottom: 10px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); /* Sayfa arka plan gradient'i */
             position: relative;
@@ -722,7 +722,19 @@
              .success-message, .error-message {
                 min-width: 80%;
             }
+            #app-logo { /* Adjust logo size for smaller screens if it becomes too large */
+                width: 80%; /* Or a fixed value like 240px, adjust as needed */
+                height: auto; /* Maintain aspect ratio */
+                max-width: 300px; /* Prevent it from becoming excessively large on slightly larger small screens */
+            }
         }
+         @media (max-width: 480px) {
+            #app-logo {
+                width: 90%; /* Further adjust for very small screens */
+                 max-width: 200px;
+            }
+        }
+
 
         /* Filter controls specific styling */
         .filter-controls {
