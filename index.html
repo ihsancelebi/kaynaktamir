@@ -598,97 +598,55 @@
             transform: translateY(-2px);
         }
 
-        /* --- YENİ ETİKET TASARIMI BAŞLANGICI --- */
+        /* Print label specific styling */
         .print-label {
-            width: 80mm; /* Genişlik */
-            height: 40mm; /* Yükseklik */
+            width: 80mm; /* Standard label width */
+            height: 40mm; /* Standard label height */
             background: white;
-            border: 1px solid #000; /* Kenarlık inceltildi */
+            border: 2px solid #000;
             box-sizing: border-box;
-            padding: 3mm; /* İç boşluk */
+            padding: 8px;
             font-family: Arial, sans-serif;
-            display: none; /* Başlangıçta gizli, yazdırma mantığı ile gösterilir */
-            overflow: hidden; /* Taşmaları engelle */
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between; /* İçeriği dikeyde yay */
+            font-size: 10px;
+            line-height: 1.2;
+            display: none; /* Initially hidden, shown by print logic */
         }
 
         .label-header {
             text-align: center;
             font-weight: bold;
-            font-size: 10pt; /* Biraz küçültüldü */
+            font-size: 12px;
+            margin-bottom: 4px;
             border-bottom: 1px solid #000;
-            padding-bottom: 1mm;
-            margin-bottom: 1mm;
-            flex-shrink: 0; /* Başlık küçülmesin */
+            padding-bottom: 2px;
         }
 
         .label-content {
-            display: flex;
-            flex-direction: column;
-            justify-content: center; /* İçeriği dikeyde ortala */
-            flex-grow: 1; /* Kalan alanı kapla */
-            gap: 0.5mm; /* Alanlar arası boşluk azaltıldı */
-            font-size: 10pt; /* Genel yazı boyutu */
-            line-height: 1.2;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4px;
+            font-size: 9px;
         }
-        
-        .label-field, .label-field-full {
+
+        .label-field {
             display: flex;
             justify-content: space-between;
-            align-items: baseline; /* Etiket ve değeri hizala */
-            width: 100%;
-            border-bottom: 1px dashed #ccc; /* Alanları ayırmak için hafif çizgi */
-            padding-bottom: 0.5mm;
-        }
-        .label-field:last-child, .label-field-full:last-child {
-            border-bottom: none; /* Son elemanın altındaki çizgiyi kaldır */
         }
 
         .label-field-full {
-            flex-direction: column; /* Tam genişlikteki alanlar için alt alta */
-            align-items: flex-start;
-        }
-
-        .label-field .label-tag, .label-field-full .label-tag {
-            font-weight: bold;
-            margin-right: 2mm;
-            font-size: 9pt; /* Etiketler biraz daha küçük */
-            white-space: nowrap; /* Etiketlerin tek satırda kalmasını sağla */
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: space-between;
         }
         
-        .label-field .label-value, .label-field-full .label-value {
-            text-align: right;
-            word-break: break-all; /* Uzun değerler için kelime kırma */
+        #print-customer { /* Larger font for customer name on label */
+            font-size: 1.2em; 
+            font-weight: bold;
         }
 
-        /* İsim Soyisim ve Telefon için büyük yazı boyutu */
-        #print-customer-value {
-            font-size: 16pt; /* İsim Soyisim için büyük font */
+        .label-bold {
             font-weight: bold;
-            text-align: left !important; /* Sola hizalı */
-            width: 100%;
-            line-height: 1.1;
         }
-
-        #print-phone-value {
-            font-size: 14pt; /* Telefon için büyük font */
-            font-weight: bold;
-            text-align: left !important; /* Sola hizalı */
-            width: 100%;
-            line-height: 1.1;
-        }
-        
-        /* Diğer bilgiler için standart boyut */
-        #print-quantity-value,
-        #print-set-value,
-        #print-total-value,
-        #print-delivery-value {
-            font-size: 10pt;
-            font-weight: normal;
-        }
-        /* --- YENİ ETİKET TASARIMI SONU --- */
 
         /* Success and error message styling */
         .success-message, .error-message {
@@ -734,11 +692,8 @@
                 position: absolute;
                 left: 0;
                 top: 0;
-                display: flex !important; /* Ensure it's visible for printing and flex layout works */
+                display: block !important; /* Ensure it's visible for printing */
                 margin: 0;
-                width: 80mm;
-                height: 40mm;
-                page-break-after: always; /* Her etiket için yeni sayfa */
             }
         }
 
@@ -748,7 +703,7 @@
                 grid-template-columns: 1fr;
             }
             
-            .record-details { /* Bu sınıf kullanılmıyor gibi, ama kalabilir */
+            .record-details {
                 grid-template-columns: 1fr;
             }
             
@@ -987,28 +942,28 @@
         <div class="label-header">KAYNAK SAÇ TAMİR</div>
         <div class="label-content">
             <div class="label-field-full">
-                <span class="label-tag">MÜŞTERİ:</span>
-                <span id="print-customer-value" class="label-value"></span>
+                <span class="label-bold">MÜŞTERİ:</span>
+                <span id="print-customer" class="label-customer"></span>
+            </div>
+            <div class="label-field">
+                <span class="label-bold">TELEFON:</span>
+                <span id="print-phone"></span>
+            </div>
+            <div class="label-field">
+                <span class="label-bold">ADET:</span>
+                <span id="print-quantity"></span>
+            </div>
+            <div class="label-field">
+                <span class="label-bold">TAKIM:</span>
+                <span id="print-set"></span>
+            </div>
+            <div class="label-field">
+                <span class="label-bold">FİYAT:</span>
+                <span id="print-total"></span>
             </div>
             <div class="label-field-full">
-                <span class="label-tag">TELEFON:</span>
-                <span id="print-phone-value" class="label-value"></span>
-            </div>
-            <div class="label-field">
-                <span class="label-tag">ADET:</span>
-                <span id="print-quantity-value" class="label-value"></span>
-            </div>
-            <div class="label-field">
-                <span class="label-tag">TAKIM:</span>
-                <span id="print-set-value" class="label-value"></span>
-            </div>
-            <div class="label-field">
-                <span class="label-tag">FİYAT:</span>
-                <span id="print-total-value" class="label-value"></span>
-            </div>
-            <div class="label-field">
-                <span class="label-tag">TESLİM:</span>
-                <span id="print-delivery-value" class="label-value"></span>
+                <span class="label-bold">TESLİM:</span>
+                <span id="print-delivery"></span>
             </div>
         </div>
     </div>
@@ -1713,7 +1668,6 @@
             currentRecordForPrint = null;
         }
 
-        // ETİKET YAZDIRMA FONKSİYONU GÜNCELLENDİ
         function printLabel() {
             if (!currentRecordForPrint) {
                 showMessage('Yazdırılacak kayıt seçilmedi.', 'error');
@@ -1722,16 +1676,15 @@
             }
 
             const record = currentRecordForPrint;
-            // Değerleri yeni ID'lere göre ata
-            document.getElementById('print-customer-value').textContent = `${record.firstName || ''} ${record.lastName || ''}`;
-            document.getElementById('print-phone-value').textContent = formatPhoneNumber(record.phone);
-            document.getElementById('print-quantity-value').textContent = record.quantity || '-';
-            document.getElementById('print-set-value').textContent = record.hasSet === 'evet' ? 'EVET' : (record.hasSet === 'hayır' ? 'HAYIR' : '-');
-            document.getElementById('print-total-value').textContent = typeof record.totalPrice === 'number' ? record.totalPrice.toFixed(2) + ' TL' : '-';
-            document.getElementById('print-delivery-value').textContent = record.returnDate ? new Date(record.returnDate).toLocaleDateString('tr-TR', { day: '2-digit', month: '2-digit', year: 'numeric' }) : '-';
+            document.getElementById('print-customer').textContent = `${record.firstName || ''} ${record.lastName || ''}`;
+            document.getElementById('print-phone').textContent = formatPhoneNumber(record.phone);
+            document.getElementById('print-quantity').textContent = record.quantity || '-';
+            document.getElementById('print-set').textContent = record.hasSet === 'evet' ? 'EVET' : (record.hasSet === 'hayır' ? 'HAYIR' : '-');
+            document.getElementById('print-total').textContent = typeof record.totalPrice === 'number' ? record.totalPrice.toFixed(2) + ' TL' : '-';
+            document.getElementById('print-delivery').textContent = record.returnDate ? new Date(record.returnDate).toLocaleDateString('tr-TR', { day: '2-digit', month: '2-digit', year: 'numeric' }) : '-';
             
             const labelElement = document.getElementById('print-label');
-            labelElement.style.display = 'flex'; // display: flex olarak ayarlandı
+            labelElement.style.display = 'block'; 
             
             window.print(); 
             
