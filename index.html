@@ -727,6 +727,12 @@
 
         /* Print-specific CSS to hide everything except the label */
         @media print {
+            html, body {
+                margin: 0;
+                padding: 0;
+                height: 100%;
+                overflow: hidden; /* Prevent scrolling in print preview */
+            }
             body * {
                 visibility: hidden;
             }
@@ -737,17 +743,16 @@
                 position: absolute;
                 left: 0;
                 top: 0;
-                display: block !important; /* Ensure it's visible for printing */
+                width: 80mm; /* Fixed width for print */
+                height: 40mm; /* Fixed height for print */
+                display: block !important; 
                 margin: 0;
-                /* Sayfanın tamamını kaplaması için */
-                width: 100vw; 
-                height: 100vh;
-                /* Adjust padding to make the label fill more of the page */
-                padding: 5mm; /* Reduced padding to make content larger */
+                padding: 5mm; /* Adjusted padding to fill the label better */
                 display: flex; /* Use flexbox for better content distribution */
                 flex-direction: column;
                 justify-content: space-between; /* Distribute space between sections */
                 align-items: stretch; /* Stretch items to fill width */
+                box-shadow: none; /* Remove shadow in print */
             }
 
             /* Ensure content inside label also becomes visible */
@@ -1047,7 +1052,7 @@
              measurementId: "G-N8B2V6RQET" 
         };
 
-        // 🔥🔥 YOUR IMGUR CLIENT ID AND SECRET HERE 🔥�🔥
+        // �🔥 YOUR IMGUR CLIENT ID AND SECRET HERE 🔥🔥🔥
         // You need to obtain a valid Client ID and Client Secret for the Imgur API.
         // Get them from: https://api.imgur.com/oauth2/addclient
         const IMGUR_CLIENT_ID = '82ab37b38a1850a'; 
@@ -1079,7 +1084,7 @@
                 photoUploadArea.classList.add('dragover');
             });
             photoUploadArea.addEventListener('dragleave', () => {
-                photoUploadarea.classList.remove('dragover');
+                photoUploadArea.classList.remove('dragover');
             });
             photoUploadArea.addEventListener('drop', (e) => {
                 e.preventDefault();
@@ -1738,9 +1743,6 @@
             document.getElementById('print-customer').textContent = `${record.firstName || ''} ${record.lastName || ''}`;
             document.getElementById('print-phone').textContent = formatPhoneNumber(record.phone);
             document.getElementById('print-quantity').textContent = record.quantity || '-';
-            // "TAKIM" ve "FİYAT" alanları görselde olmadığı için kaldırıldı.
-            // document.getElementById('print-set').textContent = record.hasSet === 'evet' ? 'EVET' : (record.hasSet === 'hayır' ? 'HAYIR' : '-');
-            // document.getElementById('print-total').textContent = typeof record.totalPrice === 'number' ? record.totalPrice.toFixed(2) + ' TL' : '-';
             document.getElementById('print-delivery').textContent = record.returnDate ? new Date(record.returnDate).toLocaleDateString('tr-TR', { day: '2-digit', month: '2-digit', year: 'numeric' }) : '-';
             
             const labelElement = document.getElementById('print-label');
