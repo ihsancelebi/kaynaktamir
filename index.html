@@ -64,8 +64,8 @@
 
         /* Logo Styling */
         #app-logo {
-            width: 720px; /* %300 büyütüldü (180px * 4) */
-            height: 240px;  /* %300 büyütüldü (60px * 4) */
+            width: 360px; /* Yarı yarıya küçültüldü */
+            height: 120px;  /* Yarı yarıya küçültüldü */
             margin-bottom: 10px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); /* Sayfa arka plan gradient'i */
             position: relative;
@@ -698,7 +698,7 @@
         }
 
         /* Responsive adjustments for smaller screens */
-        @media (max-width: 768px) {
+        @media (max-width: 768px) { /* Tablet ve daha küçük ekranlar için */
             .form-row {
                 grid-template-columns: 1fr;
             }
@@ -722,16 +722,15 @@
              .success-message, .error-message {
                 min-width: 80%;
             }
-            #app-logo { /* Adjust logo size for smaller screens if it becomes too large */
-                width: 80%; /* Or a fixed value like 240px, adjust as needed */
-                height: auto; /* Maintain aspect ratio */
-                max-width: 300px; /* Prevent it from becoming excessively large on slightly larger small screens */
+            #app-logo { 
+                width: 240px; /* Tablet için logo genişliği */
+                height: 80px; /* Tablet için logo yüksekliği (oranı koruyarak) */
             }
         }
-         @media (max-width: 480px) {
+         @media (max-width: 480px) { /* Mobil telefonlar için */
             #app-logo {
-                width: 90%; /* Further adjust for very small screens */
-                 max-width: 200px;
+                width: 180px; /* Mobil için logo genişliği */
+                height: 60px; /* Mobil için logo yüksekliği (oranı koruyarak) */
             }
         }
 
