@@ -203,6 +203,7 @@
             font-weight: normal;
             text-transform: none;
             margin-bottom: 10px; /* Spacing for vertical stacking */
+            width: fit-content; /* Make label only take content width */
         }
         .radio-group-vertical label:last-child {
             margin-bottom: 0;
@@ -867,7 +868,7 @@
         let currentRecordForPrint = null; // To hold the record to be printed
         let isFirebaseInitialized = false;
 
-        // 🔥🔥🔥 USER-PROVIDED FIREBASE PROJECT CONFIGURATION DETAILS 🔥🔥🔥
+        // 🔥🔥🔥 USER-PROVIDED FIREBASE PROJECT CONFIGURATION DETAILS 🔥�🔥
         const firebaseConfig = {
              apiKey: "AIzaSyCsy1AAiRE8HCCt4HEAcz7Sh9AM6sQt4FQ",
              authDomain: "kaynak-sac-tamir.firebaseapp.com",
@@ -1332,7 +1333,6 @@
                         <div class="record-detail">
                             <div class="record-detail-icon">📷</div>
                             <div class="record-detail-text">
-                                <span class="record-detail-label">Fotoğraf</span>
                                 <img src="${record.photoURL}" alt="[Kaynak Saç Fotoğrafı]" class="record-photo" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" onclick="openPhotoModal('${record.photoURL}')">
                                 <small style="display:none; color: #dc3545;">Fotoğraf yüklenemedi</small>
                             </div>
@@ -1340,7 +1340,6 @@
                         <div class="record-detail record-notes">
                             <div class="record-detail-icon" style="font-size: 16px;">🗒️</div>
                             <div class="record-detail-text">
-                                <span class="record-detail-label">Notlar</span>
                                 <span class="record-detail-value">${notesText}</span>
                             </div>
                         </div>
@@ -1509,3 +1508,4 @@
     </script>
 </body>
 </html>
+�
