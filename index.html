@@ -603,45 +603,59 @@
             width: 80mm; /* Standard label width */
             height: 40mm; /* Standard label height */
             background: white;
-            border: 2px solid #000;
+            /* border: 2px solid #000;  Çerçeve kaldırıldı */
             box-sizing: border-box;
-            padding: 8mm; /* Increased padding slightly for better spacing */
+            padding: 5mm; /* İç boşluk ayarlandı */
             font-family: Arial, sans-serif;
-            font-size: 10px;
-            line-height: 1.2;
+            font-size: 11px; /* Genel font boyutu biraz büyütüldü */
+            line-height: 1.4; /* Satır aralığı ayarlandı */
             display: none; /* Initially hidden, shown by print logic */
         }
 
         .label-header {
             text-align: center;
             font-weight: bold;
-            font-size: 12px;
-            margin-bottom: 4mm; /* Increased margin for better spacing */
+            font-size: 14px; /* Başlık font boyutu büyütüldü */
+            margin-bottom: 3mm; /* Başlık alt boşluğu ayarlandı */
             border-bottom: 1px solid #000;
-            padding-bottom: 2mm; /* Increased padding for better spacing */
+            padding-bottom: 1.5mm; /* Başlık alt boşluğu ayarlandı */
         }
 
         .label-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4mm; /* Increased gap for better spacing */
-            font-size: 9px;
+            display: flex; /* Grid yerine flexbox kullanıldı */
+            flex-direction: column; /* Dikey sıralama */
+            gap: 2mm; /* Alanlar arası boşluk azaltıldı */
+            font-size: 10px; /* İçerik font boyutu ayarlandı */
         }
 
-        .label-field {
+        .label-field, .label-field-full {
             display: flex;
-            justify-content: space-between;
-        }
-
-        .label-field-full {
-            grid-column: 1 / -1;
-            display: flex;
-            justify-content: space-between;
+            justify-content: space-between; /* Etiket ve değer arasında boşluk bırakır */
+            align-items: baseline; /* Metin taban çizgisine hizalama */
+            width: 100%; /* Tam genişlik */
         }
         
-        #print-customer { /* Larger font for customer name on label */
-            font-size: 1.2em; 
+        .label-field .label-bold, .label-field-full .label-bold {
+            flex-shrink: 0; /* Etiketin küçülmesini engeller */
+            margin-right: 2mm; /* Etiket ile değer arasına boşluk ekler */
+        }
+
+        .label-field span:not(.label-bold), .label-field-full span:not(.label-bold) {
+            flex-grow: 1; /* Değerin kalan alanı doldurmasını sağlar */
+            text-align: right; /* Değeri sağa hizalar */
+            word-break: break-word; /* Uzun kelimeleri kırar */
+        }
+        
+        #print-customer { /* Müşteri adı için büyük font */
+            font-size: 1.8em; /* Önemli ölçüde büyütüldü */
             font-weight: bold;
+            line-height: 1.2; /* Satır aralığı ayarlandı */
+        }
+
+        #print-phone { /* Telefon numarası için büyük font */
+            font-size: 1.5em; /* Büyütüldü */
+            font-weight: bold;
+            line-height: 1.2; /* Satır aralığı ayarlandı */
         }
 
         .label-bold {
@@ -694,6 +708,10 @@
                 top: 0;
                 display: block !important; /* Ensure it's visible for printing */
                 margin: 0;
+                /* Sayfanın tamamını kaplaması için */
+                width: 100vw; 
+                height: 100vh;
+                padding: 10mm; /* Yazdırma sırasında daha geniş boşluk */
             }
         }
 
