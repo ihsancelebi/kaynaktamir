@@ -742,7 +742,21 @@
                 /* Sayfanın tamamını kaplaması için */
                 width: 100vw; 
                 height: 100vh;
-                padding: 10mm; /* Yazdırma sırasında daha geniş boşluk */
+                /* Adjust padding to make the label fill more of the page */
+                padding: 5mm; /* Reduced padding to make content larger */
+                display: flex; /* Use flexbox for better content distribution */
+                flex-direction: column;
+                justify-content: space-between; /* Distribute space between sections */
+                align-items: stretch; /* Stretch items to fill width */
+            }
+
+            /* Ensure content inside label also becomes visible */
+            .print-label .label-top-section,
+            .print-label .label-content,
+            .print-label .label-field,
+            .print-label .label-bold,
+            .print-label span {
+                visibility: visible;
             }
         }
 
@@ -1033,7 +1047,7 @@
              measurementId: "G-N8B2V6RQET" 
         };
 
-        // 🔥🔥 YOUR IMGUR CLIENT ID AND SECRET HERE 🔥🔥🔥
+        // 🔥🔥 YOUR IMGUR CLIENT ID AND SECRET HERE 🔥�🔥
         // You need to obtain a valid Client ID and Client Secret for the Imgur API.
         // Get them from: https://api.imgur.com/oauth2/addclient
         const IMGUR_CLIENT_ID = '82ab37b38a1850a'; 
@@ -1065,7 +1079,7 @@
                 photoUploadArea.classList.add('dragover');
             });
             photoUploadArea.addEventListener('dragleave', () => {
-                photoUploadArea.classList.remove('dragover');
+                photoUploadarea.classList.remove('dragover');
             });
             photoUploadArea.addEventListener('drop', (e) => {
                 e.preventDefault();
@@ -1741,3 +1755,4 @@
     </script>
 </body>
 </html>
+�
