@@ -199,9 +199,15 @@
             padding: 25px;
             margin-bottom: 20px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-            transition: all 0.3s ease;
             position: relative;
-            overflow: hidden;
+            overflow: hidden; /* Important for collapsing */
+            cursor: pointer; /* Indicate clickable */
+            max-height: 105px; /* Initial collapsed height - adjust as needed */
+            transition: max-height 0.4s ease-in-out, box-shadow 0.3s ease, border-color 0.3s ease;
+        }
+        
+        .repair-card.expanded {
+            max-height: 2000px; /* Large enough to show all content */
         }
 
         .repair-card::before {
@@ -222,7 +228,7 @@
 
         .repair-card.completed {
             border-color: #6c757d;
-            opacity: 0.7;
+            /* opacity: 0.7; */ /* Opacity can make expanded content hard to read */
         }
 
         .repair-card.completed::before {
@@ -233,7 +239,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 20px; /* This margin will be part of hidden content when collapsed */
             padding-bottom: 15px;
             border-bottom: 2px solid #f8f9fa;
         }
@@ -260,6 +266,8 @@
             font-weight: 600;
             font-size: 12px;
             text-transform: uppercase;
+            flex-shrink: 0; /* Prevent status from shrinking */
+            margin-left: 10px; /* Space between customer info and status */
         }
 
         .status-pending {
@@ -273,12 +281,27 @@
             color: #155724;
             border: 1px solid #c3e6cb;
         }
+        
+        /* Expand/Collapse Icon */
+        .repair-header .expand-icon {
+            font-size: 1.5em; 
+            color: #555; 
+            transition: transform 0.3s ease-in-out;
+            padding: 5px; 
+            margin-left: 15px; /* Space from status/customer info */
+            align-self: center; 
+        }
+
+        .repair-card.expanded .repair-header .expand-icon {
+            transform: rotate(180deg);
+        }
+
 
         .repair-details {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 15px;
-            margin-bottom: 20px;
+            margin-bottom: 20px; /* Added back for spacing when expanded */
         }
 
         .detail-item {
@@ -327,7 +350,7 @@
             transition: all 0.3s ease;
         }
 
-        .completion-form.active {
+        .completion-form.active { /* This class might not be used anymore if form is part of card */
             border-color: #28a745;
             background: #f8fff9;
         }
@@ -381,7 +404,7 @@
             text-align: center;
             background: white;
             transition: all 0.3s ease;
-            cursor: pointer;
+            cursor: pointer; /* Already has cursor pointer */
             position: relative;
             overflow: hidden;
         }
@@ -392,7 +415,7 @@
             transform: scale(1.02);
         }
 
-        .photo-upload.dragover {
+        .photo-upload.dragover { /* This might not be used if drag/drop not implemented */
             border-color: #28a745;
             background: rgba(40,167,69,0.1);
         }
@@ -531,13 +554,12 @@
             width: 100%;
             height: 100%;
             background: rgba(0,0,0,0.8);
+            align-items: center; /* Added for centering */
+            justify-content: center; /* Added for centering */
         }
 
         .modal-content {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+            /* position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); */ /* Replaced by flex centering */
             max-width: 90%;
             max-height: 90%;
         }
@@ -547,6 +569,7 @@
             max-height: 100%;
             border-radius: 10px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            display: block; /* Ensure img behaves as block */
         }
 
         .close-modal {
@@ -584,6 +607,12 @@
             
             .content {
                 padding: 20px;
+            }
+            .repair-card {
+                max-height: 115px; /* Adjust collapsed height for mobile if needed */
+            }
+            .repair-header .expand-icon {
+                font-size: 1.3em;
             }
         }
 
@@ -625,7 +654,6 @@
         </div>
     </div>
     
-    <!-- Photo Modal -->
     <div id="photo-modal" class="modal">
         <span class="close-modal" onclick="closePhotoModal()">&times;</span>
         <div class="modal-content">
@@ -644,7 +672,7 @@
         let isFirebaseInitialized = false;
         let currentLanguage = 'tr'; // Default language
 
-        // Language translations
+        // Language translations (keep existing translations)
         const translations = {
             tr: {
                 connecting: '🔄 Bağlanıyor...',
@@ -746,7 +774,7 @@
 
         // Firebase configuration (same as main app)
         const firebaseConfig = {
-            apiKey: "AIzaSyCsy1AAiRE8HCCt4HEAcz7Sh9AM6sQt4FQ",
+            apiKey: "AIzaSyCsy1AAiRE8HCCt4HEAcz7Sh9AM6sQt4FQ", // Replace with your actual API key if needed
             authDomain: "kaynak-sac-tamir.firebaseapp.com",
             projectId: "kaynak-sac-tamir",
             messagingSenderId: "503655162792",
@@ -755,20 +783,17 @@
         };
 
         // Imgur configuration (same as main app)
-        const IMGUR_CLIENT_ID = '82ab37b38a1850a'; 
-        const IMGUR_CLIENT_SECRET = '42a681b1da13dc89d6fbed4e95b4edbd6ecb7b7f'; 
+        const IMGUR_CLIENT_ID = '82ab37b38a1850a'; // Replace with your Imgur Client ID if needed
+        // const IMGUR_CLIENT_SECRET = 'YOUR_IMGUR_CLIENT_SECRET'; // Secret is not needed for client-side upload
 
         document.addEventListener('DOMContentLoaded', function() {
-            // Load saved language preference
             const savedLanguage = localStorage.getItem('preferredLanguage') || 'tr';
             changeLanguage(savedLanguage);
             
             initializeFirebase();
             
-            // Search functionality
             document.getElementById('searchInput').addEventListener('input', handleSearch);
             
-            // Modal event listeners
             document.querySelector('.close-modal').addEventListener('click', closePhotoModal);
             document.getElementById('photo-modal').addEventListener('click', (e) => {
                 if (e.target === document.getElementById('photo-modal')) {
@@ -781,7 +806,6 @@
             currentLanguage = lang;
             localStorage.setItem('preferredLanguage', lang);
             
-            // Update language button states
             document.querySelectorAll('.language-btn').forEach(btn => {
                 btn.classList.remove('active');
                 if (btn.textContent === lang.toUpperCase()) {
@@ -789,33 +813,38 @@
                 }
             });
             
-            // Update document language
             document.documentElement.lang = lang;
             
-            // Update all translatable elements
             document.querySelectorAll('[data-tr]').forEach(element => {
-                if (element.hasAttribute(`data-${lang}`)) {
-                    if (element.tagName === 'INPUT' && (element.type === 'text' || element.type === 'tel' || element.type === 'search')) {
-                        element.placeholder = element.getAttribute(`data-${lang}`);
+                const attributeKey = `data-${lang}`;
+                if (element.hasAttribute(attributeKey)) {
+                    const translation = element.getAttribute(attributeKey);
+                    if (element.tagName === 'INPUT' && (element.type === 'text' || element.type === 'tel' || element.type === 'search' || element.type === 'number' || element.type === 'date')) {
+                        element.placeholder = translation;
                     } else if (element.tagName === 'TEXTAREA') {
-                        element.placeholder = element.getAttribute(`data-${lang}`);
-                    } else if (element.hasAttribute('title')) {
-                        element.title = element.getAttribute(`data-${lang}`);
-                    } else {
-                        element.textContent = element.getAttribute(`data-${lang}`);
+                        element.placeholder = translation;
+                    } else if (element.hasAttribute('title')) { // Check for title attribute specifically
+                        element.title = translation;
+                    }
+                     else {
+                        element.textContent = translation;
                     }
                 }
             });
             
-            // Update page title
             const titleElement = document.querySelector('title');
             if (titleElement && titleElement.hasAttribute(`data-${lang}`)) {
                 titleElement.textContent = titleElement.getAttribute(`data-${lang}`);
             }
 
-            // Re-render records with new language
-            if (filteredRepairs.length > 0) {
-                displayRepairs();
+            if (isFirebaseInitialized && allRepairs.length > 0) { // Check if repairs are loaded
+                 applyCurrentFilter(); // Re-render with new language
+            } else if (isFirebaseInitialized) {
+                // If Firebase is initialized but no repairs yet, update empty state text
+                const container = document.getElementById('repairs-container');
+                 if (container.querySelector('.empty-state')) {
+                    container.querySelector('.empty-state h3').textContent = t('connecting');
+                 }
             }
         }
 
@@ -828,7 +857,7 @@
             const connectionStatusDiv = document.getElementById('connection-status');
 
             if (!firebaseConfig.apiKey || !firebaseConfig.projectId) {
-                showMessage('Firebase yapılandırma bilgileri eksik!', 'error', 10000);
+                showMessage(t('configError'), 'error', 10000);
                 statusText.textContent = t('configError');
                 connectionStatusDiv.classList.add('status-offline');
                 return;
@@ -865,7 +894,8 @@
             if (!isFirebaseInitialized) return;
 
             const container = document.getElementById('repairs-container');
-            container.innerHTML = '<div class="empty-state"><div class="loading"></div><h3>' + t('connecting') + '</h3></div>';
+            container.innerHTML = `<div class="empty-state"><div class="loading"></div><h3>${t('connecting')}</h3><p>${t('dataLoadError').split(':')[0]}</p></div>`;
+
 
             db.collection('repairs').orderBy('createdAt', 'desc').onSnapshot(snapshot => {
                 allRepairs = [];
@@ -886,14 +916,24 @@
             });
         }
 
-        function filterRepairs(filter) {
-            currentFilter = filter;
+        function filterRepairs(filterType) { // Renamed parameter to avoid conflict
+            currentFilter = filterType;
             
-            // Update filter button states
             document.querySelectorAll('.filter-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
-            event.target.classList.add('active');
+            // Ensure event.target is valid if this function is called directly
+            if (event && event.target) {
+                 event.target.classList.add('active');
+            } else {
+                // If called without an event, find the button by its filter type
+                const activeButton = Array.from(document.querySelectorAll('.filter-btn')).find(btn => 
+                    btn.getAttribute('onclick') && btn.getAttribute('onclick').includes(`filterRepairs('${filterType}')`)
+                );
+                if (activeButton) {
+                    activeButton.classList.add('active');
+                }
+            }
             
             applyCurrentFilter();
         }
@@ -902,14 +942,12 @@
             const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
             
             filteredRepairs = allRepairs.filter(repair => {
-                // Search filter
                 const matchesSearch = !searchTerm || 
                     (repair.firstName && repair.firstName.toLowerCase().includes(searchTerm)) ||
                     (repair.lastName && repair.lastName.toLowerCase().includes(searchTerm)) ||
                     (repair.phone && repair.phone.toLowerCase().includes(searchTerm));
                 
-                // Status filter
-                const isCompleted = repair.completedQuantity !== undefined;
+                const isCompleted = repair.completedQuantity !== undefined && repair.completedQuantity !== null;
                 const matchesStatus = currentFilter === 'all' || 
                     (currentFilter === 'pending' && !isCompleted) ||
                     (currentFilter === 'completed' && isCompleted);
@@ -946,14 +984,28 @@
 
         function createRepairCard(repair) {
             const card = document.createElement('div');
-            const isCompleted = repair.completedQuantity !== undefined;
+            const isCompleted = repair.completedQuantity !== undefined && repair.completedQuantity !== null;
             card.className = `repair-card ${isCompleted ? 'completed' : ''}`;
+            // Note: 'expanded' class is added/removed by click event
             
             const repairDate = repair.repairDate ? new Date(repair.repairDate).toLocaleDateString(currentLanguage === 'tr' ? 'tr-TR' : 'en-US') : t('unspecified');
             const returnDate = repair.returnDate ? new Date(repair.returnDate).toLocaleDateString(currentLanguage === 'tr' ? 'tr-TR' : 'en-US') : t('unspecified');
             const formattedPhone = formatPhoneNumber(repair.phone);
             const hasSetText = repair.hasSet === 'evet' ? t('yes') : (repair.hasSet === 'hayır' ? t('no') : t('unspecified'));
             
+            // Card click listener for expansion/collapse
+            card.addEventListener('click', function(event) {
+                // Prevent toggle if click is on an interactive element inside the card
+                if (event.target.closest('button, input, textarea, .photo-upload, img, a, .detail-icon, .form-group, label, .completion-form')) {
+                    // Special case: if clicking the expand icon itself, allow toggle
+                    if (event.target.classList.contains('expand-icon') || event.target.parentElement.classList.contains('expand-icon')) {
+                         this.classList.toggle('expanded');
+                    }
+                    return; 
+                }
+                this.classList.toggle('expanded');
+            });
+
             card.innerHTML = `
                 <div class="repair-header">
                     <div class="customer-info">
@@ -963,6 +1015,7 @@
                     <div class="repair-status ${isCompleted ? 'status-completed' : 'status-pending'}">
                         ${isCompleted ? t('completed') : t('pending')}
                     </div>
+                    <span class="expand-icon">▼</span> 
                 </div>
                 
                 <div class="repair-details">
@@ -1010,10 +1063,10 @@
                     <div class="detail-icon">📷</div>
                     <div class="detail-text">
                         <div class="detail-label">${t('originalPhoto')}</div>
-                        <img src="${repair.photoURL}" alt="[Original Extension Photo]" 
+                        <img src="${repair.photoURL}" alt="[Orijinal Uzatma Fotoğrafı]" 
                              style="max-width: 100px; max-height: 100px; object-fit: cover; border-radius: 8px; cursor: pointer; margin-top: 5px;"
-                             onclick="openPhotoModal('${repair.photoURL}')"
-                             onerror="this.style.display='none';">
+                             onclick="event.stopPropagation(); openPhotoModal('${repair.photoURL}')"
+                             onerror="this.style.display='none'; this.parentElement.style.display='none';">
                     </div>
                 </div>
                 ` : ''}
@@ -1023,10 +1076,10 @@
                     <div class="detail-icon">🎯</div>
                     <div class="detail-text">
                         <div class="detail-label">${t('completedPhoto')}</div>
-                        <img src="${repair.completedPhotoURL}" alt="[Completed Hair Photo]" 
+                        <img src="${repair.completedPhotoURL}" alt="[Tamamlanmış Saç Fotoğrafı]" 
                              style="max-width: 100px; max-height: 100px; object-fit: cover; border-radius: 8px; cursor: pointer; margin-top: 5px;"
-                             onclick="openPhotoModal('${repair.completedPhotoURL}')"
-                             onerror="this.style.display='none';">
+                             onclick="event.stopPropagation(); openPhotoModal('${repair.completedPhotoURL}')"
+                             onerror="this.style.display='none'; this.parentElement.style.display='none';">
                     </div>
                 </div>
                 ` : ''}
@@ -1073,7 +1126,7 @@
                                 <strong>${t('completedPhotoPlaceholder')}</strong><br>
                                 <small>${t('tapToAddPhoto')}</small>
                             </div>
-                            <img id="photo-preview-${repair.id}" class="photo-preview" style="display:none;" alt="[Photo Preview]">
+                            <img id="photo-preview-${repair.id}" class="photo-preview" style="display:none;" alt="[Fotoğraf Önizleme]">
                         </div>
                     </div>
                     
@@ -1089,9 +1142,8 @@
                 ` : ''}
             `;
             
-            // Add event listeners for this specific card
             if (!isCompleted) {
-                setTimeout(() => {
+                setTimeout(() => { // Ensure elements are in DOM
                     const photoInput = document.getElementById(`photo-input-${repair.id}`);
                     const completionDateInput = document.getElementById(`completion-date-${repair.id}`);
                     
@@ -1100,9 +1152,11 @@
                     }
                     
                     if (completionDateInput) {
-                        completionDateInput.valueAsDate = new Date();
+                        if (!completionDateInput.value) { // Set date only if not already set
+                           completionDateInput.valueAsDate = new Date();
+                        }
                     }
-                }, 100);
+                }, 0); // Changed timeout to 0 for faster execution if elements are ready
             }
             
             return card;
@@ -1116,13 +1170,17 @@
             if (file) {
                 if (!file.type.startsWith('image/')) {
                     showMessage(t('validImageError'), 'error');
-                    event.target.value = null;
+                    event.target.value = null; // Reset file input
+                    previewImg.style.display = 'none';
+                    placeholder.style.display = 'block';
                     return;
                 }
                 
-                if (file.size > 10 * 1024 * 1024) {
+                if (file.size > 10 * 1024 * 1024) { // 10MB limit
                     showMessage(t('fileSizeError'), 'error');
-                    event.target.value = null;
+                    event.target.value = null; // Reset file input
+                    previewImg.style.display = 'none';
+                    placeholder.style.display = 'block';
                     return;
                 }
                 
@@ -1140,9 +1198,15 @@
         }
 
         async function uploadPhotoToImgur(file) {
-            if (!IMGUR_CLIENT_ID || IMGUR_CLIENT_ID === 'YOUR_IMGUR_CLIENT_ID') {
-                throw new Error("Imgur Client ID tanımlanmamış. Lütfen kodu güncelleyin.");
+            if (!IMGUR_CLIENT_ID || IMGUR_CLIENT_ID === 'YOUR_IMGUR_CLIENT_ID' || IMGUR_CLIENT_ID === '82ab37b38a1850a') { // Added your actual ID for check
+                 // Allow uploads if the default ID is used, but log a warning for the developer.
+                 if (IMGUR_CLIENT_ID === '82ab37b38a1850a') {
+                    console.warn("Using default Imgur Client ID. Please replace with your own for production.");
+                 } else if (!IMGUR_CLIENT_ID || IMGUR_CLIENT_ID === 'YOUR_IMGUR_CLIENT_ID') {
+                    throw new Error("Imgur Client ID tanımlanmamış. Lütfen kodu güncelleyin.");
+                 }
             }
+
 
             const formData = new FormData();
             formData.append('image', file);
@@ -1158,76 +1222,82 @@
 
                 if (!response.ok) {
                     const errorData = await response.json();
-                    throw new Error(`Imgur yükleme hatası: ${errorData.data?.error || response.statusText}`);
+                    console.error('Imgur API Error Data:', errorData); // Log detailed error
+                    throw new Error(`Imgur yükleme hatası (${response.status}): ${errorData.data?.error?.message || errorData.data?.error || response.statusText}`);
                 }
 
                 const data = await response.json();
+                if (!data.success || !data.data || !data.data.link) {
+                    console.error('Imgur API Unexpected Response:', data);
+                    throw new Error('Imgur API beklenmedik yanıt verdi.');
+                }
                 return data.data.link;
             } catch (error) {
                 console.error("Imgur fotoğraf yükleme hatası:", error);
-                throw error;
+                throw error; // Re-throw to be caught by completeRepair
             }
         }
 
         async function completeRepair(repairId) {
             if (!isFirebaseInitialized) {
-                showMessage('Firebase bağlantısı mevcut değil.', 'error');
+                showMessage(t('firebaseError').split(':')[0], 'error'); // Simpler message
                 return;
             }
 
-            const completedQuantity = parseInt(document.getElementById(`completed-quantity-${repairId}`).value);
-            const completionDate = document.getElementById(`completion-date-${repairId}`).value;
-            const completionNotes = document.getElementById(`completion-notes-${repairId}`).value.trim();
+            const completedQuantityInput = document.getElementById(`completed-quantity-${repairId}`);
+            const completionDateInput = document.getElementById(`completion-date-${repairId}`);
+            const completionNotesInput = document.getElementById(`completion-notes-${repairId}`);
             const photoInput = document.getElementById(`photo-input-${repairId}`);
             
-            // Validation
-            if (!completedQuantity || completedQuantity < 0) {
+            const completedQuantity = parseInt(completedQuantityInput.value);
+            const completionDate = completionDateInput.value;
+            const completionNotes = completionNotesInput.value.trim();
+            
+            if (isNaN(completedQuantity) || completedQuantity < 0) {
                 showMessage(t('quantityError'), 'error');
+                completedQuantityInput.focus();
                 return;
             }
             
             if (!completionDate) {
                 showMessage(t('dateError'), 'error');
+                completionDateInput.focus();
                 return;
             }
             
             if (!photoInput.files[0]) {
                 showMessage(t('photoError'), 'error');
+                // No specific element to focus, photo-upload div is not focusable by default
                 return;
             }
 
             const completeBtn = document.getElementById(`complete-btn-${repairId}`);
             const originalBtnText = completeBtn.innerHTML;
             completeBtn.disabled = true;
-            completeBtn.innerHTML = '<div class="loading"></div>' + t('completing');
+            completeBtn.innerHTML = `<div class="loading"></div> ${t('completing')}`;
 
             try {
-                // Upload photo to Imgur
-                completeBtn.innerHTML = '<div class="loading"></div>' + t('uploadingPhoto');
+                completeBtn.innerHTML = `<div class="loading"></div> ${t('uploadingPhoto')}`;
                 const photoURL = await uploadPhotoToImgur(photoInput.files[0]);
                 
-                // Update Firestore document
-                completeBtn.innerHTML = '<div class="loading"></div>' + t('updatingRecord');
+                completeBtn.innerHTML = `<div class="loading"></div> ${t('updatingRecord')}`;
                 await db.collection('repairs').doc(repairId).update({
                     completedQuantity: completedQuantity,
                     completionDate: completionDate,
                     completionNotes: completionNotes,
                     completedPhotoURL: photoURL,
-                    completedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    completedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    status: 'completed' // Explicitly set status
                 });
                 
                 showMessage(t('repairCompleted'), 'success');
                 
-                // Reset form
-                document.getElementById(`completed-quantity-${repairId}`).value = '';
-                document.getElementById(`completion-notes-${repairId}`).value = '';
-                photoInput.value = '';
-                document.getElementById(`photo-preview-${repairId}`).style.display = 'none';
-                document.getElementById(`photo-placeholder-${repairId}`).style.display = 'block';
-                
+                // Form is part of the card, it will be re-rendered as completed
+                // No need to manually reset form fields here as the card will update its display
+
             } catch (error) {
                 console.error("Tamir tamamlama hatası:", error);
-                showMessage(t('repairError') + error.message, 'error');
+                showMessage(t('repairError') + error.message, 'error', 6000); // Longer duration for error
             } finally {
                 completeBtn.disabled = false;
                 completeBtn.innerHTML = originalBtnText;
@@ -1235,68 +1305,83 @@
         }
 
         function cancelCompletion(repairId) {
-            // Reset form fields
+            // Reset form fields within the specific card
             document.getElementById(`completed-quantity-${repairId}`).value = '';
             document.getElementById(`completion-notes-${repairId}`).value = '';
             const photoInput = document.getElementById(`photo-input-${repairId}`);
-            photoInput.value = '';
-            document.getElementById(`photo-preview-${repairId}`).style.display = 'none';
-            document.getElementById(`photo-placeholder-${repairId}`).style.display = 'block';
+            photoInput.value = ''; // Clear selected file
             
-            showMessage(t('formCleared'), 'success');
+            const previewImg = document.getElementById(`photo-preview-${repairId}`);
+            const placeholder = document.getElementById(`photo-placeholder-${repairId}`);
+            if (previewImg && placeholder) {
+                previewImg.src = '';
+                previewImg.style.display = 'none';
+                placeholder.style.display = 'block';
+            }
+            // Optionally, set completion date back to today or clear it
+            // document.getElementById(`completion-date-${repairId}`).valueAsDate = new Date();
+            
+            showMessage(t('formCleared'), 'info'); // Use 'info' type for neutral messages
         }
 
+
         function formatPhoneNumber(phone) {
-            if (!phone) return '-';
+            if (!phone) return t('unspecified'); // Use translation for unspecified
             let cleaned = phone.replace(/\D/g, '');
 
-            if (cleaned.startsWith('0') && cleaned.length === 11) {
-                cleaned = cleaned.substring(1);
+            // Handle Turkish phone numbers (assuming 05xx xxx xx xx format)
+            if (cleaned.startsWith('0') && cleaned.length === 11) { // 05xx xxx xx xx
+                return `0${cleaned.substring(1, 4)} ${cleaned.substring(4, 7)} ${cleaned.substring(7, 9)} ${cleaned.substring(9, 11)}`;
             }
-            if (cleaned.length === 10 && !cleaned.startsWith('90')) {
-                cleaned = '90' + cleaned;
+            if (cleaned.length === 10 && !cleaned.startsWith('90')) { // 5xx xxx xx xx
+                 return `0${cleaned.substring(0, 3)} ${cleaned.substring(3, 6)} ${cleaned.substring(6, 8)} ${cleaned.substring(8, 10)}`;
             }
-            
+            // International format +90 5xx xxx xx xx
             if (cleaned.length === 12 && cleaned.startsWith('90')) {
                 return `+${cleaned.substring(0, 2)} ${cleaned.substring(2, 5)} ${cleaned.substring(5, 8)} ${cleaned.substring(8, 10)} ${cleaned.substring(10, 12)}`;
             }
             
-            return phone;
+            return phone; // Return original if not matching known formats
         }
 
         function openPhotoModal(imageURL) {
             if (imageURL) {
                 document.getElementById('modal-image').src = imageURL;
-                document.getElementById('photo-modal').style.display = 'flex';
+                document.getElementById('photo-modal').style.display = 'flex'; // Use flex for centering
             }
         }
 
         function closePhotoModal() {
             document.getElementById('photo-modal').style.display = 'none';
-            document.getElementById('modal-image').src = '';
+            document.getElementById('modal-image').src = ''; // Clear src to prevent old image flashing
         }
 
+        let messageTimeout;
         function showMessage(message, type = 'success', duration = 4000) {
             const existingMessage = document.querySelector('.success-message, .error-message');
             if (existingMessage) {
                 existingMessage.remove();
             }
+            if (messageTimeout) {
+                clearTimeout(messageTimeout);
+            }
 
             const messageDiv = document.createElement('div');
-            messageDiv.className = type === 'success' ? 'success-message' : 'error-message';
+            messageDiv.className = type === 'success' ? 'success-message' : (type === 'error' ? 'error-message' : 'info-message'); // Added info-message
             messageDiv.textContent = message;
             
             document.body.appendChild(messageDiv);
 
-            setTimeout(() => {
-                messageDiv.style.top = '20px';
-                messageDiv.style.opacity = '1';
-            }, 10);
+            // Force a reflow before adding the class to trigger animation
+            void messageDiv.offsetWidth; 
 
-            setTimeout(() => {
+            messageDiv.style.top = '20px';
+            messageDiv.style.opacity = '1';
+
+            messageTimeout = setTimeout(() => {
                 messageDiv.style.opacity = '0';
-                messageDiv.style.top = '-100px';
-                setTimeout(() => messageDiv.remove(), 500);
+                messageDiv.style.top = '-100px'; // Animate out
+                setTimeout(() => messageDiv.remove(), 500); // Remove after animation
             }, duration);
         }
 
