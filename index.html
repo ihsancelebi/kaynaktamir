@@ -1247,7 +1247,7 @@
                 calling: "Calling...",            
                 notSpecified: "Not specified",
                 notCalculated: "Not calculated",
-                notesNone: "None",
+                notesNone: "None", 
                 hairExtensionPhotoAlt: "[Hair Extension Photo]",
                 completedHairPhotoAlt: "[Completed Hair Photo]",
                 photoLoadError: "Photo could not be loaded",
@@ -1356,7 +1356,7 @@
                 calling: "Aranıyor...",           
                 notSpecified: "Belirtilmemiş",
                 notCalculated: "Hesaplanmadı",
-                notesNone: "Yok",
+                notesNone: "Yok", 
                 hairExtensionPhotoAlt: "[Kaynak Saç Fotoğrafı]",
                 completedHairPhotoAlt: "[Tamamlanmış Saç Fotoğrafı]",
                 photoLoadError: "Fotoğraf yüklenemedi",
@@ -1941,7 +1941,18 @@
 
             const hasSetText = record.hasSet === 'evet' ? lang.formSetYes : (record.hasSet === 'hayır' ? lang.formSetNo : lang.notSpecified);
             const formattedPhone = formatPhoneNumber(record.phone);
-            const notesText = record.notes && record.notes.length > 0 ? record.notes : lang.notesNone;
+            
+            let notesHTML = '';
+            if (record.notes && record.notes.trim().length > 0) {
+                notesHTML = `
+                <div class="record-detail record-notes"> 
+                    <div class="record-detail-icon" style="font-size: 16px;">🗒️</div>
+                    <div class="record-detail-text">
+                        <span class="record-detail-label" data-translate="recordCardNotesLabel" style="display:block; margin-bottom: 5px;">${lang.recordCardNotesLabel}:</span>
+                        <span class="record-detail-value">${record.notes}</span>
+                    </div>
+                </div>`;
+            }
 
             const completedQuantityText = isCompleted ? record.completedQuantity : '';
             const completionDateText = record.completionDate ? new Date(record.completionDate).toLocaleDateString(locale, { day: '2-digit', month: '2-digit', year: 'numeric' }) : '';
@@ -1984,13 +1995,7 @@
                         <small style="display:none; color: #dc3545;" data-translate="photoLoadError">${lang.photoLoadError}</small>
                     </div>
                 </div>` : ''}
-                <div class="record-detail record-notes"> 
-                    <div class="record-detail-icon" style="font-size: 16px;">🗒️</div>
-                    <div class="record-detail-text">
-                        <span class="record-detail-label" data-translate="recordCardNotesLabel" style="display:block; margin-bottom: 5px;">${lang.recordCardNotesLabel}:</span>
-                        <span class="record-detail-value">${notesText}</span>
-                    </div>
-                </div>
+                ${notesHTML}
             `;
 
             let afterRepairContentHTML = '';
