@@ -401,25 +401,45 @@
         .record-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: center; 
             margin-bottom: 15px;
             padding-bottom: 15px;
             border-bottom: 2px solid #f8f9fa;
+        }
+        
+        .record-info-left { /* New wrapper for name and dates */
+            display: flex;
+            align-items: baseline; /* Aligns name and dates nicely */
+            gap: 8px; /* Space between name and dates block */
+            flex-grow: 1; 
+            flex-wrap: wrap; /* Allow wrapping on very small screens */
         }
 
         .record-name {
             font-size: 1.4em;
             font-weight: 700;
             color: #333;
+            /* margin-right: 8px; Removed in favor of gap on parent */
+        }
+        
+        .record-dates-inline { /* New class for the inline date string */
+            font-size: 0.85em; 
+            color: #555; 
+            white-space: nowrap; /* Tries to keep dates on one line */
+        }
+        /* Old .record-date-info and its span styling can be removed or commented out if not used elsewhere */
+        /*
+        .record-date-info { 
+            font-size: 0.8em; 
+            color: #555; 
+            margin-top: 4px;
+            line-height: 1.4; 
         }
 
-        .record-date { 
-            color: #6c757d;
-            font-size: 0.9em;
-            background: #f8f9fa;
-            padding: 5px 12px;
-            border-radius: 20px;
+        .record-date-info span { 
+            display: block;
         }
+        */
 
         /* Always visible details */
         .record-details-always-visible {
@@ -497,7 +517,7 @@
         }
 
         .record-card.expanded .record-collapsible-content {
-            max-height: 1800px; /* Increased max-height for more content */
+            max-height: 1800px; 
             padding-top: 15px; 
         }
 
@@ -527,14 +547,14 @@
              margin-top: 20px; 
         }
         
-        .general-details-after-comparison { /* New container for details after comparison grid */
-            grid-column: 1 / -1; /* Span full width */
+        .general-details-after-comparison { 
+            grid-column: 1 / -1; 
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Responsive columns */
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
             gap: 15px;
-            margin-top: 20px; /* Space above this section */
+            margin-top: 20px; 
             padding-top: 15px;
-            border-top: 1px solid #eee; /* Optional separator */
+            border-top: 1px solid #eee; 
         }
 
 
@@ -552,6 +572,8 @@
         .expand-icon {
             font-size: 1.2em;
             transition: transform 0.3s ease;
+            margin-left: 10px; 
+            flex-shrink: 0; /* Prevent icon from shrinking */
         }
 
         .record-card.expanded .expand-icon {
@@ -604,48 +626,6 @@
             transform: scale(1.05);
         }
         
-        .call-status-container {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-top: 15px; 
-            padding: 10px;
-            background-color: #f8f9fa;
-            border-radius: 8px;
-            grid-column: 1 / -1; 
-        }
-        .call-status-text { 
-            font-weight: 600;
-            padding: 5px 10px;
-            border-radius: 5px;
-        }
-        .call-status-not-called { 
-            color: #dc3545; 
-            background-color: #f8d7da; 
-        }
-        .call-status-called { 
-            color: #28a745; 
-            background-color: #d4edda; 
-        }
-        .btn-call {
-            background: #17a2b8; 
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 15px;
-            font-size: 12px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        .btn-call:hover:not(:disabled) {
-            background: #138496;
-            transform: scale(1.05);
-        }
-         .btn-call:disabled {
-            background: #6c757d; 
-            opacity: 0.7;
-        }
-
 
         /* Empty state message for records list */
         .empty-state {
@@ -834,7 +814,7 @@
             line-height: 1.2; 
         }
 
-        #print-quantity, #print-delivery {
+        #print-quantity, #print-delivery { 
             font-size: 12px; 
             font-weight: bold;
         }
@@ -921,7 +901,7 @@
             }
             
             .record-details-always-visible { 
-                grid-template-columns: 1fr;
+                grid-template-columns: 1fr; 
             }
             
             .header h1 {
@@ -958,6 +938,14 @@
             }
             .lang-btn {
                 margin: 0 5px;
+            }
+            .record-info-left { /* Allow name and dates to stack on very small screens */
+                flex-direction: column;
+                align-items: flex-start; /* Align to start when stacked */
+                gap: 2px;
+            }
+            .record-dates-inline {
+                white-space: normal; /* Allow dates to wrap if needed when stacked */
             }
         }
 
@@ -1055,12 +1043,10 @@
                     
                     <div class="form-row">
                         <div class="form-group">
-                            <label data-translate="formRepairDate">Tamire Verilen Tarih</label>
-                            <input type="date" id="repairDate" required>
+                            <label data-translate="formRepairDateInput">Tamire Verilen Tarih</label> <input type="date" id="repairDate" required>
                         </div>
                         <div class="form-group">
-                            <label data-translate="formReturnDate">Teslim Tarihi</label>
-                            <input type="date" id="returnDate" required>
+                            <label data-translate="formTerminDateInput">Termin Tarihi</label>  <input type="date" id="returnDate" required>
                         </div>
                     </div>
                     
@@ -1181,7 +1167,7 @@
                 <span id="print-quantity"></span>
             </div>
             <div class="label-field">
-                <span class="label-bold" data-translate="printLabelDeliveryDate">TESLİM TAR:</span>
+                <span class="label-bold" data-translate="printLabelTerminDate">TERMİN TAR:</span> 
                 <span id="print-delivery"></span>
             </div>
         </div>
@@ -1213,8 +1199,8 @@
                 formLastName: "Last Name",
                 formPhone: "Phone",
                 formPhoneExample: "Example: +90 553 528 0908 or 5535280908",
-                formRepairDate: "Date Received for Repair", 
-                formReturnDate: "Delivery Date",
+                formRepairDateInput: "Date Received for Repair", 
+                formTerminDateInput: "Deadline", 
                 formQuantity: "Number of Extensions",
                 formUnitPrice: "Repair Price per Unit (₺)",
                 formHasSet: "Will it be a Set?",
@@ -1247,12 +1233,12 @@
                 errorOccurred: "An error occurred. Please check the console or try again later.",
                 noRecordsFound: "No records found matching your filters.",
                 noRecordsFoundMsg: "Clear the filters and try again, or add a new record.",
-                recordCardReceived: "Received:", 
+                recordCardArrivalDateLabel: "Arrival:", 
+                recordCardDeadlineLabel: "Deadline:", 
                 recordCardPhone: "Phone",
                 recordCardQuantity: "Quantity",
                 recordCardSet: "Set",
                 recordCardTotalPrice: "Total Price",
-                recordCardDeliveryDate: "Delivery Date",
                 recordCardNotesLabel: "Notes", 
                 recordCardCompletedQuantity: "Completed Quantity",
                 recordCardCompletionDate: "Completion Date",
@@ -1280,7 +1266,7 @@
                 printLabelCustomer: "CUSTOMER:",
                 printLabelPhone: "PHONE:",
                 printLabelQuantity: "QUANTITY:",
-                printLabelDeliveryDate: "DELIVERY DATE:",
+                printLabelTerminDate: "DEADLINE:", 
                 beforeRepairTitle: "Before Repair",
                 afterRepairTitle: "After Repair",
                 repairNotCompletedYet: "Repair not completed yet.",
@@ -1322,8 +1308,8 @@
                 formLastName: "Soyisim",
                 formPhone: "Telefon",
                 formPhoneExample: "Örnek: +90 553 528 0908 veya 5535280908",
-                formRepairDate: "Tamire Verilen Tarih", 
-                formReturnDate: "Teslim Tarihi",
+                formRepairDateInput: "Tamire Verilen Tarih", 
+                formTerminDateInput: "Termin Tarihi", 
                 formQuantity: "Kaynak Adedi",
                 formUnitPrice: "Adet Tamir Fiyatı (₺)",
                 formHasSet: "Takım Olacak mı?",
@@ -1356,12 +1342,12 @@
                 errorOccurred: "Bir hata oluştu. Lütfen konsolu kontrol edin veya daha sonra tekrar deneyin.",
                 noRecordsFound: "Filtrelerinize uygun kayıt bulunamadı.",
                 noRecordsFoundMsg: "Filtreleri temizleyip tekrar deneyin veya yeni bir kayıt ekleyin.",
-                recordCardReceived: "Giriş:", 
+                recordCardArrivalDateLabel: "Geliş T.:", // Updated for brevity
+                recordCardDeadlineLabel: "Termin T.:", // Updated for brevity
                 recordCardPhone: "Telefon",
                 recordCardQuantity: "Adet",
                 recordCardSet: "Takım",
                 recordCardTotalPrice: "Toplam Fiyat",
-                recordCardDeliveryDate: "Teslim Tarihi",
                 recordCardNotesLabel: "Notlar",
                 recordCardCompletedQuantity: "Çıkan Adet", 
                 recordCardCompletionDate: "Tamamlanma Tarihi", 
@@ -1389,7 +1375,7 @@
                 printLabelCustomer: "MÜŞTERİ:",
                 printLabelPhone: "TELEFON:",
                 printLabelQuantity: "ADET:",
-                printLabelDeliveryDate: "TESLİM TAR:",
+                printLabelTerminDate: "TERMİN TAR:", 
                 beforeRepairTitle: "Tamir Öncesi",
                 afterRepairTitle: "Tamir Sonrası",
                 repairNotCompletedYet: "Tamir henüz tamamlanmadı.",
@@ -1762,6 +1748,8 @@
             const quantity = parseInt(document.getElementById('quantity').value);
             const unitPrice = parseFloat(document.getElementById('unitPrice').value);
             const phoneInput = document.getElementById('phone').value.trim();
+            const hasSetSelected = document.querySelector('input[name="hasSet"]:checked');
+
 
             if (isNaN(quantity) || quantity <= 0) {
                 showMessage(lang.alertInvalidQuantity, 'error');
@@ -1775,19 +1763,26 @@
                 submitText.innerHTML = lang.btnAdd;
                 return;
             }
+             if (!hasSetSelected) {
+                 showMessage(lang.alertSetOptionMissing, 'error');
+                 submitBtn.disabled = false;
+                 submitText.innerHTML = lang.btnAdd;
+                 return;
+            }
 
             const record = {
                 firstName: document.getElementById('firstName').value.trim(),
                 lastName: document.getElementById('lastName').value.trim(),
                 phone: phoneInput,
-                repairDate: document.getElementById('repairDate').value,
-                returnDate: document.getElementById('returnDate').value,
-                quantity: quantity, // Giren adet
+                repairDate: document.getElementById('repairDate').value, 
+                returnDate: document.getElementById('returnDate').value, 
+                quantity: quantity, 
                 unitPrice: unitPrice,
-                totalPrice: quantity * unitPrice, // İlk başta giren adete göre hesaplanır
+                totalPrice: quantity * unitPrice, 
+                hasSet: hasSetSelected.value,
                 notes: document.getElementById('notes').value.trim(),
                 createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                completedQuantity: null, // Tamamlanınca güncellenecek çıkan adet
+                completedQuantity: null, 
                 completionDate: null,
                 completionNotes: null,
                 completedPhotoURL: null,
@@ -1795,12 +1790,6 @@
                 callStatus: null 
             };
 
-            if (!record.hasSet) {
-                 showMessage(lang.alertSetOptionMissing, 'error');
-                 submitBtn.disabled = false;
-                 submitText.innerHTML = lang.btnAdd;
-                 return;
-            }
 
             try {
                 let photoURL = null;
@@ -1858,7 +1847,7 @@
                 });
 
                 let filteredRecords = allRecords.filter(record => {
-                    const recordDate = new Date(record.repairDate);
+                    const recordDate = new Date(record.repairDate); 
 
                     let passesDateFilter = true;
                     if (startDateFilter) {
@@ -1942,8 +1931,8 @@
             const lang = translations[currentLanguage];
             const locale = currentLanguage === 'tr' ? 'tr-TR' : 'en-US';
 
-            const repairDate = record.repairDate ? new Date(record.repairDate).toLocaleDateString(locale, { day: '2-digit', month: '2-digit', year: 'numeric' }) : lang.notSpecified;
-            const returnDate = record.returnDate ? new Date(record.returnDate).toLocaleDateString(locale, { day: '2-digit', month: '2-digit', year: 'numeric' }) : lang.notSpecified;
+            const arrivalDateFormatted = record.repairDate ? new Date(record.repairDate).toLocaleDateString(locale, { day: '2-digit', month: '2-digit', year: 'numeric' }) : lang.notSpecified;
+            const deadlineDateFormatted = record.returnDate ? new Date(record.returnDate).toLocaleDateString(locale, { day: '2-digit', month: '2-digit', year: 'numeric' }) : lang.notSpecified; 
             
             let displayTotalPrice;
             if (isCompleted && typeof record.completedQuantity === 'number' && typeof record.unitPrice === 'number') {
@@ -1966,33 +1955,26 @@
             if (isCompleted) {
                 const callStatusTextVisible = record.callStatus === 'called' ? lang.callStatusCalled : lang.callStatusNotCalled;
                 const callStatusClassVisible = record.callStatus === 'called' ? 'call-status-called-visible' : 'call-status-not-called-visible';
+                
+                let phoneActionHTML = '';
+                if (record.callStatus !== 'called') {
+                    phoneActionHTML = `<span id="call-icon-${record.id}" class="call-action-icon" title="${lang.btnCall}" style="cursor:pointer; margin-left: 8px; font-size: 1.2em;" onclick="handleCallButtonClick('${record.id}', '${record.phone}', event)">📞</span>`;
+                } else {
+                    phoneActionHTML = `<span style="margin-left: 8px; font-size: 1.2em; opacity: 0.7;">📞</span>`; 
+                }
+
                 callStatusVisibleHTML = `
                     <div class="record-detail">
                         <div class="record-detail-icon call-status-icon">🔔</div>
                         <div class="record-detail-text">
                             <span class="record-detail-label" data-translate="recordCardCallStatusLabel">${lang.recordCardCallStatusLabel}</span>
                             <span class="call-status-value-visible ${callStatusClassVisible}">${callStatusTextVisible}</span>
+                            ${phoneActionHTML}
                         </div>
                     </div>
                 `;
             }
-
-            let callStatusExpandedHTML = '';
-            if (isCompleted) {
-                const callStatusTextExpanded = record.callStatus === 'called' ? lang.callStatusCalled : lang.callStatusNotCalled;
-                const callStatusClassExpanded = record.callStatus === 'called' ? 'call-status-called' : 'call-status-not-called';
-                
-                callStatusExpandedHTML = `
-                    <div class="call-status-container">
-                        <span class="call-status-text ${callStatusClassExpanded}" id="call-status-${record.id}">${callStatusTextExpanded}</span>
-                        ${record.callStatus !== 'called' ? `
-                        <button class="btn-call" id="call-btn-${record.id}" onclick="handleCallButtonClick('${record.id}', '${record.phone}', event)">
-                            ${lang.btnCall}
-                        </button>` : ''}
-                    </div>
-                `;
-            }
-
+            
             const beforeRepairTitleHTML = `<h4 data-translate="beforeRepairTitle">${lang.beforeRepairTitle}</h4>`;
             const afterRepairTitleHTML = `<h4 data-translate="afterRepairTitle">${lang.afterRepairTitle}</h4>`;
 
@@ -2056,7 +2038,6 @@
                 afterRepairContentHTML = `<p data-translate="repairNotCompletedYet" style="padding: 10px; background-color: #f8f9fa; border-radius: 8px; color: #6c757d; text-align: center;">${lang.repairNotCompletedYet}</p>`;
             }
             
-            // HTML for general details to be placed after the comparison grid
             const generalDetailsAfterComparisonHTML = `
                 <div class="general-details-after-comparison">
                     <div class="record-detail">
@@ -2073,31 +2054,21 @@
                             <span class="record-detail-value">${displayTotalPrice}</span>
                         </div>
                     </div>
-                    <div class="record-detail">
-                        <div class="record-detail-icon">📅</div>
-                        <div class="record-detail-text">
-                            <span class="record-detail-label" data-translate="recordCardDeliveryDate">${lang.recordCardDeliveryDate}</span>
-                            <span class="record-detail-value">${returnDate}</span>
-                        </div>
-                    </div>
                 </div>
             `;
 
-
+            // Updated record-header structure for single-line name and dates
             card.innerHTML = `
                 <div class="record-header">
-                    <span class="record-name">${record.firstName || ''} ${record.lastName || ''}</span>
-                    <span class="record-date">${lang.recordCardReceived} ${repairDate}</span>
+                    <div class="record-info-left">
+                        <span class="record-name">${record.firstName || ''} ${record.lastName || ''}</span>
+                        <span class="record-dates-inline">
+                            (<span data-translate="recordCardArrivalDateLabel">${lang.recordCardArrivalDateLabel}</span> ${arrivalDateFormatted} - <span data-translate="recordCardDeadlineLabel">${lang.recordCardDeadlineLabel}</span> ${deadlineDateFormatted})
+                        </span>
+                    </div>
                     <span class="expand-icon">▼</span>
                 </div>
                 <div class="record-details-always-visible">
-                    <div class="record-detail">
-                        <div class="record-detail-icon">🗓️</div>
-                        <div class="record-detail-text">
-                            <span class="record-detail-label" data-translate="recordCardReceived">${lang.recordCardReceived}</span>
-                            <span class="record-detail-value">${repairDate}</span>
-                        </div>
-                    </div>
                     <div class="record-detail">
                         <div class="record-detail-icon">📞</div>
                         <div class="record-detail-text">
@@ -2112,7 +2083,7 @@
                             <span class="record-detail-value">${record.quantity || '-'}</span>
                         </div>
                     </div>
-                    ${callStatusVisibleHTML}
+                    ${callStatusVisibleHTML} 
                 </div>
                 <div class="record-collapsible-content">
                     <div class="record-details-hidden-part">
@@ -2127,7 +2098,6 @@
                             </div>
                         </div>
                         ${generalDetailsAfterComparisonHTML}
-                        ${callStatusExpandedHTML}
                     </div>
                 </div>
                 <div style="text-align: right; margin-top: 15px;">
@@ -2141,12 +2111,12 @@
         async function handleCallButtonClick(recordId, phoneNumber, event) {
             event.stopPropagation(); 
             const lang = translations[currentLanguage];
-            const callButton = document.getElementById(`call-btn-${recordId}`);
+            const callIcon = document.getElementById(`call-icon-${recordId}`);
             
-            if (!callButton || callButton.disabled) return;
-
-            callButton.disabled = true;
-            callButton.innerHTML = `<div class="loading loading-small" style="border-top-color:#fff;"></div> ${lang.calling}`;
+            if (callIcon) {
+                callIcon.style.pointerEvents = 'none'; 
+                callIcon.textContent = '⏳'; 
+            }
 
             try {
                 await db.collection('repairs').doc(recordId).update({ callStatus: 'called' });
@@ -2157,13 +2127,15 @@
             } catch (error) {
                 console.error("Arama durumu güncellenirken hata:", error);
                 showMessage(lang.alertCallStatusUpdateFailed.replace('{errorMsg}', error.message), 'error');
-                callButton.disabled = false; 
-                callButton.innerHTML = lang.btnCall;
+                if (callIcon) { 
+                    callIcon.style.pointerEvents = 'auto';
+                    callIcon.textContent = '📞'; 
+                }
             }
         }
         
         function toggleRecordDetails(cardElement, event) {
-            if (event.target.closest('.btn, .btn-secondary, .delete-btn, a[href^="tel:"], .record-photo, .record-completed-photo, .btn-call') && !event.target.classList.contains('expand-icon')) {
+            if (event.target.closest('a, button, .record-photo, .record-completed-photo, .call-action-icon') && !event.target.classList.contains('expand-icon')) {
                  return;
             }
             cardElement.classList.toggle('expanded');
@@ -2283,7 +2255,7 @@
             document.getElementById('print-customer').textContent = `${record.firstName || ''} ${record.lastName || ''}`;
             document.getElementById('print-phone').textContent = formatPhoneNumber(record.phone);
             document.getElementById('print-quantity').textContent = record.quantity || '-';
-            document.getElementById('print-delivery').textContent = record.returnDate ? new Date(record.returnDate).toLocaleDateString(locale, { day: '2-digit', month: '2-digit', year: 'numeric' }) : '-';
+            document.getElementById('print-delivery').textContent = record.returnDate ? new Date(record.returnDate).toLocaleDateString(locale, { day: '2-digit', month: '2-digit', year: 'numeric' }) : '-'; 
             
             const labelElement = document.getElementById('print-label');
             labelElement.style.display = 'block'; 
