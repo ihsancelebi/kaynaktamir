@@ -1,0 +1,1305 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-tr="Kaynak Saç Tamir Tamamlandı" data-en="Hair Extension Repair Completed">Kaynak Saç Tamir Tamamlandı</title>
+    <style>
+        /* General styling for the entire page */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* Container for the main application content */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        /* Header section styling */
+        .header {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Animated background for the header */
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(255,255,255,0.1) 10px,
+                rgba(255,255,255,0.1) 20px
+            );
+            animation: slide 20s linear infinite;
+        }
+
+        @keyframes slide {
+            0% { transform: translateX(-50px); }
+            100% { transform: translateX(50px); }
+        }
+
+        .header h1 {
+            position: relative;
+            z-index: 1;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            position: relative;
+            z-index: 1;
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+
+        /* Language selector */
+        .language-selector {
+            position: absolute;
+            top: 10px;
+            left: 15px;
+            z-index: 2;
+        }
+
+        .language-btn {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 8px 12px;
+            margin: 0 2px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+
+        .language-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+
+        .language-btn.active {
+            background: rgba(255,255,255,0.4);
+            border-color: rgba(255,255,255,0.6);
+        }
+
+        /* Connection status indicator */
+        .connection-status {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: rgba(255,255,255,0.2);
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            z-index: 2;
+        }
+
+        .status-online { color: #28a745; }
+        .status-offline { color: #dc3545; }
+
+        /* Content area styling */
+        .content {
+            padding: 30px;
+        }
+
+        /* Pending repairs list styling */
+        .pending-repairs {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 1.8em;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #f8f9fa;
+        }
+
+        /* Search and filter controls */
+        .search-controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .search-input {
+            flex: 1;
+            min-width: 200px;
+            padding: 12px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 25px;
+            font-size: 16px;
+            background: #f8f9fa;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #28a745;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(40,167,69,0.1);
+        }
+
+        .filter-btn {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .filter-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(40,167,69,0.3);
+        }
+
+        .filter-btn.active {
+            background: linear-gradient(45deg, #20c997, #17a2b8);
+        }
+
+        /* Record card styling for pending repairs */
+        .repair-card {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .repair-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(45deg, #28a745, #20c997);
+        }
+
+        .repair-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+            border-color: #28a745;
+        }
+
+        .repair-card.completed {
+            border-color: #6c757d;
+            opacity: 0.7;
+        }
+
+        .repair-card.completed::before {
+            background: linear-gradient(45deg, #6c757d, #495057);
+        }
+
+        .repair-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f8f9fa;
+        }
+
+        .customer-info {
+            flex: 1;
+        }
+
+        .customer-name {
+            font-size: 1.4em;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .customer-phone {
+            color: #6c757d;
+            font-size: 1em;
+        }
+
+        .repair-status {
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+
+        .status-completed {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .repair-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .detail-icon {
+            width: 35px;
+            height: 35px;
+            background: linear-gradient(45deg, #28a745, #20c997);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .detail-text {
+            flex: 1;
+        }
+
+        .detail-label {
+            font-size: 12px;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .detail-value {
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+        }
+
+        /* Completion form styling */
+        .completion-form {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            border: 2px dashed #dee2e6;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .completion-form.active {
+            border-color: #28a745;
+            background: #f8fff9;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-group textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .form-group input:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #28a745;
+            box-shadow: 0 0 0 3px rgba(40,167,69,0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        /* Photo upload area styling */
+        .photo-upload {
+            border: 3px dashed #dee2e6;
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            background: white;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .photo-upload:hover {
+            border-color: #28a745;
+            background: rgba(40,167,69,0.05);
+            transform: scale(1.02);
+        }
+
+        .photo-upload.dragover {
+            border-color: #28a745;
+            background: rgba(40,167,69,0.1);
+        }
+
+        .photo-preview {
+            max-width: 150px;
+            max-height: 150px;
+            border-radius: 8px;
+            margin: 10px auto;
+            display: block;
+            object-fit: cover;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+
+        /* Button styling */
+        .btn {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(40,167,69,0.3);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: #5a6268;
+            box-shadow: 0 8px 20px rgba(108,117,125,0.3);
+        }
+
+        .btn-danger {
+            background: linear-gradient(45deg, #dc3545, #c82333);
+        }
+
+        .btn-danger:hover:not(:disabled) {
+            box-shadow: 0 8px 20px rgba(220,53,69,0.3);
+        }
+
+        /* Action buttons */
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 15px;
+        }
+
+        /* Loading spinner animation */
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #ffffff40;
+            border-radius: 50%;
+            border-top-color: #ffffff;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Success and error message styling */
+        .success-message, .error-message {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 600;
+            animation: slideDown 0.5s ease;
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2000;
+            min-width: 300px;
+            max-width: 90%;
+        }
+
+        .success-message {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+        }
+
+        .error-message {
+            background: linear-gradient(45deg, #dc3545, #c82333);
+            color: white;
+        }
+
+        @keyframes slideDown {
+            from { top: -100px; opacity: 0; }
+            to { top: 20px; opacity: 1; }
+        }
+
+        /* Empty state message */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6c757d;
+        }
+
+        .empty-state-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        /* Modal for displaying full-size photos */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            max-width: 90%;
+            max-height: 90%;
+        }
+
+        .modal-content img {
+            max-width: 100%;
+            max-height: 100%;
+            border-radius: 10px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .repair-details {
+                grid-template-columns: 1fr;
+            }
+            
+            .search-controls {
+                flex-direction: column;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="language-selector">
+                <button class="language-btn active" onclick="changeLanguage('tr')">TR</button>
+                <button class="language-btn" onclick="changeLanguage('en')">EN</button>
+            </div>
+            <div class="connection-status" id="connection-status">
+                <span id="status-text" data-tr="🔄 Bağlanıyor..." data-en="🔄 Connecting...">🔄 Bağlanıyor...</span>
+            </div>
+            <h1 data-tr="🔧 Tamir Tamamlandı Formu" data-en="🔧 Repair Completion Form">🔧 Tamir Tamamlandı Formu</h1>
+            <p data-tr="Tamamlanan tamirler için detay girişi ve fotoğraf yükleme" data-en="Detail entry and photo upload for completed repairs">Tamamlanan tamirler için detay girişi ve fotoğraf yükleme</p>
+        </div>
+        
+        <div class="content">
+            <div class="pending-repairs">
+                <h2 class="section-title" data-tr="🛠️ Bekleyen Tamirler" data-en="🛠️ Pending Repairs">🛠️ Bekleyen Tamirler</h2>
+                
+                <div class="search-controls">
+                    <input type="text" id="searchInput" class="search-input" data-tr="Müşteri adı veya telefon ile ara..." data-en="Search by customer name or phone..." placeholder="Müşteri adı veya telefon ile ara...">
+                    <button class="filter-btn active" onclick="filterRepairs('all')" data-tr="Tümü" data-en="All">Tümü</button>
+                    <button class="filter-btn" onclick="filterRepairs('pending')" data-tr="Bekleyen" data-en="Pending">Bekleyen</button>
+                    <button class="filter-btn" onclick="filterRepairs('completed')" data-tr="Tamamlanan" data-en="Completed">Tamamlanan</button>
+                </div>
+                
+                <div id="repairs-container">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🔄</div>
+                        <h3 data-tr="Firebase bağlantısı bekleniyor" data-en="Waiting for Firebase connection">Firebase bağlantısı bekleniyor</h3>
+                        <p data-tr="Veriler yükleniyor..." data-en="Loading data...">Veriler yükleniyor...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Photo Modal -->
+    <div id="photo-modal" class="modal">
+        <span class="close-modal" onclick="closePhotoModal()">&times;</span>
+        <div class="modal-content">
+            <img id="modal-image" src="" alt="[Büyük Görünüm]">
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script>
+        // Global variables
+        let db = null;
+        let allRepairs = [];
+        let filteredRepairs = [];
+        let currentFilter = 'all';
+        let isFirebaseInitialized = false;
+        let currentLanguage = 'tr'; // Default language
+
+        // Language translations
+        const translations = {
+            tr: {
+                connecting: '🔄 Bağlanıyor...',
+                connected: '✅ Bağlandı',
+                connectionError: '❌ Bağlantı Hatası',
+                configError: '❌ Yapılandırma Hatası',
+                firebaseSuccess: 'Firebase başarıyla bağlandı!',
+                firebaseError: 'Firebase bağlantı hatası: ',
+                dataLoadError: 'Veriler yüklenemedi: ',
+                validImageError: 'Lütfen geçerli bir resim dosyası seçin.',
+                fileSizeError: 'Dosya boyutu çok büyük (Maks. 10MB).',
+                quantityError: 'Lütfen geçerli bir çıkan adet girin.',
+                dateError: 'Lütfen tamamlanma tarihini girin.',
+                photoError: 'Lütfen tamamlanan saç fotoğrafını yükleyin.',
+                completing: 'Tamamlanıyor...',
+                uploadingPhoto: 'Fotoğraf yükleniyor...',
+                updatingRecord: 'Kayıt güncelleniyor...',
+                repairCompleted: 'Tamir başarıyla tamamlandı!',
+                repairError: 'Tamir tamamlanamadı: ',
+                formCleared: 'Form temizlendi.',
+                noRecordsFound: 'Kayıt bulunamadı',
+                noMatchingRecords: 'Filtrelerinize uygun tamir kaydı bulunamadı.',
+                entryDate: 'Giriş Tarihi',
+                totalQuantity: 'Toplam Adet',
+                set: 'Takım',
+                deliveryDate: 'Teslim Tarihi',
+                completedQuantity: 'Çıkan Adet',
+                originalPhoto: 'Orijinal Fotoğraf',
+                completedPhoto: 'Tamamlanan Saç Fotoğrafı',
+                completionNotes: 'Tamamlama Notları',
+                repairCompleteTitle: '🎯 Tamir Tamamlandı',
+                completedQuantityLabel: 'Çıkan Kaynak Adedi *',
+                completionDateLabel: 'Tamamlanma Tarihi *',
+                completionNotesLabel: 'Tamamlama Notları',
+                completedPhotoLabel: 'Tamamlanan Saç Fotoğrafı *',
+                completedPhotoPlaceholder: 'Tamamlanan Saç Fotoğrafı',
+                tapToAddPhoto: 'Dokunarak fotoğraf ekle',
+                cancel: '❌ İptal',
+                complete: '✅ Tamamla',
+                pending: '⏳ Bekliyor',
+                completed: '✅ Tamamlandı',
+                yes: 'Evet',
+                no: 'Hayır',
+                unspecified: 'Belirtilmemiş',
+                none: 'Yok',
+                maximum: 'Maksimum',
+                pieces: 'adet',
+                notesPlaceholder: 'Tamir sürecinde dikkat çeken detaylar, özel durumlar vb.'
+            },
+            en: {
+                connecting: '🔄 Connecting...',
+                connected: '✅ Connected',
+                connectionError: '❌ Connection Error',
+                configError: '❌ Configuration Error',
+                firebaseSuccess: 'Firebase connected successfully!',
+                firebaseError: 'Firebase connection error: ',
+                dataLoadError: 'Data could not be loaded: ',
+                validImageError: 'Please select a valid image file.',
+                fileSizeError: 'File size is too large (Max. 10MB).',
+                quantityError: 'Please enter a valid completed quantity.',
+                dateError: 'Please enter the completion date.',
+                photoError: 'Please upload the completed hair photo.',
+                completing: 'Completing...',
+                uploadingPhoto: 'Uploading photo...',
+                updatingRecord: 'Updating record...',
+                repairCompleted: 'Repair completed successfully!',
+                repairError: 'Repair could not be completed: ',
+                formCleared: 'Form cleared.',
+                noRecordsFound: 'No records found',
+                noMatchingRecords: 'No repair records found matching your filters.',
+                entryDate: 'Entry Date',
+                totalQuantity: 'Total Quantity',
+                set: 'Set',
+                deliveryDate: 'Delivery Date',
+                completedQuantity: 'Completed Quantity',
+                originalPhoto: 'Original Photo',
+                completedPhoto: 'Completed Hair Photo',
+                completionNotes: 'Completion Notes',
+                repairCompleteTitle: '🎯 Repair Completed',
+                completedQuantityLabel: 'Completed Extension Quantity *',
+                completionDateLabel: 'Completion Date *',
+                completionNotesLabel: 'Completion Notes',
+                completedPhotoLabel: 'Completed Hair Photo *',
+                completedPhotoPlaceholder: 'Completed Hair Photo',
+                tapToAddPhoto: 'Tap to add photo',
+                cancel: '❌ Cancel',
+                complete: '✅ Complete',
+                pending: '⏳ Pending',
+                completed: '✅ Completed',
+                yes: 'Yes',
+                no: 'No',
+                unspecified: 'Unspecified',
+                none: 'None',
+                maximum: 'Maximum',
+                pieces: 'pieces',
+                notesPlaceholder: 'Notable details during repair process, special conditions etc.'
+            }
+        };
+
+        // Firebase configuration (same as main app)
+        const firebaseConfig = {
+            apiKey: "AIzaSyCsy1AAiRE8HCCt4HEAcz7Sh9AM6sQt4FQ",
+            authDomain: "kaynak-sac-tamir.firebaseapp.com",
+            projectId: "kaynak-sac-tamir",
+            messagingSenderId: "503655162792",
+            appId: "1:503655162792:web:faad92041850490b92f39d",
+            measurementId: "G-N8B2V6RQET" 
+        };
+
+        // Imgur configuration (same as main app)
+        const IMGUR_CLIENT_ID = '82ab37b38a1850a'; 
+        const IMGUR_CLIENT_SECRET = '42a681b1da13dc89d6fbed4e95b4edbd6ecb7b7f'; 
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load saved language preference
+            const savedLanguage = localStorage.getItem('preferredLanguage') || 'tr';
+            changeLanguage(savedLanguage);
+            
+            initializeFirebase();
+            
+            // Search functionality
+            document.getElementById('searchInput').addEventListener('input', handleSearch);
+            
+            // Modal event listeners
+            document.querySelector('.close-modal').addEventListener('click', closePhotoModal);
+            document.getElementById('photo-modal').addEventListener('click', (e) => {
+                if (e.target === document.getElementById('photo-modal')) {
+                    closePhotoModal();
+                }
+            });
+        });
+
+        function changeLanguage(lang) {
+            currentLanguage = lang;
+            localStorage.setItem('preferredLanguage', lang);
+            
+            // Update language button states
+            document.querySelectorAll('.language-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.textContent === lang.toUpperCase()) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            // Update document language
+            document.documentElement.lang = lang;
+            
+            // Update all translatable elements
+            document.querySelectorAll('[data-tr]').forEach(element => {
+                if (element.hasAttribute(`data-${lang}`)) {
+                    if (element.tagName === 'INPUT' && (element.type === 'text' || element.type === 'tel' || element.type === 'search')) {
+                        element.placeholder = element.getAttribute(`data-${lang}`);
+                    } else if (element.tagName === 'TEXTAREA') {
+                        element.placeholder = element.getAttribute(`data-${lang}`);
+                    } else if (element.hasAttribute('title')) {
+                        element.title = element.getAttribute(`data-${lang}`);
+                    } else {
+                        element.textContent = element.getAttribute(`data-${lang}`);
+                    }
+                }
+            });
+            
+            // Update page title
+            const titleElement = document.querySelector('title');
+            if (titleElement && titleElement.hasAttribute(`data-${lang}`)) {
+                titleElement.textContent = titleElement.getAttribute(`data-${lang}`);
+            }
+
+            // Re-render records with new language
+            if (filteredRepairs.length > 0) {
+                displayRepairs();
+            }
+        }
+
+        function t(key) {
+            return translations[currentLanguage][key] || translations['tr'][key] || key;
+        }
+
+        function initializeFirebase() {
+            const statusText = document.getElementById('status-text');
+            const connectionStatusDiv = document.getElementById('connection-status');
+
+            if (!firebaseConfig.apiKey || !firebaseConfig.projectId) {
+                showMessage('Firebase yapılandırma bilgileri eksik!', 'error', 10000);
+                statusText.textContent = t('configError');
+                connectionStatusDiv.classList.add('status-offline');
+                return;
+            }
+
+            try {
+                statusText.textContent = t('connecting');
+                
+                if (!firebase.apps.length) {
+                    firebase.initializeApp(firebaseConfig);
+                } else {
+                    firebase.app(); 
+                }
+
+                db = firebase.firestore();
+                isFirebaseInitialized = true;
+
+                showMessage(t('firebaseSuccess'), 'success');
+                statusText.textContent = t('connected');
+                connectionStatusDiv.classList.remove('status-offline');
+                connectionStatusDiv.classList.add('status-online');
+                
+                loadRepairs();
+
+            } catch (error) {
+                console.error("Firebase initialization error:", error);
+                showMessage(t('firebaseError') + error.message, 'error', 10000);
+                statusText.textContent = t('connectionError');
+                connectionStatusDiv.classList.add('status-offline');
+            }
+        }
+
+        function loadRepairs() {
+            if (!isFirebaseInitialized) return;
+
+            const container = document.getElementById('repairs-container');
+            container.innerHTML = '<div class="empty-state"><div class="loading"></div><h3>' + t('connecting') + '</h3></div>';
+
+            db.collection('repairs').orderBy('createdAt', 'desc').onSnapshot(snapshot => {
+                allRepairs = [];
+                snapshot.forEach(doc => {
+                    allRepairs.push({ id: doc.id, ...doc.data() });
+                });
+
+                applyCurrentFilter();
+            }, error => {
+                console.error("Error loading repairs:", error);
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">⚠️</div>
+                        <h3>${t('dataLoadError')}</h3>
+                        <p>Error: ${error.message}</p>
+                    </div>`;
+                showMessage(t('dataLoadError') + error.message, 'error');
+            });
+        }
+
+        function filterRepairs(filter) {
+            currentFilter = filter;
+            
+            // Update filter button states
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            applyCurrentFilter();
+        }
+
+        function applyCurrentFilter() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+            
+            filteredRepairs = allRepairs.filter(repair => {
+                // Search filter
+                const matchesSearch = !searchTerm || 
+                    (repair.firstName && repair.firstName.toLowerCase().includes(searchTerm)) ||
+                    (repair.lastName && repair.lastName.toLowerCase().includes(searchTerm)) ||
+                    (repair.phone && repair.phone.toLowerCase().includes(searchTerm));
+                
+                // Status filter
+                const isCompleted = repair.completedQuantity !== undefined;
+                const matchesStatus = currentFilter === 'all' || 
+                    (currentFilter === 'pending' && !isCompleted) ||
+                    (currentFilter === 'completed' && isCompleted);
+                
+                return matchesSearch && matchesStatus;
+            });
+            
+            displayRepairs();
+        }
+
+        function handleSearch() {
+            applyCurrentFilter();
+        }
+
+        function displayRepairs() {
+            const container = document.getElementById('repairs-container');
+            
+            if (filteredRepairs.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🔍</div>
+                        <h3>${t('noRecordsFound')}</h3>
+                        <p>${t('noMatchingRecords')}</p>
+                    </div>`;
+                return;
+            }
+            
+            container.innerHTML = '';
+            filteredRepairs.forEach(repair => {
+                const card = createRepairCard(repair);
+                container.appendChild(card);
+            });
+        }
+
+        function createRepairCard(repair) {
+            const card = document.createElement('div');
+            const isCompleted = repair.completedQuantity !== undefined;
+            card.className = `repair-card ${isCompleted ? 'completed' : ''}`;
+            
+            const repairDate = repair.repairDate ? new Date(repair.repairDate).toLocaleDateString(currentLanguage === 'tr' ? 'tr-TR' : 'en-US') : t('unspecified');
+            const returnDate = repair.returnDate ? new Date(repair.returnDate).toLocaleDateString(currentLanguage === 'tr' ? 'tr-TR' : 'en-US') : t('unspecified');
+            const formattedPhone = formatPhoneNumber(repair.phone);
+            const hasSetText = repair.hasSet === 'evet' ? t('yes') : (repair.hasSet === 'hayır' ? t('no') : t('unspecified'));
+            
+            card.innerHTML = `
+                <div class="repair-header">
+                    <div class="customer-info">
+                        <div class="customer-name">${repair.firstName || ''} ${repair.lastName || ''}</div>
+                        <div class="customer-phone">📞 ${formattedPhone}</div>
+                    </div>
+                    <div class="repair-status ${isCompleted ? 'status-completed' : 'status-pending'}">
+                        ${isCompleted ? t('completed') : t('pending')}
+                    </div>
+                </div>
+                
+                <div class="repair-details">
+                    <div class="detail-item">
+                        <div class="detail-icon">📅</div>
+                        <div class="detail-text">
+                            <div class="detail-label">${t('entryDate')}</div>
+                            <div class="detail-value">${repairDate}</div>
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-icon">📦</div>
+                        <div class="detail-text">
+                            <div class="detail-label">${t('totalQuantity')}</div>
+                            <div class="detail-value">${repair.quantity || 0}</div>
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-icon">🔧</div>
+                        <div class="detail-text">
+                            <div class="detail-label">${t('set')}</div>
+                            <div class="detail-value">${hasSetText}</div>
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-icon">📅</div>
+                        <div class="detail-text">
+                            <div class="detail-label">${t('deliveryDate')}</div>
+                            <div class="detail-value">${returnDate}</div>
+                        </div>
+                    </div>
+                    ${isCompleted ? `
+                    <div class="detail-item">
+                        <div class="detail-icon">✅</div>
+                        <div class="detail-text">
+                            <div class="detail-label">${t('completedQuantity')}</div>
+                            <div class="detail-value">${repair.completedQuantity || 0}</div>
+                        </div>
+                    </div>
+                    ` : ''}
+                </div>
+                
+                ${repair.photoURL ? `
+                <div class="detail-item" style="margin: 15px 0;">
+                    <div class="detail-icon">📷</div>
+                    <div class="detail-text">
+                        <div class="detail-label">${t('originalPhoto')}</div>
+                        <img src="${repair.photoURL}" alt="[Original Extension Photo]" 
+                             style="max-width: 100px; max-height: 100px; object-fit: cover; border-radius: 8px; cursor: pointer; margin-top: 5px;"
+                             onclick="openPhotoModal('${repair.photoURL}')"
+                             onerror="this.style.display='none';">
+                    </div>
+                </div>
+                ` : ''}
+                
+                ${isCompleted && repair.completedPhotoURL ? `
+                <div class="detail-item" style="margin: 15px 0;">
+                    <div class="detail-icon">🎯</div>
+                    <div class="detail-text">
+                        <div class="detail-label">${t('completedPhoto')}</div>
+                        <img src="${repair.completedPhotoURL}" alt="[Completed Hair Photo]" 
+                             style="max-width: 100px; max-height: 100px; object-fit: cover; border-radius: 8px; cursor: pointer; margin-top: 5px;"
+                             onclick="openPhotoModal('${repair.completedPhotoURL}')"
+                             onerror="this.style.display='none';">
+                    </div>
+                </div>
+                ` : ''}
+                
+                ${isCompleted && repair.completionNotes ? `
+                <div class="detail-item" style="grid-column: 1 / -1; margin: 15px 0;">
+                    <div class="detail-icon">📝</div>
+                    <div class="detail-text">
+                        <div class="detail-label">${t('completionNotes')}</div>
+                        <div class="detail-value" style="white-space: pre-wrap; background: #f8f9fa; padding: 10px; border-radius: 8px; margin-top: 5px;">${repair.completionNotes}</div>
+                    </div>
+                </div>
+                ` : ''}
+                
+                ${!isCompleted ? `
+                <div class="completion-form" id="form-${repair.id}">
+                    <h4 style="margin-bottom: 15px; color: #28a745;">${t('repairCompleteTitle')}</h4>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="completed-quantity-${repair.id}">${t('completedQuantityLabel')}</label>
+                            <input type="number" id="completed-quantity-${repair.id}" min="0" max="${repair.quantity || 999}" 
+                                   placeholder="${t('completedQuantity')}" required>
+                            <small style="color: #6c757d;">${t('maximum')}: ${repair.quantity || 0} ${t('pieces')}</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="completion-date-${repair.id}">${t('completionDateLabel')}</label>
+                            <input type="date" id="completion-date-${repair.id}" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="completion-notes-${repair.id}">${t('completionNotesLabel')}</label>
+                        <textarea id="completion-notes-${repair.id}" 
+                                  placeholder="${t('notesPlaceholder')}"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="completed-photo-${repair.id}">${t('completedPhotoLabel')}</label>
+                        <div class="photo-upload" onclick="document.getElementById('photo-input-${repair.id}').click()">
+                            <input type="file" id="photo-input-${repair.id}" accept="image/*" capture="environment" style="display: none;">
+                            <div id="photo-placeholder-${repair.id}">
+                                📸<br>
+                                <strong>${t('completedPhotoPlaceholder')}</strong><br>
+                                <small>${t('tapToAddPhoto')}</small>
+                            </div>
+                            <img id="photo-preview-${repair.id}" class="photo-preview" style="display:none;" alt="[Photo Preview]">
+                        </div>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <button type="button" class="btn btn-secondary" onclick="cancelCompletion('${repair.id}')">
+                            ${t('cancel')}
+                        </button>
+                        <button type="button" class="btn" onclick="completeRepair('${repair.id}')" id="complete-btn-${repair.id}">
+                            ${t('complete')}
+                        </button>
+                    </div>
+                </div>
+                ` : ''}
+            `;
+            
+            // Add event listeners for this specific card
+            if (!isCompleted) {
+                setTimeout(() => {
+                    const photoInput = document.getElementById(`photo-input-${repair.id}`);
+                    const completionDateInput = document.getElementById(`completion-date-${repair.id}`);
+                    
+                    if (photoInput) {
+                        photoInput.addEventListener('change', (e) => handlePhotoInputChange(e, repair.id));
+                    }
+                    
+                    if (completionDateInput) {
+                        completionDateInput.valueAsDate = new Date();
+                    }
+                }, 100);
+            }
+            
+            return card;
+        }
+
+        function handlePhotoInputChange(event, repairId) {
+            const file = event.target.files[0];
+            const previewImg = document.getElementById(`photo-preview-${repairId}`);
+            const placeholder = document.getElementById(`photo-placeholder-${repairId}`);
+            
+            if (file) {
+                if (!file.type.startsWith('image/')) {
+                    showMessage(t('validImageError'), 'error');
+                    event.target.value = null;
+                    return;
+                }
+                
+                if (file.size > 10 * 1024 * 1024) {
+                    showMessage(t('fileSizeError'), 'error');
+                    event.target.value = null;
+                    return;
+                }
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImg.src = e.target.result;
+                    previewImg.style.display = 'block';
+                    placeholder.style.display = 'none';
+                }
+                reader.readAsDataURL(file);
+            } else {
+                previewImg.style.display = 'none';
+                placeholder.style.display = 'block';
+            }
+        }
+
+        async function uploadPhotoToImgur(file) {
+            if (!IMGUR_CLIENT_ID || IMGUR_CLIENT_ID === 'YOUR_IMGUR_CLIENT_ID') {
+                throw new Error("Imgur Client ID tanımlanmamış. Lütfen kodu güncelleyin.");
+            }
+
+            const formData = new FormData();
+            formData.append('image', file);
+
+            try {
+                const response = await fetch('https://api.imgur.com/3/image', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Client-ID ${IMGUR_CLIENT_ID}`
+                    },
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(`Imgur yükleme hatası: ${errorData.data?.error || response.statusText}`);
+                }
+
+                const data = await response.json();
+                return data.data.link;
+            } catch (error) {
+                console.error("Imgur fotoğraf yükleme hatası:", error);
+                throw error;
+            }
+        }
+
+        async function completeRepair(repairId) {
+            if (!isFirebaseInitialized) {
+                showMessage('Firebase bağlantısı mevcut değil.', 'error');
+                return;
+            }
+
+            const completedQuantity = parseInt(document.getElementById(`completed-quantity-${repairId}`).value);
+            const completionDate = document.getElementById(`completion-date-${repairId}`).value;
+            const completionNotes = document.getElementById(`completion-notes-${repairId}`).value.trim();
+            const photoInput = document.getElementById(`photo-input-${repairId}`);
+            
+            // Validation
+            if (!completedQuantity || completedQuantity < 0) {
+                showMessage(t('quantityError'), 'error');
+                return;
+            }
+            
+            if (!completionDate) {
+                showMessage(t('dateError'), 'error');
+                return;
+            }
+            
+            if (!photoInput.files[0]) {
+                showMessage(t('photoError'), 'error');
+                return;
+            }
+
+            const completeBtn = document.getElementById(`complete-btn-${repairId}`);
+            const originalBtnText = completeBtn.innerHTML;
+            completeBtn.disabled = true;
+            completeBtn.innerHTML = '<div class="loading"></div>' + t('completing');
+
+            try {
+                // Upload photo to Imgur
+                completeBtn.innerHTML = '<div class="loading"></div>' + t('uploadingPhoto');
+                const photoURL = await uploadPhotoToImgur(photoInput.files[0]);
+                
+                // Update Firestore document
+                completeBtn.innerHTML = '<div class="loading"></div>' + t('updatingRecord');
+                await db.collection('repairs').doc(repairId).update({
+                    completedQuantity: completedQuantity,
+                    completionDate: completionDate,
+                    completionNotes: completionNotes,
+                    completedPhotoURL: photoURL,
+                    completedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                
+                showMessage(t('repairCompleted'), 'success');
+                
+                // Reset form
+                document.getElementById(`completed-quantity-${repairId}`).value = '';
+                document.getElementById(`completion-notes-${repairId}`).value = '';
+                photoInput.value = '';
+                document.getElementById(`photo-preview-${repairId}`).style.display = 'none';
+                document.getElementById(`photo-placeholder-${repairId}`).style.display = 'block';
+                
+            } catch (error) {
+                console.error("Tamir tamamlama hatası:", error);
+                showMessage(t('repairError') + error.message, 'error');
+            } finally {
+                completeBtn.disabled = false;
+                completeBtn.innerHTML = originalBtnText;
+            }
+        }
+
+        function cancelCompletion(repairId) {
+            // Reset form fields
+            document.getElementById(`completed-quantity-${repairId}`).value = '';
+            document.getElementById(`completion-notes-${repairId}`).value = '';
+            const photoInput = document.getElementById(`photo-input-${repairId}`);
+            photoInput.value = '';
+            document.getElementById(`photo-preview-${repairId}`).style.display = 'none';
+            document.getElementById(`photo-placeholder-${repairId}`).style.display = 'block';
+            
+            showMessage(t('formCleared'), 'success');
+        }
+
+        function formatPhoneNumber(phone) {
+            if (!phone) return '-';
+            let cleaned = phone.replace(/\D/g, '');
+
+            if (cleaned.startsWith('0') && cleaned.length === 11) {
+                cleaned = cleaned.substring(1);
+            }
+            if (cleaned.length === 10 && !cleaned.startsWith('90')) {
+                cleaned = '90' + cleaned;
+            }
+            
+            if (cleaned.length === 12 && cleaned.startsWith('90')) {
+                return `+${cleaned.substring(0, 2)} ${cleaned.substring(2, 5)} ${cleaned.substring(5, 8)} ${cleaned.substring(8, 10)} ${cleaned.substring(10, 12)}`;
+            }
+            
+            return phone;
+        }
+
+        function openPhotoModal(imageURL) {
+            if (imageURL) {
+                document.getElementById('modal-image').src = imageURL;
+                document.getElementById('photo-modal').style.display = 'flex';
+            }
+        }
+
+        function closePhotoModal() {
+            document.getElementById('photo-modal').style.display = 'none';
+            document.getElementById('modal-image').src = '';
+        }
+
+        function showMessage(message, type = 'success', duration = 4000) {
+            const existingMessage = document.querySelector('.success-message, .error-message');
+            if (existingMessage) {
+                existingMessage.remove();
+            }
+
+            const messageDiv = document.createElement('div');
+            messageDiv.className = type === 'success' ? 'success-message' : 'error-message';
+            messageDiv.textContent = message;
+            
+            document.body.appendChild(messageDiv);
+
+            setTimeout(() => {
+                messageDiv.style.top = '20px';
+                messageDiv.style.opacity = '1';
+            }, 10);
+
+            setTimeout(() => {
+                messageDiv.style.opacity = '0';
+                messageDiv.style.top = '-100px';
+                setTimeout(() => messageDiv.remove(), 500);
+            }, duration);
+        }
+
+    </script>
+</body>
+</html>
