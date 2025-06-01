@@ -500,7 +500,7 @@
         }
 
         /* Success and error message styling */
-        .success-message, .error-message {
+        .success-message, .error-message, .info-message { /* Added .info-message */
             padding: 15px;
             border-radius: 10px;
             margin-bottom: 20px;
@@ -525,6 +525,11 @@
             background: linear-gradient(45deg, #dc3545, #c82333);
             color: white;
         }
+        .info-message { /* Style for info messages */
+            background: linear-gradient(45deg, #17a2b8, #138496);
+            color: white;
+        }
+
 
         @keyframes slideDown {
             from { top: -100px; opacity: 0; }
@@ -1101,7 +1106,7 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label for="completed-quantity-${repair.id}">${t('completedQuantityLabel')}</label>
-                            <input type="number" id="completed-quantity-${repair.id}" min="0" max="${repair.quantity || 999}" 
+                            <input type="tel" pattern="[0-9]*" id="completed-quantity-${repair.id}" min="0" max="${repair.quantity || 999}" 
                                    placeholder="${t('completedQuantity')}" required>
                             <small style="color: #6c757d;">${t('maximum')}: ${repair.quantity || 0} ${t('pieces')}</small>
                         </div>
@@ -1198,8 +1203,7 @@
         }
 
         async function uploadPhotoToImgur(file) {
-            if (!IMGUR_CLIENT_ID || IMGUR_CLIENT_ID === 'YOUR_IMGUR_CLIENT_ID' || IMGUR_CLIENT_ID === '82ab37b38a1850a') { // Added your actual ID for check
-                 // Allow uploads if the default ID is used, but log a warning for the developer.
+            if (!IMGUR_CLIENT_ID || IMGUR_CLIENT_ID === 'YOUR_IMGUR_CLIENT_ID' || IMGUR_CLIENT_ID === '82ab37b38a1850a') { 
                  if (IMGUR_CLIENT_ID === '82ab37b38a1850a') {
                     console.warn("Using default Imgur Client ID. Please replace with your own for production.");
                  } else if (!IMGUR_CLIENT_ID || IMGUR_CLIENT_ID === 'YOUR_IMGUR_CLIENT_ID') {
@@ -1222,7 +1226,7 @@
 
                 if (!response.ok) {
                     const errorData = await response.json();
-                    console.error('Imgur API Error Data:', errorData); // Log detailed error
+                    console.error('Imgur API Error Data:', errorData); 
                     throw new Error(`Imgur yükleme hatası (${response.status}): ${errorData.data?.error?.message || errorData.data?.error || response.statusText}`);
                 }
 
@@ -1234,13 +1238,13 @@
                 return data.data.link;
             } catch (error) {
                 console.error("Imgur fotoğraf yükleme hatası:", error);
-                throw error; // Re-throw to be caught by completeRepair
+                throw error; 
             }
         }
 
         async function completeRepair(repairId) {
             if (!isFirebaseInitialized) {
-                showMessage(t('firebaseError').split(':')[0], 'error'); // Simpler message
+                showMessage(t('firebaseError').split(':')[0], 'error'); 
                 return;
             }
 
@@ -1267,7 +1271,6 @@
             
             if (!photoInput.files[0]) {
                 showMessage(t('photoError'), 'error');
-                // No specific element to focus, photo-upload div is not focusable by default
                 return;
             }
 
@@ -1287,17 +1290,14 @@
                     completionNotes: completionNotes,
                     completedPhotoURL: photoURL,
                     completedAt: firebase.firestore.FieldValue.serverTimestamp(),
-                    status: 'completed' // Explicitly set status
+                    status: 'completed' 
                 });
                 
                 showMessage(t('repairCompleted'), 'success');
                 
-                // Form is part of the card, it will be re-rendered as completed
-                // No need to manually reset form fields here as the card will update its display
-
             } catch (error) {
                 console.error("Tamir tamamlama hatası:", error);
-                showMessage(t('repairError') + error.message, 'error', 6000); // Longer duration for error
+                showMessage(t('repairError') + error.message, 'error', 6000); 
             } finally {
                 completeBtn.disabled = false;
                 completeBtn.innerHTML = originalBtnText;
@@ -1305,11 +1305,10 @@
         }
 
         function cancelCompletion(repairId) {
-            // Reset form fields within the specific card
             document.getElementById(`completed-quantity-${repairId}`).value = '';
             document.getElementById(`completion-notes-${repairId}`).value = '';
             const photoInput = document.getElementById(`photo-input-${repairId}`);
-            photoInput.value = ''; // Clear selected file
+            photoInput.value = ''; 
             
             const previewImg = document.getElementById(`photo-preview-${repairId}`);
             const placeholder = document.getElementById(`photo-placeholder-${repairId}`);
@@ -1318,47 +1317,43 @@
                 previewImg.style.display = 'none';
                 placeholder.style.display = 'block';
             }
-            // Optionally, set completion date back to today or clear it
-            // document.getElementById(`completion-date-${repairId}`).valueAsDate = new Date();
             
-            showMessage(t('formCleared'), 'info'); // Use 'info' type for neutral messages
+            showMessage(t('formCleared'), 'info'); 
         }
 
 
         function formatPhoneNumber(phone) {
-            if (!phone) return t('unspecified'); // Use translation for unspecified
+            if (!phone) return t('unspecified'); 
             let cleaned = phone.replace(/\D/g, '');
 
-            // Handle Turkish phone numbers (assuming 05xx xxx xx xx format)
-            if (cleaned.startsWith('0') && cleaned.length === 11) { // 05xx xxx xx xx
+            if (cleaned.startsWith('0') && cleaned.length === 11) { 
                 return `0${cleaned.substring(1, 4)} ${cleaned.substring(4, 7)} ${cleaned.substring(7, 9)} ${cleaned.substring(9, 11)}`;
             }
-            if (cleaned.length === 10 && !cleaned.startsWith('90')) { // 5xx xxx xx xx
+            if (cleaned.length === 10 && !cleaned.startsWith('90')) { 
                  return `0${cleaned.substring(0, 3)} ${cleaned.substring(3, 6)} ${cleaned.substring(6, 8)} ${cleaned.substring(8, 10)}`;
             }
-            // International format +90 5xx xxx xx xx
             if (cleaned.length === 12 && cleaned.startsWith('90')) {
                 return `+${cleaned.substring(0, 2)} ${cleaned.substring(2, 5)} ${cleaned.substring(5, 8)} ${cleaned.substring(8, 10)} ${cleaned.substring(10, 12)}`;
             }
             
-            return phone; // Return original if not matching known formats
+            return phone; 
         }
 
         function openPhotoModal(imageURL) {
             if (imageURL) {
                 document.getElementById('modal-image').src = imageURL;
-                document.getElementById('photo-modal').style.display = 'flex'; // Use flex for centering
+                document.getElementById('photo-modal').style.display = 'flex'; 
             }
         }
 
         function closePhotoModal() {
             document.getElementById('photo-modal').style.display = 'none';
-            document.getElementById('modal-image').src = ''; // Clear src to prevent old image flashing
+            document.getElementById('modal-image').src = ''; 
         }
 
         let messageTimeout;
         function showMessage(message, type = 'success', duration = 4000) {
-            const existingMessage = document.querySelector('.success-message, .error-message');
+            const existingMessage = document.querySelector('.success-message, .error-message, .info-message'); // Added .info-message
             if (existingMessage) {
                 existingMessage.remove();
             }
@@ -1367,12 +1362,11 @@
             }
 
             const messageDiv = document.createElement('div');
-            messageDiv.className = type === 'success' ? 'success-message' : (type === 'error' ? 'error-message' : 'info-message'); // Added info-message
+            messageDiv.className = type === 'success' ? 'success-message' : (type === 'error' ? 'error-message' : 'info-message'); 
             messageDiv.textContent = message;
             
             document.body.appendChild(messageDiv);
 
-            // Force a reflow before adding the class to trigger animation
             void messageDiv.offsetWidth; 
 
             messageDiv.style.top = '20px';
@@ -1380,8 +1374,8 @@
 
             messageTimeout = setTimeout(() => {
                 messageDiv.style.opacity = '0';
-                messageDiv.style.top = '-100px'; // Animate out
-                setTimeout(() => messageDiv.remove(), 500); // Remove after animation
+                messageDiv.style.top = '-100px'; 
+                setTimeout(() => messageDiv.remove(), 500); 
             }, duration);
         }
 
