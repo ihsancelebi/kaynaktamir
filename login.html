@@ -4,104 +4,208 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Giriş Yap - Kaynak Saç Tamir Takip</title>
+    <link rel="icon" href="iconios.png" type="image/png">
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
-        .login-container { background: white; padding: 40px; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); text-align: center; max-width: 400px; width: 90%; }
-        #app-logo { width: 300px; height: 100px; max-width: 100%; margin: 0 auto 25px auto; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-mask-image: url(logo.svg); mask-image: url(logo.svg); -webkit-mask-size: contain; mask-size: contain; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; -webkit-mask-position: center; mask-position: center; }
-        h2 { margin-bottom: 20px; color: #333; }
-        .form-group { margin-bottom: 20px; text-align: left; }
-        label { display: block; margin-bottom: 5px; font-weight: 600; color: #555; }
-        input { width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; box-sizing: border-box; }
-        input:focus { outline: none; border-color: #764ba2; }
-        .button-group { display: flex; gap: 10px; margin-top: 10px; }
-        .btn { flex-grow: 1; background: linear-gradient(45deg, #667eea, #764ba2); color: white; border: none; padding: 15px; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; }
-        .btn:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0,0,0,0.15); }
-        .btn-secondary { background: #6c757d; }
-        #error-message { color: #dc3545; margin-top: 15px; font-weight: 500; display: none; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .login-container {
+            max-width: 400px;
+            width: 100%;
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .login-container img {
+            width: 150px;
+            margin-bottom: 20px;
+        }
+        .login-container h1 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .login-container p {
+            margin-bottom: 30px;
+            color: #6c757d;
+        }
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
+        }
+        .btn {
+            background: linear-gradient(45deg, #007bff, #0056b3);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0,123,255,0.3);
+        }
+        .btn-secondary {
+            background: #6c757d;
+        }
+        .btn-secondary:hover {
+             box-shadow: 0 10px 25px rgba(108,117,125,0.3);
+        }
+        .error-message {
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: center;
+            font-weight: 600;
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            display: none; /* Initially hidden */
+        }
     </style>
 </head>
 <body>
+
     <div class="login-container">
-        <div id="app-logo"></div>
-        <h2>Giriş Yap</h2>
-        <p style="color:#6c757d; margin-top:-15px; margin-bottom:25px;">Lütfen devam etmek için giriş yapın.</p>
-        <div class="form-group">
-            <label for="email">E-posta</label>
-            <input type="email" id="email" required>
+        <img src="iconios.png" alt="Logo">
+        <h1>Hoş Geldiniz!</h1>
+        <p>Lütfen devam etmek için giriş yapın.</p>
+        
+        <div id="login-form">
+            <div class="form-group">
+                <label for="email">E-posta Adresi</label>
+                <input type="email" id="email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Şifre</label>
+                <input type="password" id="password" required>
+            </div>
+            
+            <button class="btn" id="login-btn">Giriş Yap</button>
+            <button class="btn btn-secondary" id="register-btn">Yeni Hesap Oluştur</button>
+
+            <div id="error-message" class="error-message"></div>
         </div>
-        <div class="form-group">
-            <label for="password">Şifre</label>
-            <input type="password" id="password" required>
-        </div>
-        <div class="button-group">
-            <button id="loginBtn" class="btn">Giriş Yap</button>
-            <button id="signupBtn" class="btn btn-secondary">Kayıt Ol</button>
-        </div>
-        <div id="error-message"></div>
     </div>
+
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
     <script>
         const firebaseConfig = {
-             apiKey: "AIzaSyCsy1AAiRE8HCCt4HEAcz7Sh9AM6sQt4FQ",
+             apiKey: "AIzaSyCsy1AAiRE8HCCt4HEAcz7Sh9AM6sQt4FQ", 
              authDomain: "kaynak-sac-tamir.firebaseapp.com",
              projectId: "kaynak-sac-tamir",
              messagingSenderId: "503655162792",
              appId: "1:503655162792:web:faad92041850490b92f39d",
              measurementId: "G-N8B2V6RQET" 
         };
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
-        }
+
+        firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
+        const db = firebase.firestore();
+
         const emailInput = document.getElementById('email');
         const passwordInput = document.getElementById('password');
-        const loginBtn = document.getElementById('loginBtn');
-        const errorMessageDiv = document.getElementById('error-message');
+        const loginBtn = document.getElementById('login-btn');
+        const registerBtn = document.getElementById('register-btn');
+        const errorDiv = document.getElementById('error-message');
+
+        // Kullanıcı zaten giriş yapmışsa ana sayfaya yönlendir
         auth.onAuthStateChanged(user => {
-            if (user) { window.location.href = 'index.html'; }
+            if (user) {
+                window.location.href = 'index-6.html';
+            }
         });
-        const handleLogin = () => {
+
+        const displayError = (message) => {
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+        };
+
+        loginBtn.addEventListener('click', () => {
             const email = emailInput.value;
             const password = passwordInput.value;
-            errorMessageDiv.style.display = 'none';
+
             if (!email || !password) {
-                errorMessageDiv.textContent = 'Lütfen e-posta ve şifre girin.';
-                errorMessageDiv.style.display = 'block';
+                displayError("E-posta ve şifre alanları boş bırakılamaz.");
                 return;
             }
+
             auth.signInWithEmailAndPassword(email, password)
-                .catch(() => {
-                    errorMessageDiv.textContent = 'E-posta veya şifre hatalı. Lütfen tekrar deneyin.';
-                    errorMessageDiv.style.display = 'block';
+                .then((userCredential) => {
+                    // Başarılı giriş, onAuthStateChanged yönlendirmeyi yapacak
+                })
+                .catch((error) => {
+                    console.error("Giriş Hatası:", error);
+                    let message = "Bir hata oluştu. Lütfen tekrar deneyin.";
+                    if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+                        message = "E-posta veya şifre hatalı.";
+                    }
+                    displayError(message);
                 });
-        };
-        const handleSignup = () => {
+        });
+        
+        registerBtn.addEventListener('click', () => {
             const email = emailInput.value;
             const password = passwordInput.value;
-            errorMessageDiv.style.display = 'none';
+
             if (!email || !password) {
-                errorMessageDiv.textContent = 'Lütfen e-posta ve şifre girin.';
-                errorMessageDiv.style.display = 'block';
+                displayError("E-posta ve şifre alanları boş bırakılamaz.");
                 return;
             }
+            if (password.length < 6) {
+                displayError("Şifre en az 6 karakter olmalıdır.");
+                return;
+            }
+
             auth.createUserWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    // Başarılı kayıt, onAuthStateChanged yönlendirmeyi yapacak
+                })
                 .catch((error) => {
+                    console.error("Kayıt Hatası:", error);
+                     let message = "Bir hata oluştu. Lütfen tekrar deneyin.";
                     if (error.code === 'auth/email-already-in-use') {
-                        errorMessageDiv.textContent = 'Bu e-posta adresi zaten kullanımda.';
-                    } else if (error.code === 'auth/weak-password') {
-                        errorMessageDiv.textContent = 'Şifre en az 6 karakter olmalıdır.';
-                    } else {
-                        errorMessageDiv.textContent = 'Bir hata oluştu: ' + error.message;
+                        message = "Bu e-posta adresi zaten kullanılıyor.";
+                    } else if (error.code === 'auth/invalid-email') {
+                        message = "Lütfen geçerli bir e-posta adresi girin.";
                     }
-                    errorMessageDiv.style.display = 'block';
+                    displayError(message);
                 });
-        };
-        loginBtn.addEventListener('click', handleLogin);
-        document.getElementById('signupBtn').addEventListener('click', handleSignup);
-        passwordInput.addEventListener('keyup', (event) => {
-            if (event.key === "Enter") { handleLogin(); }
         });
+
     </script>
 </body>
 </html>
