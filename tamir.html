@@ -6,9 +6,8 @@
     <title data-tr="Kaynak Saç Tamir Tamamlandı" data-en="Hair Extension Repair Completed">Kaynak Saç Tamir Tamamlandı</title>
     <link rel="apple-touch-icon" href="iconios.png">
     <style>
-       /* [MEVCUT CSS KODUNUZ BURADA KALACAK - DEĞİŞİKLİK YOK] */
-       /* Stilinizi kopyalayıp buraya yapıştırın */
-       /* General styling for the entire page */
+       /* [CSS KODUNUZ BURADA DEĞİŞMEDEN KALACAK] */
+        /* General styling for the entire page */
         * {
             margin: 0;
             padding: 0;
@@ -652,7 +651,8 @@
         }
     </style>
 </head>
-<body style="display: none;"> <div class="container">
+<body style="display: none;">
+    <div class="container">
         <div class="header">
             <div class="language-selector">
                 <button class="language-btn active" onclick="changeLanguage('tr')">TR</button>
@@ -698,22 +698,22 @@
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script> <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
     <script>
         // Global variables
         let db = null;
-        let auth = null; // YENİ
-        let currentUser = null; // YENİ
+        let auth = null;
+        let currentUser = null;
         let allRepairs = [];
         let filteredRepairs = [];
         let currentFilter = 'all';
         let isFirebaseInitialized = false;
         let currentLanguage = 'tr';
 
-        // [TRANSLATIONS NESNENİZ BURADA KALACAK - DEĞİŞİKLİK YOK]
+        // [TRANSLATIONS NESNENİZ BURADA KALACAK]
         // ...
         
-        // Firebase ve Imgur config nesneleri burada kalacak
         const firebaseConfig = {
             apiKey: "AIzaSyCsy1AAiRE8HCCt4HEAcz7Sh9AM6sQt4FQ", 
             authDomain: "kaynak-sac-tamir.firebaseapp.com",
@@ -724,7 +724,6 @@
         };
         const IMGUR_CLIENT_ID = '82ab37b38a1850a'; 
 
-        // GÜNCELLENDİ: DOMContentLoaded Listener
         document.addEventListener('DOMContentLoaded', function() {
             if (!firebase.apps.length) {
                 firebase.initializeApp(firebaseConfig);
@@ -743,42 +742,23 @@
             });
         });
 
-        // YENİ: Uygulamayı başlatan ana fonksiyon
         function initializeApp() {
-            const savedLanguage = localStorage.getItem('preferredLanguage') || 'tr';
-            changeLanguage(savedLanguage);
-            
-            initializeFirebaseConnectionStatus();
-            
-            document.getElementById('logout-btn').addEventListener('click', () => {
-                auth.signOut();
-            });
-
-            document.getElementById('searchInput').addEventListener('input', handleSearch);
-            
-            document.querySelector('.close-modal').addEventListener('click', closePhotoModal);
-            document.getElementById('photo-modal').addEventListener('click', (e) => {
-                if (e.target === document.getElementById('photo-modal')) {
-                    closePhotoModal();
-                }
-            });
+            // ...
         }
         
-        // DEĞİŞTİ: Artık sadece bağlantı durumunu kontrol ediyor
         function initializeFirebaseConnectionStatus() {
-            // ... Bu fonksiyonun içi `index-6.html`'deki gibi aynı kalabilir ...
+            // ...
         }
 
-        // GÜNCELLENDİ: loadRepairs fonksiyonu
+        // --- DEĞİŞİKLİK ---
         function loadRepairs() {
             if (!isFirebaseInitialized || !currentUser) return;
 
             const container = document.getElementById('repairs-container');
             container.innerHTML = `<div class="empty-state"><div class="loading"></div><h3>${t('connecting')}</h3><p>${t('dataLoadError').split(':')[0]}</p></div>`;
 
-            // YENİ: Sorguya .where() koşulu eklendi
+            // `.where()` koşulu kaldırıldı
             db.collection('repairs')
-              .where('userId', '==', currentUser.uid) // Sadece bu kullanıcıya ait kayıtları getir
               .orderBy('createdAt', 'desc')
               .onSnapshot(snapshot => {
                 allRepairs = [];
@@ -788,12 +768,12 @@
                 applyCurrentFilter();
             }, error => {
                 console.error("Error loading repairs:", error);
-                // ... Hata gösterim mantığı aynı kalır ...
+                // ... error handling ...
             });
         }
         
-        // [GERİ KALAN TÜM JAVASCRIPT FONKSİYONLARI (filterRepairs, displayRepairs, createRepairCard, vb.) AYNI KALABİLİR]
-        // ... Diğer tüm JavaScript fonksiyonlarınızı buraya kopyalayın ...
+        // [GERİ KALAN TÜM JAVASCRIPT FONKSİYONLARI DEĞİŞMEDEN KALACAK]
+        // ...
 
     </script>
 </body>
