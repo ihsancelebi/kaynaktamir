@@ -8,6 +8,7 @@
     <link rel="icon" href="iconios.png" type="image/png">
     <link rel="shortcut icon" href="/favicon.ico">
     <style>
+        /* Orijinal CSS stilleri (değiştirilmedi) */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
         .container { max-width: 800px; margin: 0 auto; background: white; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); overflow: hidden; }
@@ -92,31 +93,149 @@
         <div class="content">
             <div id="add-section" class="section">
                 <form id="repair-form">
-                    </form>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label data-translate="formFirstName">İsim</label>
+                            <input type="text" id="firstName" required>
+                        </div>
+                        <div class="form-group">
+                            <label data-translate="formLastName">Soyisim</label>
+                            <input type="text" id="lastName" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label data-translate="formPhone">Telefon</label>
+                        <input type="tel" id="phone" required placeholder="+90 5XX XXX XX XX" inputmode="numeric">
+                        <small style="color: #6c757d;" data-translate="formPhoneExample">Örnek: +90 553 528 0908 veya 5535280908</small>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label data-translate="formRepairDateInput">Tamire Verilen Tarih</label> <input type="date" id="repairDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label data-translate="formTerminDateInput">Termin Tarihi</label>  <input type="date" id="returnDate" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label data-translate="formQuantity">Kaynak Adedi</label>
+                            <input type="number" id="quantity" min="1" inputmode="numeric" pattern="[0-9]*" required>
+                        </div>
+                        <div class="form-group">
+                            <label data-translate="formUnitPrice">Adet Tamir Fiyatı (₺)</label>
+                            <input type="number" id="unitPrice" min="0" step="0.01" value="10" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label data-translate="formHasSet">Takım Olacak mı?</label>
+                        <div class="radio-group-vertical" style="margin-top: 10px;">
+                            <label>
+                                <input type="radio" name="hasSet" value="evet" required> <span data-translate="formSetYes">Evet</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="hasSet" value="hayır" required> <span data-translate="formSetNo">Hayır</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label data-translate="formNotes">Notlar</label>
+                        <textarea id="notes" rows="4" data-translate-placeholder="formNotesPlaceholder" placeholder="Ek notlarınızı buraya yazın..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label data-translate="formPhoto">Fotoğraf</label>
+                        <div class="photo-upload" onclick="document.getElementById('photoInput').click()">
+                            <input type="file" id="photoInput" accept="image/*" capture="environment" style="display: none;">
+                            <div id="photo-placeholder">
+                                📷<br>
+                                <strong data-translate="formAddPhoto">Fotoğraf Ekle</strong><br>
+                                <small data-translate="formTapCamera">Dokunarak kamera aç</small>
+                            </div>
+                            <img id="photo-preview-img" class="photo-preview" style="display:none;" alt="[Fotoğraf Önizlemesi]" data-translate-alt="photoPreviewAlt">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn" id="submit-btn">
+                        <span id="submit-text" data-translate="btnAdd">➕ Ekle</span>
+                    </button>
+                </form>
             </div>
             <div id="list-section" class="section">
-                 <div id="records-container"></div>
+                <div class="filter-controls">
+                    <div class="filter-header" onclick="toggleFilterControls()">
+                        <span data-translate="filterOptions">Filtreleme Seçenekleri</span>
+                        <span class="expand-icon">🔍</span>
+                    </div>
+                    <div id="filter-collapsible-content" class="filter-collapsible-content">
+                        <div class="form-row" style="margin-bottom: 15px;">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label for="startDateFilter" data-translate="filterStartDate">Başlangıç Tarihi</label>
+                                <input type="date" id="startDateFilter">
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label for="endDateFilter" data-translate="filterEndDate">Bitiş Tarihi</label>
+                                <input type="date" id="endDateFilter">
+                            </div>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 15px;">
+                            <label for="searchFilter" data-translate="filterSearchNamePhone">İsim veya Telefon Ara</label>
+                            <input type="text" id="searchFilter" data-translate-placeholder="filterSearchPlaceholder" placeholder="İsim veya telefon numarası...">
+                        </div>
+                        <button class="btn" onclick="applyFilters()" style="width: 100%;" data-translate="filterButton">Filtrele</button>
+                    </div>
+                </div>
+                <div id="records-container"></div>
             </div>
         </div>
     </div>
     
     <div id="photo-modal" class="modal">
+        <span class="close-modal" onclick="closePhotoModal()">&times;</span>
+        <div class="modal-content">
+            <img id="modal-image" src="" alt="[Büyük Görünüm]" data-translate-alt="largeViewAlt">
         </div>
+    </div>
 
     <div id="print-modal" class="print-modal">
+        <div class="print-modal-content">
+            <h3 data-translate="printModalTitle">🖨️ Etiket Yazdır</h3>
+            <p data-translate="printModalSubtitle">80x40mm etiket yazdırılacak</p>
+            <div class="print-modal-buttons">
+                <button class="btn-secondary" onclick="closePrintModal()" data-translate="btnClose">Kapat</button>
+                <button class="btn" onclick="printLabel()" data-translate="btnPrint">🖨️ Yazdır</button>
+            </div>
         </div>
+    </div>
 
     <div id="print-label" class="print-label">
-         </div>
+        <div class="label-top-section">
+            <div class="label-logo-section">
+                <img src="logo.svg" alt="THE ICONE Logosu">
+            </div>
+            <div class="label-main-title" data-translate="printLabelTitle">KAYNAK TAMİR</div>
+        </div>
+        <div class="label-content">
+            <div class="label-field">
+                <span class="label-bold" data-translate="printLabelCustomer">MÜŞTERİ:</span>
+                <span id="print-customer"></span>
+            </div>
+            <div class="label-field">
+                <span class="label-bold" data-translate="printLabelPhone">TELEFON:</span>
+                <span id="print-phone"></span>
+            </div>
+            <div class="label-field">
+                <span class="label-bold" data-translate="printLabelQuantity">ADET:</span>
+                <span id="print-quantity"></span>
+            </div>
+            <div class="label-field">
+                <span class="label-bold" data-translate="printLabelTerminDate">TERMİN TAR:</span> 
+                <span id="print-delivery"></span>
+            </div>
+        </div>
+    </div>
 
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
     <script>
-        // Global değişkenler, çeviriler vb. (değiştirilmedi)
-        let db = null; let records = []; let currentPhotoFile = null; let currentRecordForPrint = null; let isFirebaseInitialized = false; let currentLanguage = localStorage.getItem('language') || 'tr';
-        const translations = { /* ... */ };
-
         const firebaseConfig = {
              apiKey: "AIzaSyCsy1AAiRE8HCCt4HEAcz7Sh9AM6sQt4FQ",
              authDomain: "kaynak-sac-tamir.firebaseapp.com",
@@ -125,22 +244,20 @@
              appId: "1:503655162792:web:faad92041850490b92f39d",
              measurementId: "G-N8B2V6RQET" 
         };
-        
         const IMGUR_CLIENT_ID = '82ab37b38a1850a'; 
+        
+        let db = null, records = [], currentPhotoFile = null, currentRecordForPrint = null, isFirebaseInitialized = false, currentLanguage = localStorage.getItem('language') || 'tr';
+        const translations = { /* ... tüm çeviriler buraya ... */ };
 
-        // LOGIN GÜVENLİK KONTROLÜ
         document.addEventListener('DOMContentLoaded', function() {
             try {
-                if (!firebase.apps.length) {
-                    firebase.initializeApp(firebaseConfig);
-                }
+                if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
             } catch (error) {
                 console.error("Firebase başlatma hatası:", error);
                 document.body.style.display = "block";
                 document.body.innerHTML = "<h1>Hata: Uygulama başlatılamadı.</h1>";
                 return;
             }
-
             const auth = firebase.auth();
             auth.onAuthStateChanged(user => {
                 if (user) {
@@ -153,40 +270,39 @@
         });
 
         function runApp(user) {
+            db = firebase.firestore();
+            isFirebaseInitialized = true;
             console.log("Uygulama çalışıyor, kullanıcı:", user.email);
-            
+
             const header = document.querySelector('.header');
             if (header && !document.getElementById('user-info-container')) {
                 const userInfoContainer = document.createElement('div');
                 userInfoContainer.id = 'user-info-container';
-                userInfoContainer.innerHTML = `
-                    <div style="position: absolute; top: 40px; right: 15px; background: rgba(255,255,255,0.2); padding: 5px 10px; border-radius: 15px; font-size: 12px; color: white; z-index: 10;">
-                        ${user.email} | <a href="#" id="logoutBtn" style="color:white; font-weight:bold; text-decoration:none;">Çıkış</a>
-                    </div>
-                `;
+                userInfoContainer.innerHTML = `<div style="position: absolute; top: 40px; right: 15px; background: rgba(255,255,255,0.2); padding: 5px 10px; border-radius: 15px; font-size: 12px; color: white; z-index: 10;">${user.email} | <a href="#" id="logoutBtn" style="color:white; font-weight:bold; text-decoration:none;">Çıkış</a></div>`;
                 header.appendChild(userInfoContainer);
-                
-                document.getElementById('logoutBtn').addEventListener('click', (e) => {
-                    e.preventDefault();
-                    firebase.auth().signOut();
-                });
+                document.getElementById('logoutBtn').addEventListener('click', e => { e.preventDefault(); firebase.auth().signOut(); });
             }
-
-            // Orijinal başlangıç fonksiyonlarını çağır
-            db = firebase.firestore();
-            isFirebaseInitialized = true;
-            document.getElementById('status-text').textContent = "✔️ Bağlandı";
-            document.getElementById('connection-status').classList.add('status-online');
             
+            // Orijinal başlangıç fonksiyonları
+            document.documentElement.lang = currentLanguage;
+            document.getElementById('repairDate').valueAsDate = new Date();
+            document.getElementById('unitPrice').value = '10';
             setLanguage(currentLanguage, true); 
-            showSection('add'); 
-            
+            const photoUploadArea = document.querySelector('.photo-upload');
+            photoUploadArea.addEventListener('dragover', (e) => { e.preventDefault(); photoUploadArea.classList.add('dragover'); });
+            photoUploadArea.addEventListener('dragleave', () => { photoUploadArea.classList.remove('dragover'); });
+            photoUploadArea.addEventListener('drop', (e) => { e.preventDefault(); photoUploadArea.classList.remove('dragover'); if (e.dataTransfer.files.length > 0) { document.getElementById('photoInput').files = e.dataTransfer.files; handlePhotoInputChange({ target: document.getElementById('photoInput') }); } });
+            document.querySelector('.close-modal').addEventListener('click', closePhotoModal);
+            document.getElementById('photo-modal').addEventListener('click', (e) => { if (e.target === document.getElementById('photo-modal')) closePhotoModal(); });
+            document.querySelectorAll('.nav-btn').forEach(btn => { btn.addEventListener('click', (event) => { document.querySelector('.nav-btn.active').classList.remove('active'); event.currentTarget.classList.add('active'); }); });
             document.getElementById('repair-form').addEventListener('submit', handleFormSubmit);
             document.getElementById('photoInput').addEventListener('change', handlePhotoInputChange);
+            showSection('add');
         }
 
-        // --- Diğer tüm orijinal fonksiyonlar (setLanguage, showSection, handleFormSubmit, vb.) buraya gelecek ---
-        // ... (Bu fonksiyonlar değiştirilmedi)
+        // --- Diğer tüm orijinal fonksiyonlar buraya ---
+        // (setLanguage, showSection, handleFormSubmit, loadRecords, vb. değiştirilmedi)
+        // ...
 
     </script>
 </body>
