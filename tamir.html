@@ -6,99 +6,795 @@
     <title data-tr="Kaynak Saç Tamir Tamamlandı" data-en="Hair Extension Repair Completed">Kaynak Saç Tamir Tamamlandı</title>
     <link rel="apple-touch-icon" href="iconios.png">
     <style>
-        /* Orijinal CSS stillerinin tümü buradadır (değiştirilmedi) */
-        * { margin: 0; padding: 0; box-sizing: border-box; } body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; } .container { max-width: 900px; margin: 0 auto; background: white; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); overflow: hidden; } .header { background: linear-gradient(45deg, #28a745, #20c997); color: white; padding: 30px; text-align: center; position: relative; overflow: hidden; } /* ... Diğer stiller ... */
+       /* [MEVCUT CSS KODUNUZ BURADA KALACAK - DEĞİŞİKLİK YOK] */
+       /* Stilinizi kopyalayıp buraya yapıştırın */
+       /* General styling for the entire page */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* Container for the main application content */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        /* Header section styling */
+        .header {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Animated background for the header */
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(255,255,255,0.1) 10px,
+                rgba(255,255,255,0.1) 20px
+            );
+            animation: slide 20s linear infinite;
+        }
+
+        @keyframes slide {
+            0% { transform: translateX(-50px); }
+            100% { transform: translateX(50px); }
+        }
+
+        .header h1 {
+            position: relative;
+            z-index: 1;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            position: relative;
+            z-index: 1;
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+
+        /* Language selector */
+        .language-selector {
+            position: absolute;
+            top: 10px;
+            left: 15px;
+            z-index: 2;
+        }
+
+        .language-btn {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 8px 12px;
+            margin: 0 2px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+
+        .language-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+
+        .language-btn.active {
+            background: rgba(255,255,255,0.4);
+            border-color: rgba(255,255,255,0.6);
+        }
+        
+        .auth-controls {
+             position: absolute;
+             top: 10px;
+             right: 15px;
+             z-index: 2;
+             display: flex;
+             align-items: center;
+             gap: 10px;
+        }
+        
+        .logout-btn {
+             background: rgba(255, 255, 255, 0.2);
+             color: white;
+             border: 1px solid rgba(255, 255, 255, 0.3);
+             padding: 8px 12px;
+             border-radius: 20px;
+             font-size: 12px;
+             cursor: pointer;
+             font-weight: 600;
+             transition: background 0.3s ease;
+        }
+        .logout-btn:hover {
+            background: rgba(220, 53, 69, 0.7);
+        }
+
+        /* Connection status indicator */
+        .connection-status {
+            background: rgba(255,255,255,0.2);
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            z-index: 2;
+        }
+
+        .status-online { color: #28a745; }
+        .status-offline { color: #dc3545; }
+
+        /* Content area styling */
+        .content {
+            padding: 30px;
+        }
+
+        /* Pending repairs list styling */
+        .pending-repairs {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 1.8em;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #f8f9fa;
+        }
+
+        /* Search and filter controls */
+        .search-controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .search-input {
+            flex: 1;
+            min-width: 200px;
+            padding: 12px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 25px;
+            font-size: 16px;
+            background: #f8f9fa;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #28a745;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(40,167,69,0.1);
+        }
+
+        .filter-btn {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .filter-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(40,167,69,0.3);
+        }
+
+        .filter-btn.active {
+            background: linear-gradient(45deg, #20c997, #17a2b8);
+        }
+
+        /* Record card styling for pending repairs */
+        .repair-card {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            position: relative;
+            overflow: hidden; /* Important for collapsing */
+            cursor: pointer; /* Indicate clickable */
+            max-height: 105px; /* Initial collapsed height - adjust as needed */
+            transition: max-height 0.4s ease-in-out, box-shadow 0.3s ease, border-color 0.3s ease;
+        }
+        
+        .repair-card.expanded {
+            max-height: 2000px; /* Large enough to show all content */
+        }
+
+        .repair-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(45deg, #28a745, #20c997);
+        }
+
+        .repair-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+            border-color: #28a745;
+        }
+
+        .repair-card.completed {
+            border-color: #6c757d;
+            /* opacity: 0.7; */ /* Opacity can make expanded content hard to read */
+        }
+
+        .repair-card.completed::before {
+            background: linear-gradient(45deg, #6c757d, #495057);
+        }
+
+        .repair-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px; /* This margin will be part of hidden content when collapsed */
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f8f9fa;
+        }
+
+        .customer-info {
+            flex: 1;
+        }
+
+        .customer-name {
+            font-size: 1.4em;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .customer-phone {
+            color: #6c757d;
+            font-size: 1em;
+        }
+
+        .repair-status {
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            flex-shrink: 0; /* Prevent status from shrinking */
+            margin-left: 10px; /* Space between customer info and status */
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+
+        .status-completed {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        /* Expand/Collapse Icon */
+        .repair-header .expand-icon {
+            font-size: 1.5em; 
+            color: #555; 
+            transition: transform 0.3s ease-in-out;
+            padding: 5px; 
+            margin-left: 15px; /* Space from status/customer info */
+            align-self: center; 
+        }
+
+        .repair-card.expanded .repair-header .expand-icon {
+            transform: rotate(180deg);
+        }
+
+
+        .repair-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px; /* Added back for spacing when expanded */
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .detail-icon {
+            width: 35px;
+            height: 35px;
+            background: linear-gradient(45deg, #28a745, #20c997);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .detail-text {
+            flex: 1;
+        }
+
+        .detail-label {
+            font-size: 12px;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .detail-value {
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+        }
+
+        /* Completion form styling */
+        .completion-form {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            border: 2px dashed #dee2e6;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .completion-form.active { /* This class might not be used anymore if form is part of card */
+            border-color: #28a745;
+            background: #f8fff9;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-group textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .form-group input:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #28a745;
+            box-shadow: 0 0 0 3px rgba(40,167,69,0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        /* Photo upload area styling */
+        .photo-upload {
+            border: 3px dashed #dee2e6;
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            background: white;
+            transition: all 0.3s ease;
+            cursor: pointer; /* Already has cursor pointer */
+            position: relative;
+            overflow: hidden;
+        }
+
+        .photo-upload:hover {
+            border-color: #28a745;
+            background: rgba(40,167,69,0.05);
+            transform: scale(1.02);
+        }
+
+        .photo-upload.dragover { /* This might not be used if drag/drop not implemented */
+            border-color: #28a745;
+            background: rgba(40,167,69,0.1);
+        }
+
+        .photo-preview {
+            max-width: 150px;
+            max-height: 150px;
+            border-radius: 8px;
+            margin: 10px auto;
+            display: block;
+            object-fit: cover;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+
+        /* Button styling */
+        .btn {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(40,167,69,0.3);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: #5a6268;
+            box-shadow: 0 8px 20px rgba(108,117,125,0.3);
+        }
+
+        .btn-danger {
+            background: linear-gradient(45deg, #dc3545, #c82333);
+        }
+
+        .btn-danger:hover:not(:disabled) {
+            box-shadow: 0 8px 20px rgba(220,53,69,0.3);
+        }
+
+        /* Action buttons */
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 15px;
+        }
+
+        /* Loading spinner animation */
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #ffffff40;
+            border-radius: 50%;
+            border-top-color: #ffffff;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Success and error message styling */
+        .success-message, .error-message, .info-message { /* Added .info-message */
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 600;
+            animation: slideDown 0.5s ease;
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2000;
+            min-width: 300px;
+            max-width: 90%;
+        }
+
+        .success-message {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+        }
+
+        .error-message {
+            background: linear-gradient(45deg, #dc3545, #c82333);
+            color: white;
+        }
+        .info-message { /* Style for info messages */
+            background: linear-gradient(45deg, #17a2b8, #138496);
+            color: white;
+        }
+
+
+        @keyframes slideDown {
+            from { top: -100px; opacity: 0; }
+            to { top: 20px; opacity: 1; }
+        }
+
+        /* Empty state message */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6c757d;
+        }
+
+        .empty-state-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        /* Modal for displaying full-size photos */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            align-items: center; /* Added for centering */
+            justify-content: center; /* Added for centering */
+        }
+
+        .modal-content {
+            /* position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); */ /* Replaced by flex centering */
+            max-width: 90%;
+            max-height: 90%;
+        }
+
+        .modal-content img {
+            max-width: 100%;
+            max-height: 100%;
+            border-radius: 10px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            display: block; /* Ensure img behaves as block */
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .repair-details {
+                grid-template-columns: 1fr;
+            }
+            
+            .search-controls {
+                flex-direction: column;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            .repair-card {
+                max-height: 115px; /* Adjust collapsed height for mobile if needed */
+            }
+            .repair-header .expand-icon {
+                font-size: 1.3em;
+            }
+             .auth-controls {
+                gap: 5px;
+                flex-direction: column;
+                align-items: flex-end;
+            }
+        }
     </style>
 </head>
-<body style="display: none;">
-    <div class="container">
+<body style="display: none;"> <div class="container">
         <div class="header">
-            <div class="language-selector"><button class="language-btn active" onclick="changeLanguage('tr')">TR</button><button class="language-btn" onclick="changeLanguage('en')">EN</button></div>
-            <div class="connection-status" id="connection-status"><span id="status-text" data-tr="🔄 Bağlanıyor..." data-en="🔄 Connecting...">🔄 Bağlanıyor...</span></div>
+            <div class="language-selector">
+                <button class="language-btn active" onclick="changeLanguage('tr')">TR</button>
+                <button class="language-btn" onclick="changeLanguage('en')">EN</button>
+            </div>
+             <div class="auth-controls">
+                <div class="connection-status" id="connection-status">
+                     <span id="status-text" data-tr="🔄 Bağlanıyor..." data-en="🔄 Connecting...">🔄 Bağlanıyor...</span>
+                </div>
+                <button class="logout-btn" id="logout-btn" data-tr="Çıkış Yap" data-en="Logout">Çıkış Yap</button>
+            </div>
             <h1 data-tr="🔧 Tamir Tamamlandı Formu" data-en="🔧 Repair Completion Form">🔧 Tamir Tamamlandı Formu</h1>
             <p data-tr="Tamamlanan tamirler için detay girişi ve fotoğraf yükleme" data-en="Detail entry and photo upload for completed repairs">Tamamlanan tamirler için detay girişi ve fotoğraf yükleme</p>
         </div>
+        
         <div class="content">
             <div class="pending-repairs">
                 <h2 class="section-title" data-tr="🛠️ Bekleyen Tamirler" data-en="🛠️ Pending Repairs">🛠️ Bekleyen Tamirler</h2>
-                <div class="search-controls"><input type="text" id="searchInput" class="search-input" data-tr="Müşteri adı veya telefon ile ara..." data-en="Search by customer name or phone..." placeholder="Müşteri adı veya telefon ile ara..."><button class="filter-btn active" onclick="filterRepairs('all')">Tümü</button><button class="filter-btn" onclick="filterRepairs('pending')">Bekleyen</button><button class="filter-btn" onclick="filterRepairs('completed')">Tamamlanan</button></div>
-                <div id="repairs-container"><div class="empty-state"><div class="empty-state-icon">🔄</div><h3 data-tr="Firebase bağlantısı bekleniyor" data-en="Waiting for Firebase connection">Firebase bağlantısı bekleniyor</h3><p data-tr="Veriler yükleniyor..." data-en="Loading data...">Veriler yükleniyor...</p></div></div>
+                
+                <div class="search-controls">
+                    <input type="text" id="searchInput" class="search-input" data-tr="Müşteri adı veya telefon ile ara..." data-en="Search by customer name or phone..." placeholder="Müşteri adı veya telefon ile ara...">
+                    <button class="filter-btn active" onclick="filterRepairs('all')" data-tr="Tümü" data-en="All">Tümü</button>
+                    <button class="filter-btn" onclick="filterRepairs('pending')" data-tr="Bekleyen" data-en="Pending">Bekleyen</button>
+                    <button class="filter-btn" onclick="filterRepairs('completed')" data-tr="Tamamlanan" data-en="Completed">Tamamlanan</button>
+                </div>
+                
+                <div id="repairs-container">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🔄</div>
+                        <h3 data-tr="Firebase bağlantısı bekleniyor" data-en="Waiting for Firebase connection">Firebase bağlantısı bekleniyor</h3>
+                        <p data-tr="Veriler yükleniyor..." data-en="Loading data...">Veriler yükleniyor...</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-    <div id="photo-modal" class="modal"><span class="close-modal" onclick="closePhotoModal()">&times;</span><div class="modal-content"><img id="modal-image" src="" alt="[Büyük Görünüm]"></div></div>
+    
+    <div id="photo-modal" class="modal">
+        <span class="close-modal" onclick="closePhotoModal()">&times;</span>
+        <div class="modal-content">
+            <img id="modal-image" src="" alt="[Büyük Görünüm]">
+        </div>
+    </div>
 
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script> <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
     <script>
-        const firebaseConfig = { apiKey: "AIzaSyCsy1AAiRE8HCCt4HEAcz7Sh9AM6sQt4FQ", authDomain: "kaynak-sac-tamir.firebaseapp.com", projectId: "kaynak-sac-tamir", messagingSenderId: "503655162792", appId: "1:503655162792:web:faad92041850490b92f39d", measurementId: "G-N8B2V6RQET" };
-        const IMGUR_CLIENT_ID = '82ab37b38a1850a';
-        let db, allRepairs = [], filteredRepairs = [], currentFilter = 'all', isFirebaseInitialized = false, currentLanguage = 'tr', activeFormState = {};
-        const translations = {"tr":{},"en":{}}; // Orijinal tüm çeviriler buradadır.
+        // Global variables
+        let db = null;
+        let auth = null; // YENİ
+        let currentUser = null; // YENİ
+        let allRepairs = [];
+        let filteredRepairs = [];
+        let currentFilter = 'all';
+        let isFirebaseInitialized = false;
+        let currentLanguage = 'tr';
 
-        // Güvenlik sarmalayıcı fonksiyon
-        document.addEventListener('DOMContentLoaded', () => {
-            try {
-                if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-                const auth = firebase.auth();
-                auth.onAuthStateChanged(user => {
-                    if (user) {
-                        document.body.style.display = "block";
-                        const originalScript = document.createElement('script');
-                        originalScript.textContent = `(${app_main.toString()})('${user.email}');`;
-                        document.body.appendChild(originalScript);
-                    } else {
-                        window.location.href = 'login.html';
-                    }
-                });
-            } catch (error) {
-                document.body.style.display = "block";
-                document.body.innerHTML = "<h1>Uygulama Yüklenemedi. Lütfen konsolu kontrol edin.</h1>";
-                console.error("Initialization Error:", error);
-            }
-        });
+        // [TRANSLATIONS NESNENİZ BURADA KALACAK - DEĞİŞİKLİK YOK]
+        // ...
         
-        // Orijinal dosyadaki tüm kodlar bu ana fonksiyonun içine alındı
-        function app_main(userEmail) {
-            let db = null, allRepairs = [], filteredRepairs = [], currentFilter = 'all', isFirebaseInitialized = false, currentLanguage = 'tr', activeFormState = {};
-            
-            const header = document.querySelector('.header');
-            if (header && !document.getElementById('user-info-container')) {
-                const userInfoContainer = document.createElement('div');
-                userInfoContainer.id = 'user-info-container';
-                userInfoContainer.innerHTML = `<div style="position: absolute; top: 40px; right: 15px; background: rgba(255,255,255,0.2); padding: 5px 10px; border-radius: 15px; font-size: 12px; color: white; z-index: 10;">${userEmail} | <a href="#" id="logoutBtn" style="color:white; font-weight:bold; text-decoration:none;">Çıkış</a></div>`;
-                header.appendChild(userInfoContainer);
-                document.getElementById('logoutBtn').addEventListener('click', e => { e.preventDefault(); firebase.auth().signOut(); });
+        // Firebase ve Imgur config nesneleri burada kalacak
+        const firebaseConfig = {
+            apiKey: "AIzaSyCsy1AAiRE8HCCt4HEAcz7Sh9AM6sQt4FQ", 
+            authDomain: "kaynak-sac-tamir.firebaseapp.com",
+            projectId: "kaynak-sac-tamir",
+            messagingSenderId: "503655162792",
+            appId: "1:503655162792:web:faad92041850490b92f39d",
+            measurementId: "G-N8B2V6RQET" 
+        };
+        const IMGUR_CLIENT_ID = '82ab37b38a1850a'; 
+
+        // GÜNCELLENDİ: DOMContentLoaded Listener
+        document.addEventListener('DOMContentLoaded', function() {
+            if (!firebase.apps.length) {
+                firebase.initializeApp(firebaseConfig);
             }
+            auth = firebase.auth();
+            db = firebase.firestore();
 
-            // Orijinal dosyadaki tüm fonksiyonlar buraya kopyalanır
-            function changeLanguage(lang) {}
-            function t(key) {}
-            function initializeFirebase() {}
-            function loadRepairs() {}
-            function filterRepairs(filterType) {}
-            function applyCurrentFilter() {}
-            function handleSearch() {}
-            function displayRepairs() {}
-            function createRepairCard(repair) {}
-            function handlePhotoInputChange(event, repairId) {}
-            async function uploadPhotoToImgur(file) {}
-            async function completeRepair(repairId) {}
-            function cancelCompletion(repairId) {}
-            function formatPhoneNumber(phone) {}
-            function openPhotoModal(imageURL) {}
-            function closePhotoModal() {}
-            function showMessage(message, type = 'success', duration = 4000) {}
+            auth.onAuthStateChanged(user => {
+                if (user) {
+                    currentUser = user;
+                    document.body.style.display = 'block';
+                    initializeApp();
+                } else {
+                    window.location.href = 'login.html';
+                }
+            });
+        });
 
-            // Orijinal DOMContentLoaded içeriği
+        // YENİ: Uygulamayı başlatan ana fonksiyon
+        function initializeApp() {
             const savedLanguage = localStorage.getItem('preferredLanguage') || 'tr';
             changeLanguage(savedLanguage);
-            initializeFirebase();
+            
+            initializeFirebaseConnectionStatus();
+            
+            document.getElementById('logout-btn').addEventListener('click', () => {
+                auth.signOut();
+            });
+
             document.getElementById('searchInput').addEventListener('input', handleSearch);
+            
             document.querySelector('.close-modal').addEventListener('click', closePhotoModal);
-            document.getElementById('photo-modal').addEventListener('click', (e) => { if (e.target === document.getElementById('photo-modal')) { closePhotoModal(); } });
+            document.getElementById('photo-modal').addEventListener('click', (e) => {
+                if (e.target === document.getElementById('photo-modal')) {
+                    closePhotoModal();
+                }
+            });
         }
+        
+        // DEĞİŞTİ: Artık sadece bağlantı durumunu kontrol ediyor
+        function initializeFirebaseConnectionStatus() {
+            // ... Bu fonksiyonun içi `index-6.html`'deki gibi aynı kalabilir ...
+        }
+
+        // GÜNCELLENDİ: loadRepairs fonksiyonu
+        function loadRepairs() {
+            if (!isFirebaseInitialized || !currentUser) return;
+
+            const container = document.getElementById('repairs-container');
+            container.innerHTML = `<div class="empty-state"><div class="loading"></div><h3>${t('connecting')}</h3><p>${t('dataLoadError').split(':')[0]}</p></div>`;
+
+            // YENİ: Sorguya .where() koşulu eklendi
+            db.collection('repairs')
+              .where('userId', '==', currentUser.uid) // Sadece bu kullanıcıya ait kayıtları getir
+              .orderBy('createdAt', 'desc')
+              .onSnapshot(snapshot => {
+                allRepairs = [];
+                snapshot.forEach(doc => {
+                    allRepairs.push({ id: doc.id, ...doc.data() });
+                });
+                applyCurrentFilter();
+            }, error => {
+                console.error("Error loading repairs:", error);
+                // ... Hata gösterim mantığı aynı kalır ...
+            });
+        }
+        
+        // [GERİ KALAN TÜM JAVASCRIPT FONKSİYONLARI (filterRepairs, displayRepairs, createRepairCard, vb.) AYNI KALABİLİR]
+        // ... Diğer tüm JavaScript fonksiyonlarınızı buraya kopyalayın ...
+
     </script>
 </body>
 </html>
