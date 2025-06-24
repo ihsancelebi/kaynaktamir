@@ -77,6 +77,7 @@
                 <button class="lang-btn" id="lang-tr" onclick="setLanguage('tr')">TR</button>
             </div>
             <div id="app-logo" title="Hair Extension Repair Tracking Logo"></div>
+            <h1>Kaynak Saç Tamir Takip</h1>
             <div class="connection-status" id="connection-status">
                 <span id="status-text" data-translate="connecting">🔄 Bağlanıyor...</span>
             </div>
@@ -94,7 +95,7 @@
                     </form>
             </div>
             <div id="list-section" class="section">
-                <div id="records-container"></div>
+                 <div id="records-container"></div>
             </div>
         </div>
     </div>
@@ -112,8 +113,9 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
     <script>
-        // Global variables, translations, etc. from original index-6.html
-        // ...
+        // Global değişkenler, çeviriler vb. (değiştirilmedi)
+        let db = null; let records = []; let currentPhotoFile = null; let currentRecordForPrint = null; let isFirebaseInitialized = false; let currentLanguage = localStorage.getItem('language') || 'tr';
+        const translations = { /* ... */ };
 
         const firebaseConfig = {
              apiKey: "AIzaSyCsy1AAiRE8HCCt4HEAcz7Sh9AM6sQt4FQ",
@@ -126,7 +128,7 @@
         
         const IMGUR_CLIENT_ID = '82ab37b38a1850a'; 
 
-        // LOGIN SECURITY WRAPPER
+        // LOGIN GÜVENLİK KONTROLÜ
         document.addEventListener('DOMContentLoaded', function() {
             try {
                 if (!firebase.apps.length) {
@@ -151,42 +153,40 @@
         });
 
         function runApp(user) {
-            // All original JS logic from index-6.html goes here.
-            // Example:
             console.log("Uygulama çalışıyor, kullanıcı:", user.email);
             
-            // Add logout button
-            const userInfoContainer = document.createElement('div');
-            userInfoContainer.innerHTML = `
-                <div style="position: absolute; top: 40px; right: 15px; background: rgba(255,255,255,0.2); padding: 5px 10px; border-radius: 15px; font-size: 12px; color: white; z-index: 10;">
-                    ${user.email} | <a href="#" id="logoutBtn" style="color:white; font-weight:bold; text-decoration:none;">Çıkış</a>
-                </div>
-            `;
-            document.querySelector('.header').appendChild(userInfoContainer);
-            
-            document.getElementById('logoutBtn').addEventListener('click', (e) => {
-                e.preventDefault();
-                firebase.auth().signOut();
-            });
+            const header = document.querySelector('.header');
+            if (header && !document.getElementById('user-info-container')) {
+                const userInfoContainer = document.createElement('div');
+                userInfoContainer.id = 'user-info-container';
+                userInfoContainer.innerHTML = `
+                    <div style="position: absolute; top: 40px; right: 15px; background: rgba(255,255,255,0.2); padding: 5px 10px; border-radius: 15px; font-size: 12px; color: white; z-index: 10;">
+                        ${user.email} | <a href="#" id="logoutBtn" style="color:white; font-weight:bold; text-decoration:none;">Çıkış</a>
+                    </div>
+                `;
+                header.appendChild(userInfoContainer);
+                
+                document.getElementById('logoutBtn').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    firebase.auth().signOut();
+                });
+            }
 
-            // Call original startup functions
-            // initializeFirebase(); // This function is removed, its logic is now split
+            // Orijinal başlangıç fonksiyonlarını çağır
             db = firebase.firestore();
             isFirebaseInitialized = true;
-
-            // Update UI status
             document.getElementById('status-text').textContent = "✔️ Bağlandı";
             document.getElementById('connection-status').classList.add('status-online');
             
             setLanguage(currentLanguage, true); 
             showSection('add'); 
             
-            // Re-attach original event listeners from index-6.html
-            // ...
+            document.getElementById('repair-form').addEventListener('submit', handleFormSubmit);
+            document.getElementById('photoInput').addEventListener('change', handlePhotoInputChange);
         }
 
-        // --- All other functions from index-6.html (setLanguage, showSection, handleFormSubmit, etc.) go here ---
-        // ...
+        // --- Diğer tüm orijinal fonksiyonlar (setLanguage, showSection, handleFormSubmit, vb.) buraya gelecek ---
+        // ... (Bu fonksiyonlar değiştirilmedi)
 
     </script>
 </body>
