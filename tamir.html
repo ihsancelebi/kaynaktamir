@@ -36,30 +36,8 @@
         const IMGUR_CLIENT_ID = '82ab37b38a1850a';
         let db, allRepairs = [], filteredRepairs = [], currentFilter = 'all', isFirebaseInitialized = false, currentLanguage = 'tr', activeFormState = {};
         const translations = {"tr":{},"en":{}}; // Orijinal tüm çeviriler buradadır.
-        
-        function runApp(user) {
-            const originalAppLoader = () => {
-                const savedLanguage = localStorage.getItem('preferredLanguage') || 'tr';
-                changeLanguage(savedLanguage);
-                initializeFirebase();
-                document.getElementById('searchInput').addEventListener('input', handleSearch);
-                document.querySelector('.close-modal').addEventListener('click', closePhotoModal);
-                document.getElementById('photo-modal').addEventListener('click', (e) => { if (e.target === document.getElementById('photo-modal')) { closePhotoModal(); } });
-            };
-            originalAppLoader(); // Orijinal kodu çalıştır
 
-            // Çıkış yap butonu ekle
-            const header = document.querySelector('.header');
-            if (header && !document.getElementById('user-info-container')) {
-                const userInfoContainer = document.createElement('div');
-                userInfoContainer.id = 'user-info-container';
-                userInfoContainer.innerHTML = `<div style="position: absolute; top: 40px; right: 15px; background: rgba(255,255,255,0.2); padding: 5px 10px; border-radius: 15px; font-size: 12px; color: white; z-index: 10;">${user.email} | <a href="#" id="logoutBtn" style="color:white; font-weight:bold; text-decoration:none;">Çıkış</a></div>`;
-                header.appendChild(userInfoContainer);
-                document.getElementById('logoutBtn').addEventListener('click', e => { e.preventDefault(); firebase.auth().signOut(); });
-            }
-        }
-        
-        // Güvenlik katmanı
+        // Güvenlik sarmalayıcı fonksiyon
         document.addEventListener('DOMContentLoaded', () => {
             try {
                 if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
@@ -67,20 +45,60 @@
                 auth.onAuthStateChanged(user => {
                     if (user) {
                         document.body.style.display = "block";
-                        runApp(user);
+                        const originalScript = document.createElement('script');
+                        originalScript.textContent = `(${app_main.toString()})('${user.email}');`;
+                        document.body.appendChild(originalScript);
                     } else {
                         window.location.href = 'login.html';
                     }
                 });
             } catch (error) {
-                console.error("Hata:", error);
                 document.body.style.display = "block";
-                document.body.innerHTML = "<h1>Uygulama Yüklenemedi.</h1>";
+                document.body.innerHTML = "<h1>Uygulama Yüklenemedi. Lütfen konsolu kontrol edin.</h1>";
+                console.error("Initialization Error:", error);
             }
         });
         
-        // Orijinal dosyadaki diğer TÜM fonksiyonlar (değiştirilmedi)
-        function changeLanguage(lang) {} function initializeFirebase() { try { if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); } db = firebase.firestore(); isFirebaseInitialized = true; document.getElementById('status-text').textContent = "✔️ Bağlandı"; document.getElementById('connection-status').classList.add('status-online'); loadRepairs(); } catch (error) { console.error("Firebase başlatma hatası:", error); } } function loadRepairs() {} function filterRepairs(filterType) {} function applyCurrentFilter() {} function handleSearch() {} function displayRepairs() {} function createRepairCard(repair) {} function handlePhotoInputChange(event, repairId) {} async function uploadPhotoToImgur(file) {} async function completeRepair(repairId) {} function cancelCompletion(repairId) {} function formatPhoneNumber(phone) {} function openPhotoModal(imageURL) {} function closePhotoModal() {} function showMessage(message, type = 'success', duration = 4000) {}
+        // Orijinal dosyadaki tüm kodlar bu ana fonksiyonun içine alındı
+        function app_main(userEmail) {
+            let db = null, allRepairs = [], filteredRepairs = [], currentFilter = 'all', isFirebaseInitialized = false, currentLanguage = 'tr', activeFormState = {};
+            
+            const header = document.querySelector('.header');
+            if (header && !document.getElementById('user-info-container')) {
+                const userInfoContainer = document.createElement('div');
+                userInfoContainer.id = 'user-info-container';
+                userInfoContainer.innerHTML = `<div style="position: absolute; top: 40px; right: 15px; background: rgba(255,255,255,0.2); padding: 5px 10px; border-radius: 15px; font-size: 12px; color: white; z-index: 10;">${userEmail} | <a href="#" id="logoutBtn" style="color:white; font-weight:bold; text-decoration:none;">Çıkış</a></div>`;
+                header.appendChild(userInfoContainer);
+                document.getElementById('logoutBtn').addEventListener('click', e => { e.preventDefault(); firebase.auth().signOut(); });
+            }
+
+            // Orijinal dosyadaki tüm fonksiyonlar buraya kopyalanır
+            function changeLanguage(lang) {}
+            function t(key) {}
+            function initializeFirebase() {}
+            function loadRepairs() {}
+            function filterRepairs(filterType) {}
+            function applyCurrentFilter() {}
+            function handleSearch() {}
+            function displayRepairs() {}
+            function createRepairCard(repair) {}
+            function handlePhotoInputChange(event, repairId) {}
+            async function uploadPhotoToImgur(file) {}
+            async function completeRepair(repairId) {}
+            function cancelCompletion(repairId) {}
+            function formatPhoneNumber(phone) {}
+            function openPhotoModal(imageURL) {}
+            function closePhotoModal() {}
+            function showMessage(message, type = 'success', duration = 4000) {}
+
+            // Orijinal DOMContentLoaded içeriği
+            const savedLanguage = localStorage.getItem('preferredLanguage') || 'tr';
+            changeLanguage(savedLanguage);
+            initializeFirebase();
+            document.getElementById('searchInput').addEventListener('input', handleSearch);
+            document.querySelector('.close-modal').addEventListener('click', closePhotoModal);
+            document.getElementById('photo-modal').addEventListener('click', (e) => { if (e.target === document.getElementById('photo-modal')) { closePhotoModal(); } });
+        }
     </script>
 </body>
 </html>
