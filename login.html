@@ -24,10 +24,25 @@
             box-shadow: 0 20px 40px rgba(0,0,0,0.1);
             text-align: center;
         }
-        .login-container img {
-            width: 150px;
-            margin-bottom: 20px;
+        
+        /* --- YENİ LOGO STİLİ EKLENDİ --- */
+        #login-logo {
+            width: 180px;
+            height: 60px;
+            margin: 0 auto 20px auto; /* Logoyu ortalar ve altına boşluk bırakır */
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); /* Arkaplan ile aynı renk */
+            
+            /* SVG'yi maske olarak kullanma */
+            -webkit-mask-image: url(logo.svg);
+            mask-image: url(logo.svg);
+            -webkit-mask-size: contain;
+            mask-size: contain;
+            -webkit-mask-repeat: no-repeat;
+            mask-repeat: no-repeat;
+            -webkit-mask-position: center;
+            mask-position: center;
         }
+        
         .login-container h1 {
             margin-bottom: 10px;
             color: #333;
@@ -98,7 +113,9 @@
 <body>
 
     <div class="login-container">
-        <img src="iconios.png" alt="Logo">
+        
+        <div id="login-logo"></div>
+        
         <h1>Hoş Geldiniz!</h1>
         <p>Lütfen devam etmek için giriş yapın.</p>
         
@@ -142,10 +159,8 @@
         const registerBtn = document.getElementById('register-btn');
         const errorDiv = document.getElementById('error-message');
 
-        // Kullanıcı zaten giriş yapmışsa ana sayfaya yönlendir
         auth.onAuthStateChanged(user => {
             if (user) {
-                // DEĞİŞİKLİK BURADA YAPILDI
                 window.location.href = 'index.html'; 
             }
         });
