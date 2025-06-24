@@ -39,7 +39,6 @@
         </div>
         <div id="error-message"></div>
     </div>
-
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
     <script>
@@ -72,7 +71,7 @@
                 return;
             }
             auth.signInWithEmailAndPassword(email, password)
-                .catch((error) => {
+                .catch(() => {
                     errorMessageDiv.textContent = 'E-posta veya şifre hatalı. Lütfen tekrar deneyin.';
                     errorMessageDiv.style.display = 'block';
                 });
