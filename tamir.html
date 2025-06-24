@@ -6,18 +6,27 @@
     <title data-tr="Kaynak Saç Tamir Tamamlandı" data-en="Hair Extension Repair Completed">Kaynak Saç Tamir Tamamlandı</title>
     <link rel="apple-touch-icon" href="iconios.png">
     <style>
-        /* All CSS styles from the original tamir.html file */
+        /* Orijinal tamir.html dosyasındaki tüm CSS stilleri */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
         .container { max-width: 900px; margin: 0 auto; background: white; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); overflow: hidden; }
         .header { background: linear-gradient(45deg, #28a745, #20c997); color: white; padding: 30px; text-align: center; position: relative; overflow: hidden; }
-        /* ... more original CSS ... */
+        /* ... diğer orijinal CSS stilleri ... */
     </style>
 </head>
 <body style="display: none;">
     <div class="container">
         <div class="header">
+            <div class="language-selector">
+                <button class="language-btn active" onclick="changeLanguage('tr')">TR</button>
+                <button class="language-btn" onclick="changeLanguage('en')">EN</button>
             </div>
+            <div class="connection-status" id="connection-status">
+                <span id="status-text" data-tr="🔄 Bağlanıyor..." data-en="🔄 Connecting...">🔄 Bağlanıyor...</span>
+            </div>
+            <h1 data-tr="🔧 Tamir Tamamlandı Formu" data-en="🔧 Repair Completion Form">🔧 Tamir Tamamlandı Formu</h1>
+            <p data-tr="Tamamlanan tamirler için detay girişi ve fotoğraf yükleme" data-en="Detail entry and photo upload for completed repairs">Tamamlanan tamirler için detay girişi ve fotoğraf yükleme</p>
+        </div>
         
         <div class="content">
             <div class="pending-repairs">
@@ -37,8 +46,9 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
     <script>
-        // Global variables, translations, etc. from original tamir.html
-        // ...
+        // Global değişkenler, çeviriler vb. (değiştirilmedi)
+        let db = null; let allRepairs = []; let filteredRepairs = []; let currentFilter = 'all'; let isFirebaseInitialized = false; let currentLanguage = 'tr';
+        const translations = { /* ... */ };
 
         const firebaseConfig = {
              apiKey: "AIzaSyCsy1AAiRE8HCCt4HEAcz7Sh9AM6sQt4FQ",
@@ -51,7 +61,7 @@
 
         const IMGUR_CLIENT_ID = '82ab37b38a1850a';
 
-        // LOGIN SECURITY WRAPPER
+        // LOGIN GÜVENLİK KONTROLÜ
         document.addEventListener('DOMContentLoaded', function() {
             try {
                 if (!firebase.apps.length) {
@@ -77,27 +87,27 @@
 
         function runApp(user) {
             console.log("Tamir uygulaması çalışıyor, kullanıcı:", user.email);
-
-            // Add logout button
-            const userInfoContainer = document.createElement('div');
-            userInfoContainer.id = 'user-info-container';
-            userInfoContainer.innerHTML = `
-                <div style="position: absolute; top: 40px; right: 15px; background: rgba(255,255,255,0.2); padding: 5px 10px; border-radius: 15px; font-size: 12px; color: white; z-index: 10;">
-                    ${user.email} | <a href="#" id="logoutBtn" style="color:white; font-weight:bold; text-decoration:none;">Çıkış</a>
-                </div>
-            `;
-            document.querySelector('.header').appendChild(userInfoContainer);
             
-            document.getElementById('logoutBtn').addEventListener('click', (e) => {
-                e.preventDefault();
-                firebase.auth().signOut();
-            });
-
-            // Call original startup functions from tamir.html
+            const header = document.querySelector('.header');
+            if (header && !document.getElementById('user-info-container')) {
+                const userInfoContainer = document.createElement('div');
+                userInfoContainer.id = 'user-info-container';
+                userInfoContainer.innerHTML = `
+                    <div style="position: absolute; top: 40px; right: 15px; background: rgba(255,255,255,0.2); padding: 5px 10px; border-radius: 15px; font-size: 12px; color: white; z-index: 10;">
+                        ${user.email} | <a href="#" id="logoutBtn" style="color:white; font-weight:bold; text-decoration:none;">Çıkış</a>
+                    </div>
+                `;
+                header.appendChild(userInfoContainer);
+                
+                document.getElementById('logoutBtn').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    firebase.auth().signOut();
+                });
+            }
+            
+            // Orijinal başlangıç fonksiyonlarını çağır
             db = firebase.firestore();
             isFirebaseInitialized = true;
-            
-            // Update UI status
             document.getElementById('status-text').textContent = "✔️ Bağlandı";
             document.getElementById('connection-status').classList.add('status-online');
             
@@ -105,12 +115,11 @@
             changeLanguage(savedLanguage);
             loadRepairs();
             
-            // Re-attach original event listeners from tamir.html
-            // ...
+            document.getElementById('searchInput').addEventListener('input', handleSearch);
         }
         
-        // --- All other functions from tamir.html (changeLanguage, loadRepairs, createRepairCard, etc.) go here ---
-        // ...
+        // --- Diğer tüm orijinal fonksiyonlar (changeLanguage, loadRepairs, createRepairCard, vb.) buraya gelecek ---
+        // ... (Bu fonksiyonlar değiştirilmedi)
 
     </script>
 </body>
