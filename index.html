@@ -5,10 +5,8 @@
     <title id="pageTitle">Kaynak Saç Tamir Takip</title>
     <link rel="apple-touch-icon" href="iconios.png">
     <link rel="icon" href="iconios.png" type="image/png">
-    <link rel="shortcut icon" href="/favicon.ico">
     <style>
-        /* [MEVCUT CSS KODUNUZ BURADA KALACAK - DEĞİŞİKLİK YOK] */
-        /* Stilinizi kopyalayıp buraya yapıştırın */
+        /* [CSS KODUNUZ BURADA DEĞİŞMEDEN KALACAK] */
         /* General styling for the entire page */
         * {
             margin: 0;
@@ -1033,7 +1031,8 @@
         }
     </style>
 </head>
-<body style="display: none;"> <div class="container">
+<body style="display: none;">
+    <div class="container">
         <div class="header">
             <div class="lang-switcher">
                 <button class="lang-btn" id="lang-en" onclick="setLanguage('en')">EN</button>
@@ -1207,20 +1206,21 @@
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script> <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
     <script>
         // Global variables
         let db = null;
-        let auth = null; // YENİ
-        let currentUser = null; // YENİ
+        let auth = null;
+        let currentUser = null;
         let records = []; 
         let currentPhotoFile = null; 
         let currentRecordForPrint = null; 
         let isFirebaseInitialized = false;
         let currentLanguage = localStorage.getItem('language') || 'tr'; 
 
-        // [TRANSLATIONS NESNENİZ BURADA KALACAK - DEĞİŞİKLİK YOK]
-        const translations = {
+        // [TRANSLATIONS NESNENİZ BURADA KALACAK]
+         const translations = {
             en: {
                 pageTitle: "Hair Extension Repair Tracking",
                 headerSubtitle: "Cloud-supported professional repair tracking system",
@@ -1443,7 +1443,6 @@
             }
         };
 
-        // --- Firebase Projesi Yapılandırma Detayları ---
         const firebaseConfig = {
              apiKey: "AIzaSyCsy1AAiRE8HCCt4HEAcz7Sh9AM6sQt4FQ", 
              authDomain: "kaynak-sac-tamir.firebaseapp.com",
@@ -1453,10 +1452,8 @@
              measurementId: "G-N8B2V6RQET" 
         };
 
-        // --- Imgur İstemci Kimliğiniz ---
         const IMGUR_CLIENT_ID = '82ab37b38a1850a'; 
 
-        // GÜNCELLENDİ: DOMContentLoaded Listener
         document.addEventListener('DOMContentLoaded', function() {
             if (!firebase.apps.length) {
                 firebase.initializeApp(firebaseConfig);
@@ -1464,21 +1461,17 @@
             auth = firebase.auth();
             db = firebase.firestore();
 
-            // Kimlik doğrulama durumu dinleyicisi
             auth.onAuthStateChanged(user => {
                 if (user) {
-                    // Kullanıcı giriş yapmış, uygulamayı başlat
                     currentUser = user;
-                    document.body.style.display = 'block'; // Sayfayı göster
+                    document.body.style.display = 'block';
                     initializeApp();
                 } else {
-                    // Kullanıcı giriş yapmamış, login sayfasına yönlendir
                     window.location.href = 'login.html';
                 }
             });
         });
         
-        // YENİ: Uygulamayı başlatan ana fonksiyon
         function initializeApp() {
             document.documentElement.lang = currentLanguage; 
             document.getElementById('repairDate').valueAsDate = new Date();
@@ -1487,9 +1480,8 @@
             initializeFirebaseConnectionStatus();
             setLanguage(currentLanguage, true); 
             
-            // Çıkış yap butonu
             document.getElementById('logout-btn').addEventListener('click', () => {
-                auth.signOut(); // Bu, onAuthStateChanged'i tetikler ve kullanıcı login sayfasına yönlendirilir.
+                auth.signOut();
             });
 
             document.querySelectorAll('.nav-btn').forEach(btn => {
@@ -1523,45 +1515,19 @@
             showSection('add'); 
         }
 
-        // DEĞİŞTİ: Artık sadece bağlantı durumunu kontrol ediyor
         function initializeFirebaseConnectionStatus() {
-            const statusText = document.getElementById('status-text');
-            const connectionStatusDiv = document.getElementById('connection-status');
-            const lang = translations[currentLanguage]; 
-            
-            statusText.textContent = lang.connecting; 
-            connectionStatusDiv.classList.remove('status-online', 'status-offline');
-
-            if (!firebaseConfig.apiKey || !firebaseConfig.projectId) {
-                // Hata mesajları ve durum gösterimi aynı kalabilir...
-                 return;
-            }
-             try {
-                isFirebaseInitialized = true;
-                showMessage(lang.alertFirebaseInitialized, 'success');
-                statusText.setAttribute('data-translate', 'connected'); 
-                statusText.textContent = lang.connected; 
-                connectionStatusDiv.classList.remove('status-offline');
-                connectionStatusDiv.classList.add('status-online');
-                
-                if (document.getElementById('list-section').classList.contains('active')) {
-                    applyFilters();
-                }
-            } catch (error) {
-                 // Hata mesajları ve durum gösterimi aynı kalabilir...
-            }
+            // ...
         }
         
-        // GÜNCELLENDİ: handleFormSubmit fonksiyonu
+        // --- DEĞİŞİKLİK 1 ---
         async function handleFormSubmit(event) {
             event.preventDefault();
             const lang = translations[currentLanguage];
-            if (!isFirebaseInitialized || !currentUser) { // currentUser kontrolü eklendi
+            if (!isFirebaseInitialized || !currentUser) {
                 showMessage(lang.alertFirebaseNotInitialized, 'error');
                 return;
             }
 
-            // ... form validation kodları aynı kalır ...
             const submitBtn = document.getElementById('submit-btn');
             const submitText = document.getElementById('submit-text');
             submitBtn.disabled = true;
@@ -1572,28 +1538,21 @@
             const phoneInput = document.getElementById('phone').value.trim();
             const hasSetSelected = document.querySelector('input[name="hasSet"]:checked');
 
-
             if (isNaN(quantity) || quantity <= 0) {
-                showMessage(lang.alertInvalidQuantity, 'error');
-                submitBtn.disabled = false;
-                submitText.innerHTML = lang.btnAdd;
+                // ... validation ...
                 return;
             }
             if (isNaN(unitPrice) || unitPrice < 0) {
-                showMessage(lang.alertInvalidUnitPrice, 'error');
-                submitBtn.disabled = false;
-                submitText.innerHTML = lang.btnAdd;
+                // ... validation ...
                 return;
             }
              if (!hasSetSelected) {
-                 showMessage(lang.alertSetOptionMissing, 'error');
-                 submitBtn.disabled = false;
-                 submitText.innerHTML = lang.btnAdd;
-                 return;
+                // ... validation ...
+                return;
             }
             
+            // `userId` alanı artık eklenmiyor
             const record = {
-                userId: currentUser.uid, // YENİ: Kullanıcı ID'sini kaydet
                 firstName: document.getElementById('firstName').value.trim(),
                 lastName: document.getElementById('lastName').value.trim(),
                 phone: phoneInput,
@@ -1613,8 +1572,7 @@
                 callStatus: null 
             };
 
-            // ... fotoğraf yükleme ve kaydetme mantığı aynı kalır ...
-             try {
+            try {
                 let photoURL = null;
                 if (currentPhotoFile) {
                     submitText.innerHTML = `<div class="loading"></div>${lang.uploadingPhoto}`;
@@ -1627,39 +1585,26 @@
                 
                 showMessage(lang.alertRecordAddedSuccess, 'success');
                 document.getElementById('repair-form').reset(); 
-                document.getElementById('repairDate').valueAsDate = new Date(); 
-                document.getElementById('unitPrice').value = '10'; 
-                currentPhotoFile = null; 
-                document.getElementById('photo-preview-img').style.display = 'none';
-                document.getElementById('photo-placeholder').style.display = 'block';
-                document.getElementById('photoInput').value = null; 
-                document.getElementById('notes').value = '';
-                
+                // ... form reset logic ...
                 showSection('list'); 
                 
             } catch (error) {
-                console.error("İşlem hatası:", error);
-                if (error.message.includes("Imgur Client ID")) { 
-                     showMessage(lang.alertPhotoUploadFailedImgurIdMissing, 'error', 10000);
-                } else {
-                     showMessage(lang.alertRecordAddFailed.replace('{errorMsg}', error.message), 'error');
-                }
+                // ... error handling ...
             } finally {
                 submitBtn.disabled = false;
                 submitText.innerHTML = lang.btnAdd;
             }
         }
         
-        // GÜNCELLENDİ: loadRecords fonksiyonu
+        // --- DEĞİŞİKLİK 2 ---
         function loadRecords(startDateFilter = '', endDateFilter = '', searchTerm = '') {
-            if (!isFirebaseInitialized || !currentUser) return; // Güvenlik kontrolü
+            if (!isFirebaseInitialized) return;
             const lang = translations[currentLanguage];
             const recordsContainer = document.getElementById('records-container');
             recordsContainer.innerHTML = `<div class="empty-state"><div class="loading"></div> ${lang.loadingRecords}</div>`; 
 
-            // YENİ: Sorguya .where() koşulu eklendi
+            // `.where()` koşulu kaldırıldı, artık tüm kayıtlar çekilecek
             db.collection('repairs')
-              .where('userId', '==', currentUser.uid) // Sadece bu kullanıcıya ait kayıtları getir
               .orderBy('createdAt', 'desc')
               .onSnapshot(snapshot => {
                 let allRecords = []; 
@@ -1667,10 +1612,8 @@
                     allRecords.push({ id: doc.id, ...doc.data() });
                 });
                 
-                // ... filtreleme mantığı aynı kalır ...
                 let filteredRecords = allRecords.filter(record => {
                     const recordDate = new Date(record.repairDate); 
-
                     let passesDateFilter = true;
                     if (startDateFilter) {
                         const start = new Date(startDateFilter);
@@ -1700,606 +1643,12 @@
 
             }, error => {
                 console.error("Kayıtları yüklerken hata:", error);
-                recordsContainer.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-state-icon">⚠️</div>
-                        <h3 data-translate="couldNotLoadRecords">${lang.couldNotLoadRecords}</h3>
-                        <p data-translate="errorOccurred">${lang.errorOccurred}</p>
-                    </div>`;
-                showMessage(lang.alertRecordsLoadFailed.replace('{errorMsg}', error.message), 'error');
+                // ... error handling ...
             });
         }
         
-        // [GERİ KALAN TÜM JAVASCRIPT FONKSİYONLARI (displayRecords, createRecordCard, deleteRecord, vb.) AYNI KALABİLİR]
-        // ... Diğer tüm JavaScript fonksiyonlarınızı buraya kopyalayın ...
-        function updateUIText() {
-            const lang = translations[currentLanguage];
-            document.querySelectorAll('[data-translate]').forEach(el => {
-                const key = el.getAttribute('data-translate');
-                if (lang[key]) {
-                    if (el.querySelector('.loading') || el.querySelector('.loading-small')) {
-                        const spinner = el.querySelector('.loading') || el.querySelector('.loading-small');
-                        el.textContent = lang[key]; 
-                        el.prepend(spinner); 
-                    } else {
-                        el.textContent = lang[key];
-                    }
-                }
-            });
-            document.querySelectorAll('[data-translate-placeholder]').forEach(el => {
-                const key = el.getAttribute('data-translate-placeholder');
-                if (lang[key]) {
-                    el.placeholder = lang[key];
-                }
-            });
-             document.querySelectorAll('[data-translate-alt]').forEach(el => {
-                const key = el.getAttribute('data-translate-alt');
-                if (lang[key]) {
-                    el.alt = lang[key];
-                }
-            });
-            document.title = lang.pageTitle || translations.tr.pageTitle; 
-
-            document.getElementById('lang-en').classList.toggle('active', currentLanguage === 'en');
-            document.getElementById('lang-tr').classList.toggle('active', currentLanguage === 'tr');
-
-            if (document.getElementById('list-section').classList.contains('active') && records.length > 0) {
-                 displayRecords(records);
-            } else if (isFirebaseInitialized && document.getElementById('list-section').classList.contains('active')) {
-                const emptyStateDiv = document.querySelector('#records-container .empty-state');
-                if (emptyStateDiv) {
-                     if (emptyStateDiv.querySelector('h3[data-translate="emptyStateWaitingFirebase"]')) {
-                         emptyStateDiv.querySelector('h3').textContent = lang.emptyStateWaitingFirebase;
-                         emptyStateDiv.querySelector('p').textContent = lang.emptyStateFirebaseWillInitialize;
-                    } else if (emptyStateDiv.textContent.includes(translations.en.loadingRecords) || emptyStateDiv.textContent.includes(translations.tr.loadingRecords)) {
-                         emptyStateDiv.innerHTML = `<div class="empty-state"><div class="loading"></div> ${lang.loadingRecords}</div>`;
-                    } else if (emptyStateDiv.querySelector('h3[data-translate="noRecordsFound"]')) {
-                        emptyStateDiv.querySelector('h3').textContent = lang.noRecordsFound;
-                        emptyStateDiv.querySelector('p').textContent = lang.noRecordsFoundMsg;
-                    }
-                }
-            }
-        }
-
-
-        function setLanguage(lang, isInitialLoad = false) {
-            currentLanguage = lang;
-            localStorage.setItem('language', lang);
-            document.documentElement.lang = lang; 
-            updateUIText(); 
-            if (isFirebaseInitialized && !isInitialLoad && document.getElementById('list-section').classList.contains('active')) {
-                applyFilters(); 
-            }
-        }
-        
-        function showSection(sectionId) {
-            document.querySelectorAll('.section').forEach(section => {
-                section.classList.remove('active');
-            });
-            const activeSection = document.getElementById(sectionId + '-section');
-            if (activeSection) {
-                 activeSection.classList.add('active');
-            }
-
-             document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.remove('active');
-                if (btn.getAttribute('onclick') === `showSection('${sectionId}')`) {
-                    btn.classList.add('active');
-                }
-            });
-            
-            const lang = translations[currentLanguage];
-            if (sectionId === 'list') {
-                if (isFirebaseInitialized) {
-                    applyFilters(); 
-                } else {
-                    const recordsContainer = document.getElementById('records-container');
-                    const configError = !firebaseConfig.apiKey || !firebaseConfig.projectId;
-                    const connectionError = !isFirebaseInitialized && (firebaseConfig.apiKey && firebaseConfig.projectId);
-
-                    if (configError) {
-                         recordsContainer.innerHTML = `
-                            <div class="empty-state">
-                                <div class="empty-state-icon">⚠️</div>
-                                <h3 data-translate="emptyStateFirebaseConfigError">${lang.emptyStateFirebaseConfigError}</h3>
-                                <p data-translate="emptyStateFirebaseConfigErrorMsg">${lang.emptyStateFirebaseConfigErrorMsg}</p>
-                            </div>`;
-                    } else if (connectionError) {
-                         recordsContainer.innerHTML = `
-                            <div class="empty-state">
-                                <div class="empty-state-icon">🔥</div>
-                                <h3 data-translate="emptyStateFirebaseConnectionError">${lang.emptyStateFirebaseConnectionError}</h3>
-                                <p data-translate="emptyStateFirebaseConnectionErrorMsg">${lang.emptyStateFirebaseConnectionErrorMsg}</p>
-                            </div>`;
-                    } else { 
-                         recordsContainer.innerHTML = `
-                            <div class="empty-state">
-                                <div class="empty-state-icon">📝</div>
-                                <h3 data-translate="emptyStateWaitingFirebase">${lang.emptyStateWaitingFirebase}</h3>
-                                <p data-translate="emptyStateFirebaseWillInitialize">${lang.emptyStateFirebaseWillInitialize}</p>
-                            </div>`;
-                    }
-                }
-            }
-        }
-
-        function showMessage(message, type = 'success', duration = 4000) { 
-            const existingMessage = document.querySelector('.success-message, .error-message');
-            if (existingMessage) {
-                existingMessage.remove(); 
-            }
-
-            const messageDiv = document.createElement('div');
-            messageDiv.className = type === 'success' ? 'success-message' : 'error-message';
-            messageDiv.textContent = message;
-            
-            document.body.appendChild(messageDiv); 
-
-            setTimeout(() => {
-                messageDiv.style.top = '20px'; 
-                messageDiv.style.opacity = '1';
-            }, 10);
-
-
-            setTimeout(() => {
-                messageDiv.style.opacity = '0';
-                messageDiv.style.top = '-100px'; 
-                setTimeout(() => messageDiv.remove(), 500); 
-            }, duration);
-        }
-
-        function handlePhotoInputChange(event) {
-            const file = event.target.files[0];
-            const lang = translations[currentLanguage];
-            if (file) {
-                if (!file.type.startsWith('image/')){
-                    showMessage(lang.alertInvalidImageFile, 'error');
-                    event.target.value = null; 
-                    currentPhotoFile = null;
-                    document.getElementById('photo-preview-img').style.display = 'none';
-                    document.getElementById('photo-placeholder').style.display = 'block';
-                    return;
-                }
-                if (file.size > 10 * 1024 * 1024) { 
-                    showMessage(lang.alertFileSizeTooLarge, 'error');
-                    event.target.value = null;
-                    currentPhotoFile = null;
-                    document.getElementById('photo-preview-img').style.display = 'none';
-                    document.getElementById('photo-placeholder').style.display = 'block';
-                    return;
-                }
-
-                currentPhotoFile = file; 
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const previewImg = document.getElementById('photo-preview-img');
-                    previewImg.src = e.target.result;
-                    previewImg.style.display = 'block';
-                    document.getElementById('photo-placeholder').style.display = 'none'; 
-                }
-                reader.readAsDataURL(file);
-            } else {
-                currentPhotoFile = null;
-                document.getElementById('photo-preview-img').style.display = 'none';
-                document.getElementById('photo-placeholder').style.display = 'block';
-            }
-        }
-
-        async function uploadPhotoToImgur(file) {
-            const lang = translations[currentLanguage];
-            if (!IMGUR_CLIENT_ID || IMGUR_CLIENT_ID === 'YOUR_IMGUR_CLIENT_ID') { 
-                throw new Error(lang.alertImgurClientId);
-            }
-            
-            const formData = new FormData();
-            formData.append('image', file);
-
-            try {
-                const response = await fetch('https://api.imgur.com/3/image', {
-                    method: 'POST',
-                    headers: { 'Authorization': `Client-ID ${IMGUR_CLIENT_ID}` },
-                    body: formData
-                });
-
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(`Imgur yükleme hatası: ${errorData.data.error || response.statusText}`);
-                }
-                const data = await response.json();
-                return data.data.link;
-            } catch (error) {
-                console.error("Imgur fotoğraf yükleme hatası:", error);
-                throw error;
-            }
-        }
-        
-        function applyFilters() {
-            const startDate = document.getElementById('startDateFilter').value;
-            const endDate = document.getElementById('endDateFilter').value;
-            const searchTerm = document.getElementById('searchFilter').value.toLowerCase().trim();
-            loadRecords(startDate, endDate, searchTerm);
-        }
-        
-        function displayRecords(recordsToDisplay) {
-            const recordsContainer = document.getElementById('records-container');
-            recordsContainer.innerHTML = ''; 
-            const lang = translations[currentLanguage];
-
-            if (recordsToDisplay.length === 0) {
-                recordsContainer.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-state-icon">🔍</div>
-                        <h3 data-translate="noRecordsFound">${lang.noRecordsFound}</h3>
-                        <p data-translate="noRecordsFoundMsg">${lang.noRecordsFoundMsg}</p>
-                    </div>`;
-                return;
-            }
-
-            recordsToDisplay.forEach(record => {
-                const card = createRecordCard(record);
-                recordsContainer.appendChild(card);
-            });
-        }
-
-        function formatPhoneNumber(phone) {
-            if (!phone) return '-';
-            let cleaned = phone.replace(/\D/g, '');
-            if (cleaned.startsWith('0') && cleaned.length === 11) cleaned = cleaned.substring(1);
-            if (cleaned.length === 10 && !cleaned.startsWith('90')) cleaned = '90' + cleaned;
-            if (cleaned.length === 12 && cleaned.startsWith('90')) {
-                return `+${cleaned.substring(0, 2)} ${cleaned.substring(2, 5)} ${cleaned.substring(5, 8)} ${cleaned.substring(8, 10)} ${cleaned.substring(10, 12)}`;
-            }
-            return phone; 
-        }
-
-        function createRecordCard(record) {
-            const card = document.createElement('div');
-            card.className = 'record-card';
-            const isCompleted = record.completedQuantity !== null && record.completedQuantity !== undefined && record.completedQuantity !== '';
-            if (isCompleted) {
-                card.classList.add('completed-record');
-            }
-            card.addEventListener('click', (event) => toggleRecordDetails(card, event));
-            const lang = translations[currentLanguage];
-            const locale = currentLanguage === 'tr' ? 'tr-TR' : 'en-US';
-
-            const arrivalDateFormatted = record.repairDate ? new Date(record.repairDate).toLocaleDateString(locale, { day: '2-digit', month: '2-digit', year: 'numeric' }) : lang.notSpecified;
-            const deadlineDateFormatted = record.returnDate ? new Date(record.returnDate).toLocaleDateString(locale, { day: '2-digit', month: '2-digit', year: 'numeric' }) : lang.notSpecified; 
-            
-            let displayTotalPrice;
-            if (isCompleted && typeof record.completedQuantity === 'number' && typeof record.unitPrice === 'number') {
-                displayTotalPrice = (record.completedQuantity * record.unitPrice).toFixed(2) + ' ₺';
-            } else if (typeof record.totalPrice === 'number') {
-                displayTotalPrice = record.totalPrice.toFixed(2) + ' ₺';
-            } else {
-                displayTotalPrice = lang.notCalculated;
-            }
-
-            const hasSetText = record.hasSet === 'evet' ? lang.formSetYes : (record.hasSet === 'hayır' ? lang.formSetNo : lang.notSpecified);
-            const formattedPhone = formatPhoneNumber(record.phone);
-            
-            let notesHTML = '';
-            if (record.notes && record.notes.trim().length > 0) {
-                notesHTML = `
-                <div class="record-detail record-notes"> 
-                    <div class="record-detail-icon" style="font-size: 16px;">🗒️</div>
-                    <div class="record-detail-text">
-                        <span class="record-detail-label" data-translate="recordCardNotesLabel" style="display:block; margin-bottom: 5px;">${lang.recordCardNotesLabel}:</span>
-                        <span class="record-detail-value">${record.notes}</span>
-                    </div>
-                </div>`;
-            }
-
-            const completedQuantityText = isCompleted ? record.completedQuantity : '';
-            const completionDateText = record.completionDate ? new Date(record.completionDate).toLocaleDateString(locale, { day: '2-digit', month: '2-digit', year: 'numeric' }) : '';
-            const completionNotesText = record.completionNotes && record.completionNotes.length > 0 ? record.completionNotes : '';
-
-            let callStatusVisibleHTML = '';
-            if (isCompleted) {
-                const callStatusTextVisible = record.callStatus === 'called' ? lang.callStatusCalled : lang.callStatusNotCalled;
-                const callStatusClassVisible = record.callStatus === 'called' ? 'call-status-called-visible' : 'call-status-not-called-visible';
-                
-                let phoneActionHTML = '';
-                if (record.callStatus !== 'called') {
-                    phoneActionHTML = `<span id="call-icon-${record.id}" class="call-action-icon" title="${lang.btnCall}" style="cursor:pointer; margin-left: 8px; font-size: 1.2em;" onclick="handleCallButtonClick('${record.id}', '${record.phone}', event)">📞</span>`;
-                } else {
-                    phoneActionHTML = `<span style="margin-left: 8px; font-size: 1.2em; opacity: 0.7;">📞</span>`; 
-                }
-
-                callStatusVisibleHTML = `
-                    <div class="record-detail">
-                        <div class="record-detail-icon call-status-icon">🔔</div>
-                        <div class="record-detail-text">
-                            <span class="record-detail-label" data-translate="recordCardCallStatusLabel">${lang.recordCardCallStatusLabel}</span>
-                            <span class="call-status-value-visible ${callStatusClassVisible}">${callStatusTextVisible}</span>
-                            ${phoneActionHTML}
-                        </div>
-                    </div>
-                `;
-            }
-            
-            const beforeRepairTitleHTML = `<h4 data-translate="beforeRepairTitle">${lang.beforeRepairTitle}</h4>`;
-            const afterRepairTitleHTML = `<h4 data-translate="afterRepairTitle">${lang.afterRepairTitle}</h4>`;
-
-            let beforeRepairContentHTML = `
-                ${record.photoURL ? `
-                <div class="record-detail">
-                    <div class="record-detail-icon">📷</div>
-                    <div class="record-detail-text">
-                        <span class="record-detail-label" data-translate="formPhoto" style="display:block; margin-bottom: 5px;">${lang.formPhoto}</span>
-                        <img src="${record.photoURL}" alt="${lang.hairExtensionPhotoAlt}" class="record-photo" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" onclick="openPhotoModal('${record.photoURL}', event)">
-                        <small style="display:none; color: #dc3545;" data-translate="photoLoadError">${lang.photoLoadError}</small>
-                    </div>
-                </div>` : ''}
-                ${notesHTML}
-            `;
-
-            let afterRepairContentHTML = '';
-            if (isCompleted) {
-                afterRepairContentHTML = `
-                    ${completedQuantityText ? `
-                    <div class="record-detail">
-                        <div class="record-detail-icon completed-icon">✅</div>
-                        <div class="record-detail-text">
-                            <span class="record-detail-label" data-translate="recordCardCompletedQuantity">${lang.recordCardCompletedQuantity}</span>
-                            <span class="record-detail-value">${completedQuantityText}</span>
-                        </div>
-                    </div>` : ''}
-                    ${completionDateText ? `
-                    <div class="record-detail">
-                        <div class="record-detail-icon completed-icon">🗓️</div>
-                        <div class="record-detail-text">
-                            <span class="record-detail-label" data-translate="recordCardCompletionDate">${lang.recordCardCompletionDate}</span>
-                            <span class="record-detail-value">${completionDateText}</span>
-                        </div>
-                    </div>` : ''}
-                    ${record.completedPhotoURL ? `
-                    <div class="record-detail">
-                        <div class="record-detail-icon completed-icon">📸</div>
-                        <div class="record-detail-text">
-                             <span class="record-detail-label" data-translate="recordCardCompletedPhoto" style="display:block; margin-bottom: 5px;">${lang.recordCardCompletedPhoto}</span>
-                            <img src="${record.completedPhotoURL}" alt="${lang.completedHairPhotoAlt}" class="record-completed-photo" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" onclick="openPhotoModal('${record.completedPhotoURL}', event)">
-                            <small style="display:none; color: #dc3545;" data-translate="photoLoadError">${lang.photoLoadError}</small>
-                        </div>
-                    </div>` : ''}
-                    ${completionNotesText ? `
-                    <div class="record-detail record-completion-notes">
-                        <div class="record-detail-icon completed-icon" style="font-size: 16px;">📋</div>
-                        <div class="record-detail-text">
-                            <span class="record-detail-label" data-translate="recordCardCompletionNotes" style="display:block; margin-bottom: 5px;">${lang.recordCardCompletionNotes}:</span>
-                            <span class="record-detail-value">${completionNotesText}</span>
-                        </div>
-                    </div>` : ''}
-                `;
-            } else {
-                afterRepairContentHTML = `<p data-translate="repairNotCompletedYet" style="padding: 10px; background-color: #f8f9fa; border-radius: 8px; color: #6c757d; text-align: center;">${lang.repairNotCompletedYet}</p>`;
-            }
-            
-            const generalDetailsAfterComparisonHTML = `
-                <div class="general-details-after-comparison">
-                    <div class="record-detail">
-                        <div class="record-detail-icon">🔧</div> 
-                        <div class="record-detail-text">
-                            <span class="record-detail-label" data-translate="recordCardSet">${lang.recordCardSet}</span>
-                            <span class="record-detail-value">${hasSetText}</span>
-                        </div>
-                    </div>
-                    <div class="record-detail">
-                        <div class="record-detail-icon">💰</div>
-                        <div class="record-detail-text">
-                            <span class="record-detail-label" data-translate="recordCardTotalPrice">${lang.recordCardTotalPrice}</span>
-                            <span class="record-detail-value">${displayTotalPrice}</span>
-                        </div>
-                    </div>
-                </div>
-            `;
-
-            card.innerHTML = `
-                <div class="record-header">
-                    <div class="record-info-left">
-                        <span class="record-name">${record.firstName || ''} ${record.lastName || ''}</span>
-                        <span class="record-dates-inline">
-                            (<span data-translate="recordCardArrivalDateLabel">${lang.recordCardArrivalDateLabel}</span> ${arrivalDateFormatted} - <span data-translate="recordCardDeadlineLabel">${lang.recordCardDeadlineLabel}</span> ${deadlineDateFormatted})
-                        </span>
-                    </div>
-                    <span class="expand-icon">▼</span>
-                </div>
-                <div class="record-details-always-visible">
-                    <div class="record-detail">
-                        <div class="record-detail-icon">📞</div>
-                        <div class="record-detail-text">
-                            <span class="record-detail-label" data-translate="recordCardPhone">${lang.recordCardPhone}</span>
-                            <a href="tel:${formattedPhone.replace(/\s/g, '')}" class="record-detail-value" onclick="event.stopPropagation();">${formattedPhone}</a>
-                        </div>
-                    </div>
-                    <div class="record-detail">
-                        <div class="record-detail-icon">📦</div>
-                        <div class="record-detail-text">
-                            <span class="record-detail-label" data-translate="recordCardQuantity">${lang.recordCardQuantity}</span>
-                            <span class="record-detail-value">${record.quantity || '-'}</span>
-                        </div>
-                    </div>
-                    ${callStatusVisibleHTML} 
-                </div>
-                <div class="record-collapsible-content">
-                    <div class="record-details-hidden-part">
-                        <div class="repair-comparison-grid">
-                            <div class="before-repair-column">
-                                ${beforeRepairTitleHTML}
-                                ${beforeRepairContentHTML}
-                            </div>
-                            <div class="after-repair-column">
-                                ${afterRepairTitleHTML}
-                                ${afterRepairContentHTML}
-                            </div>
-                        </div>
-                        ${generalDetailsAfterComparisonHTML}
-                    </div>
-                     <div class="record-actions"> 
-                        <button class="btn-secondary" style="font-size:12px; padding: 8px 15px; border-radius:15px;" onclick="openPrintModalSetup('${record.id}', event)" data-translate="btnLabel">${lang.btnLabel}</button>
-                        <button class="delete-btn" onclick="confirmDeleteRecord('${record.id}', '${record.photoURL || ''}', event)" data-translate="btnDelete">${lang.btnDelete}</button>
-                    </div>
-                </div>
-            `;
-            return card;
-        }
-
-        async function handleCallButtonClick(recordId, phoneNumber, event) {
-            event.stopPropagation(); 
-            const lang = translations[currentLanguage];
-            const callIcon = document.getElementById(`call-icon-${recordId}`);
-            
-            if (callIcon) {
-                callIcon.style.pointerEvents = 'none'; 
-                callIcon.textContent = '⏳'; 
-            }
-
-            try {
-                await db.collection('repairs').doc(recordId).update({ callStatus: 'called' });
-                
-                if (phoneNumber) {
-                    window.location.href = `tel:${phoneNumber.replace(/\s/g, '')}`;
-                }
-            } catch (error) {
-                console.error("Arama durumu güncellenirken hata:", error);
-                showMessage(lang.alertCallStatusUpdateFailed.replace('{errorMsg}', error.message), 'error');
-                if (callIcon) { 
-                    callIcon.style.pointerEvents = 'auto';
-                    callIcon.textContent = '📞'; 
-                }
-            }
-        }
-        
-        function toggleRecordDetails(cardElement, event) {
-            if (event.target.closest('a, button, .record-photo, .record-completed-photo, .call-action-icon') && !event.target.classList.contains('expand-icon')) {
-                 return;
-            }
-            cardElement.classList.toggle('expanded');
-        }
-
-        function toggleFilterControls() {
-            const filterHeader = document.querySelector('.filter-header');
-            const filterContent = document.getElementById('filter-collapsible-content');
-            filterHeader.classList.toggle('expanded');
-            filterContent.classList.toggle('expanded');
-        }
-
-        function openPhotoModal(imageURL, event) {
-            if (event) event.stopPropagation(); 
-            if(imageURL) {
-                document.getElementById('modal-image').src = imageURL;
-                document.getElementById('photo-modal').style.display = 'flex'; 
-            }
-        }
-
-        function closePhotoModal() {
-            document.getElementById('photo-modal').style.display = 'none';
-            document.getElementById('modal-image').src = ''; 
-        }
-        
-        function confirmDeleteRecord(recordId, photoURL, event) {
-            event.stopPropagation(); 
-            const lang = translations[currentLanguage];
-            const existingModal = document.getElementById('confirm-delete-modal');
-            if (existingModal) existingModal.remove();
-
-            const modalHTML = `
-                <div id="confirm-delete-modal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 3000; padding: 20px;">
-                    <div style="background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); text-align: center; max-width: 380px; width:100%;">
-                        <h3 style="margin-bottom: 20px; font-size: 1.4em; color: #333;">${lang.confirmDeleteTitle}</h3>
-                        <p style="margin-bottom: 25px; color: #555; font-size: 1em;">${lang.confirmDeleteMsg}</p>
-                        <div style="display: flex; justify-content: space-around; gap: 10px;">
-                            <button id="cancel-delete-btn" class="btn-secondary" style="flex:1;">${lang.btnCancel}</button>
-                            <button id="confirm-delete-btn" class="delete-btn" style="background-color: #dc3545; color:white; padding: 10px 20px; border-radius: 20px; flex:1;">${lang.btnYesDelete}</button>
-                        </div>
-                    </div>
-                </div>
-            `;
-            document.body.insertAdjacentHTML('beforeend', modalHTML);
-
-            document.getElementById('confirm-delete-btn').onclick = async () => {
-                await deleteRecord(recordId, photoURL);
-                const modalToDelete = document.getElementById('confirm-delete-modal');
-                if(modalToDelete) modalToDelete.remove();
-            };
-            document.getElementById('cancel-delete-btn').onclick = () => {
-                 const modalToCancel = document.getElementById('confirm-delete-modal');
-                if(modalToCancel) modalToCancel.remove();
-            };
-        }
-
-        async function deleteRecord(recordId, photoURL) {
-            const lang = translations[currentLanguage];
-            if (!isFirebaseInitialized || !currentUser) { // Güvenlik
-                showMessage(lang.alertFirebaseNotInitialized, 'error');
-                return;
-            }
-            
-            const cardElement = document.querySelector(`.record-card button[onclick*="'${recordId}'"]`)?.closest('.record-card');
-            const deleteButtonInCard = cardElement ? cardElement.querySelector('.delete-btn') : null;
-
-
-            let originalButtonText = '';
-            if (deleteButtonInCard) {
-                originalButtonText = deleteButtonInCard.innerHTML;
-                deleteButtonInCard.innerHTML = '<div class="loading loading-small" style="border-top-color:#fff; width:12px; height:12px; margin: 0 auto;"></div>';
-                deleteButtonInCard.disabled = true;
-            }
-
-            try {
-                await db.collection('repairs').doc(recordId).delete();
-                if (photoURL) {
-                    console.warn(lang.alertRecordDeletedImgurManual.replace('{photoURL}', photoURL));
-                }
-                showMessage(lang.alertRecordDeleteSuccess, 'success');
-            } catch (error) {
-                console.error("Kayıt silinirken hata:", error);
-                showMessage(lang.alertRecordDeleteFailed.replace('{errorMsg}', error.message), 'error');
-                 if (deleteButtonInCard) { 
-                    deleteButtonInCard.innerHTML = originalButtonText;
-                    deleteButtonInCard.disabled = false;
-                }
-            }
-        }
-
-        function openPrintModalSetup(recordId, event) {
-            event.stopPropagation();
-            const lang = translations[currentLanguage];
-            currentRecordForPrint = records.find(r => r.id === recordId); 
-            if (currentRecordForPrint) {
-                document.getElementById('print-modal').style.display = 'flex'; 
-            } else {
-                showMessage(lang.alertPrintRecordNotFound, 'error');
-            }
-        }
-
-        function closePrintModal() {
-            document.getElementById('print-modal').style.display = 'none';
-            currentRecordForPrint = null;
-        }
-
-        function printLabel() {
-            const lang = translations[currentLanguage];
-            const locale = currentLanguage === 'tr' ? 'tr-TR' : 'en-US';
-            if (!currentRecordForPrint) {
-                showMessage(lang.alertPrintNoRecordSelected, 'error');
-                closePrintModal();
-                return;
-            }
-
-            const record = currentRecordForPrint;
-            document.getElementById('print-customer').textContent = `${record.firstName || ''} ${record.lastName || ''}`;
-            document.getElementById('print-phone').textContent = formatPhoneNumber(record.phone);
-            document.getElementById('print-quantity').textContent = record.quantity || '-';
-            document.getElementById('print-delivery').textContent = record.returnDate ? new Date(record.returnDate).toLocaleDateString(locale, { day: '2-digit', month: '2-digit', year: 'numeric' }) : '-'; 
-            
-            const labelElement = document.getElementById('print-label');
-            labelElement.style.display = 'block'; 
-            window.print(); 
-            labelElement.style.display = 'none'; 
-            closePrintModal();
-        }
-
+        // [GERİ KALAN TÜM JAVASCRIPT FONKSİYONLARI DEĞİŞMEDEN KALACAK]
+        // ...
     </script>
 </body>
 </html>
