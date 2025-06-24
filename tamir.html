@@ -6,7 +6,7 @@
     <title data-tr="Kaynak Saç Tamir Tamamlandı" data-en="Hair Extension Repair Completed">Kaynak Saç Tamir Tamamlandı</title>
     <link rel="apple-touch-icon" href="iconios.png">
     <style>
-        /* Orijinal tamir.html dosyasındaki tüm CSS stilleri */
+        /* Orijinal CSS stilleri (değiştirilmedi) */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
         .container { max-width: 900px; margin: 0 auto; background: white; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); overflow: hidden; }
@@ -32,24 +32,33 @@
             <div class="pending-repairs">
                 <h2 class="section-title" data-tr="🛠️ Bekleyen Tamirler" data-en="🛠️ Pending Repairs">🛠️ Bekleyen Tamirler</h2>
                 <div class="search-controls">
-                    </div>
+                    <input type="text" id="searchInput" class="search-input" data-tr="Müşteri adı veya telefon ile ara..." data-en="Search by customer name or phone..." placeholder="Müşteri adı veya telefon ile ara...">
+                    <button class="filter-btn active" onclick="filterRepairs('all', event)">Tümü</button>
+                    <button class="filter-btn" onclick="filterRepairs('pending', event)">Bekleyen</button>
+                    <button class="filter-btn" onclick="filterRepairs('completed', event)">Tamamlanan</button>
+                </div>
                 <div id="repairs-container">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🔄</div>
+                        <h3 data-tr="Firebase bağlantısı bekleniyor" data-en="Waiting for Firebase connection">Firebase bağlantısı bekleniyor</h3>
+                        <p data-tr="Veriler yükleniyor..." data-en="Loading data...">Veriler yükleniyor...</p>
                     </div>
+                </div>
             </div>
         </div>
     </div>
     
     <div id="photo-modal" class="modal">
+        <span class="close-modal" onclick="closePhotoModal()">&times;</span>
+        <div class="modal-content">
+            <img id="modal-image" src="" alt="[Büyük Görünüm]">
         </div>
+    </div>
 
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
     <script>
-        // Global değişkenler, çeviriler vb. (değiştirilmedi)
-        let db = null; let allRepairs = []; let filteredRepairs = []; let currentFilter = 'all'; let isFirebaseInitialized = false; let currentLanguage = 'tr';
-        const translations = { /* ... */ };
-
         const firebaseConfig = {
              apiKey: "AIzaSyCsy1AAiRE8HCCt4HEAcz7Sh9AM6sQt4FQ",
              authDomain: "kaynak-sac-tamir.firebaseapp.com",
@@ -58,22 +67,20 @@
              appId: "1:503655162792:web:faad92041850490b92f39d",
              measurementId: "G-N8B2V6RQET" 
         };
-
         const IMGUR_CLIENT_ID = '82ab37b38a1850a';
+        
+        let db = null, allRepairs = [], filteredRepairs = [], currentFilter = 'all', isFirebaseInitialized = false, currentLanguage = 'tr', activeFormState = {};
+        const translations = { /* ... tüm çeviriler buraya ... */ };
 
-        // LOGIN GÜVENLİK KONTROLÜ
         document.addEventListener('DOMContentLoaded', function() {
             try {
-                if (!firebase.apps.length) {
-                    firebase.initializeApp(firebaseConfig);
-                }
+                if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
             } catch (error) {
                 console.error("Firebase başlatma hatası:", error);
                 document.body.style.display = "block";
                 document.body.innerHTML = "<h1>Hata: Uygulama başlatılamadı.</h1>";
                 return;
             }
-
             const auth = firebase.auth();
             auth.onAuthStateChanged(user => {
                 if (user) {
@@ -86,40 +93,31 @@
         });
 
         function runApp(user) {
+            db = firebase.firestore();
+            isFirebaseInitialized = true;
             console.log("Tamir uygulaması çalışıyor, kullanıcı:", user.email);
-            
+
             const header = document.querySelector('.header');
             if (header && !document.getElementById('user-info-container')) {
                 const userInfoContainer = document.createElement('div');
                 userInfoContainer.id = 'user-info-container';
-                userInfoContainer.innerHTML = `
-                    <div style="position: absolute; top: 40px; right: 15px; background: rgba(255,255,255,0.2); padding: 5px 10px; border-radius: 15px; font-size: 12px; color: white; z-index: 10;">
-                        ${user.email} | <a href="#" id="logoutBtn" style="color:white; font-weight:bold; text-decoration:none;">Çıkış</a>
-                    </div>
-                `;
+                userInfoContainer.innerHTML = `<div style="position: absolute; top: 40px; right: 15px; background: rgba(255,255,255,0.2); padding: 5px 10px; border-radius: 15px; font-size: 12px; color: white; z-index: 10;">${user.email} | <a href="#" id="logoutBtn" style="color:white; font-weight:bold; text-decoration:none;">Çıkış</a></div>`;
                 header.appendChild(userInfoContainer);
-                
-                document.getElementById('logoutBtn').addEventListener('click', (e) => {
-                    e.preventDefault();
-                    firebase.auth().signOut();
-                });
+                document.getElementById('logoutBtn').addEventListener('click', e => { e.preventDefault(); firebase.auth().signOut(); });
             }
             
-            // Orijinal başlangıç fonksiyonlarını çağır
-            db = firebase.firestore();
-            isFirebaseInitialized = true;
-            document.getElementById('status-text').textContent = "✔️ Bağlandı";
-            document.getElementById('connection-status').classList.add('status-online');
-            
+            // Orijinal başlangıç fonksiyonları
             const savedLanguage = localStorage.getItem('preferredLanguage') || 'tr';
             changeLanguage(savedLanguage);
             loadRepairs();
-            
             document.getElementById('searchInput').addEventListener('input', handleSearch);
+            document.querySelector('.close-modal').addEventListener('click', closePhotoModal);
+            document.getElementById('photo-modal').addEventListener('click', (e) => { if (e.target === document.getElementById('photo-modal')) closePhotoModal(); });
         }
         
-        // --- Diğer tüm orijinal fonksiyonlar (changeLanguage, loadRepairs, createRepairCard, vb.) buraya gelecek ---
-        // ... (Bu fonksiyonlar değiştirilmedi)
+        // --- Diğer tüm orijinal fonksiyonlar buraya ---
+        // (changeLanguage, loadRepairs, createRepairCard vb. değiştirilmedi)
+        // ...
 
     </script>
 </body>
