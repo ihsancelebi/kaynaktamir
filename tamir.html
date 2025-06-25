@@ -1,154 +1,75 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tamirleri Yönet</title>
-    <link rel="icon" href="iconios.png" type="image/png">
+    <!-- Mevcut head içeriği -->
     <style>
-        /* Sizin orijinal tamir.html dosyanızdaki tüm CSS kodları buradadır */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); min-height: 100vh; padding: 20px; }
-        .container { max-width: 900px; margin: 0 auto; background: white; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); overflow: hidden; }
-        .header { background: linear-gradient(45deg, #28a745, #20c997); color: white; padding: 30px; text-align: center; position: relative; }
-        .header h1 { font-size: 2.5em; }
-        .auth-controls { position: absolute; top: 15px; right: 15px; display: flex; gap: 10px; align-items: center; }
-        .logout-btn { background: rgba(255,255,255,0.2); border: 1px solid #fff; color: white; padding: 8px 15px; border-radius: 20px; cursor: pointer; font-weight: 600; text-decoration: none; }
-        .content { padding: 30px; }
-        .search-controls { display: flex; gap: 15px; margin-bottom: 20px; }
-        .search-input { flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 25px; }
-        .filter-btn { background: #6c757d; color: white; border: none; padding: 12px 20px; border-radius: 25px; cursor: pointer; }
-        .filter-btn.active { background: #0d6efd; }
-        .repair-card { background: #fff; border: 1px solid #eee; border-radius: 15px; padding: 20px; margin-bottom: 20px; }
-        .repair-header { display: flex; justify-content: space-between; align-items: center; }
-        .customer-name { font-size: 1.4em; font-weight: 700; }
-        .repair-status { padding: 8px 15px; border-radius: 20px; font-size: 12px; }
-        .status-pending { background: #fff3cd; color: #856404; }
-        .status-completed { background: #d4edda; color: #155724; }
-        .completion-form { border-top: 1px solid #eee; margin-top: 20px; padding-top: 20px; }
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; margin-bottom: 5px; }
-        .form-group input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; }
-        .btn { background: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 20px; cursor: pointer; }
-        .btn:disabled { background: #aaa; }
-        .loading { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.5); border-top-color: #fff; border-radius: 50%; animation: spin 1s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .empty-state { text-align: center; padding: 40px; color: #777; }
+        /* Giriş formu stilleri (index-6.html ile aynı) */
+        .login-container {
+            /* ... index-6.html'deki giriş formu stilleri ... */
+        }
+        
+        .user-info {
+            /* ... index-6.html'deki kullanıcı bilgisi stilleri ... */
+        }
     </style>
 </head>
-<body style="display: none;">
+<body>
     <div class="container">
-        <div class="header">
-            <div class="auth-controls">
-                <a href="index.html" class="logout-btn">Ana Sayfa</a>
-                <button class="logout-btn" id="logout-btn">Çıkış Yap</button>
-            </div>
-            <h1>Tamirleri Yönet</h1>
+        <!-- Giriş formu -->
+        <div id="login-container" class="login-container">
+            <!-- ... index-6.html'deki giriş formu içeriği ... -->
         </div>
-        <div class="content">
-            <div class="search-controls">
-                <input type="text" id="searchInput" class="search-input" placeholder="Müşteri adı veya telefon ile ara...">
-                <button class="filter-btn active" onclick="filterRepairs('all')">Tümü</button>
-                <button class="filter-btn" onclick="filterRepairs('pending')">Bekleyen</button>
-                <button class="filter-btn" onclick="filterRepairs('completed')">Tamamlanan</button>
+        
+        <!-- Uygulama içeriği -->
+        <div id="app-content" class="hidden">
+            <div class="header">
+                <div class="language-selector">
+                    <!-- Mevcut dil seçici -->
+                </div>
+                <div class="user-info">
+                    <span id="user-email"></span>
+                    <button class="logout-btn" onclick="logout()" data-tr="Çıkış Yap" data-en="Logout">Çıkış Yap</button>
+                </div>
+                <div class="connection-status" id="connection-status">
+                    <!-- Bağlantı durumu -->
+                </div>
+                <!-- Diğer header içeriği -->
             </div>
-            <div id="repairs-container"><div class="empty-state">Yükleniyor...</div></div>
+            <!-- Diğer uygulama içeriği -->
         </div>
     </div>
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
     <script>
-        const firebaseConfig = { apiKey: "AIzaSyCsy1AAiRE8HCCt4HEAcz7Sh9AM6sQt4FQ", authDomain: "kaynak-sac-tamir.firebaseapp.com", projectId: "kaynak-sac-tamir", messagingSenderId: "503655162792", appId: "1:503655162792:web:faad92041850490b92f39d" };
-        let db, auth, currentUser, allRepairs = [], currentFilter = 'all';
-
-        document.addEventListener('DOMContentLoaded', () => {
-            firebase.initializeApp(firebaseConfig);
-            auth = firebase.auth();
-            db = firebase.firestore();
-            auth.onAuthStateChanged(user => {
-                if (user) {
-                    currentUser = user;
-                    document.body.style.display = 'block';
-                    initializeApp();
-                } else { window.location.href = 'login.html'; }
-            });
-        });
-
-        function initializeApp() {
-            document.getElementById('logout-btn').addEventListener('click', () => auth.signOut());
-            document.getElementById('searchInput').addEventListener('input', () => filterRepairs(currentFilter));
-            loadRepairs();
-        }
-
+        // index-6.html'deki kullanıcı yönetim kodunun aynısı
+        // (initializeFirebase, auth işlemleri, Firestore filtreleme)
+        
+        // Kayıtları yükleme fonksiyonunu güncelle
         function loadRepairs() {
-            db.collection('repairs').orderBy('createdAt', 'desc').onSnapshot(snapshot => {
-                allRepairs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                filterRepairs(currentFilter);
-            }, error => {
-                document.getElementById('repairs-container').innerHTML = `<div class="empty-state">Hata: ${error.message}</div>`;
-            });
+            // ... mevcut kod ...
+            
+            // Sadece kullanıcının kendi kayıtlarını yükle
+            db.collection('repairs')
+                .where('userId', '==', currentUser.uid)
+                .orderBy('createdAt', 'desc')
+                .onSnapshot(snapshot => {
+                    // ... mevcut kod ...
+                });
         }
-
-        function filterRepairs(status) {
-            currentFilter = status;
-            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelector(`.filter-btn[onclick="filterRepairs('${status}')"]`).classList.add('active');
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            const filtered = allRepairs.filter(rec => {
-                const name = `${rec.firstName} ${rec.lastName}`.toLowerCase();
-                const matchesSearch = !searchTerm || name.includes(searchTerm) || (rec.phone || '').includes(searchTerm);
-                const isCompleted = rec.status === 'completed';
-                const matchesStatus = status === 'all' || (status === 'pending' && !isCompleted) || (status === 'completed' && isCompleted);
-                return matchesSearch && matchesStatus;
-            });
-            displayRepairs(filtered);
-        }
-
-        function displayRepairs(records) {
-            const container = document.getElementById('repairs-container');
-            if (!records.length) {
-                container.innerHTML = `<div class="empty-state">Kayıt bulunamadı.</div>`; return;
-            }
-            container.innerHTML = records.map(rec => `
-                <div class="repair-card">
-                    <div class="repair-header">
-                        <span class="customer-name">${rec.firstName} ${rec.lastName}</span>
-                        <span class="repair-status ${rec.status === 'completed' ? 'status-completed' : 'status-pending'}">${rec.status}</span>
-                    </div>
-                    ${rec.status !== 'completed' ? `
-                    <div class="completion-form">
-                        <div class="form-group"><label>Çıkan Adet</label><input type="number" id="qty-${rec.id}"></div>
-                        <div class="form-group"><label>Tamamlanma Tarihi</label><input type="date" id="date-${rec.id}"></div>
-                        <button class="btn" onclick="completeRepair('${rec.id}', event)">Tamamla</button>
-                    </div>` : `<div style="padding-top:10px;"><p>Bu kayıt tamamlandı.</p></div>`}
-                </div>`).join('');
-        }
-
-        async function completeRepair(id, event) {
-            event.stopPropagation();
-            const btn = event.target;
-            btn.disabled = true;
-            btn.innerHTML = '<span class="loading"></span>';
-            const data = {
-                completedQuantity: parseInt(document.getElementById(`qty-${id}`).value),
-                completionDate: document.getElementById(`date-${id}`).value,
-                status: 'completed'
-            };
-            if (!data.completedQuantity || !data.completionDate) {
-                alert('Lütfen tüm alanları doldurun.');
-                btn.disabled = false;
-                btn.textContent = 'Tamamla';
+        
+        // Tamir tamamlama fonksiyonunu güncelle
+        async function completeRepair(repairId) {
+            // ... mevcut kod ...
+            
+            // Kaydın kullanıcıya ait olduğunu doğrula
+            const repairRef = db.collection('repairs').doc(repairId);
+            const doc = await repairRef.get();
+            
+            if (!doc.exists || doc.data().userId !== currentUser.uid) {
+                showMessage(t('accessDenied'), 'error');
                 return;
             }
-            try {
-                await db.collection('repairs').doc(id).update(data);
-                alert('Tamir tamamlandı!');
-            } catch (err) {
-                alert('Hata: ' + err.message);
-                btn.disabled = false;
-                btn.textContent = 'Tamamla';
-            }
+            
+            // ... mevcut tamamlama kodu ...
         }
     </script>
 </body>
