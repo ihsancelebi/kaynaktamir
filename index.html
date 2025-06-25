@@ -92,18 +92,79 @@
         .print-modal-buttons { display: flex; gap: 20px; justify-content: center; }
         .btn-secondary { background: #6c757d; color: white; border: none; padding: 12px 25px; border-radius: 25px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; }
         .btn-secondary:hover { background: #5a6268; transform: translateY(-2px); }
-        .print-label { width: 80mm; height: 40mm; background: white; border: none; box-sizing: border-box; padding: 2mm 3mm; font-family: Arial, sans-serif; line-height: 1.1; display: none; overflow: hidden; }
-        .label-top-section { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1mm; }
-        .label-logo-section img { height: 15mm; width: auto; object-fit: contain; }
-        .label-main-title { font-size: 18px; font-weight: bold; text-align: right; flex-grow: 1; }
-        .label-content { display: flex; flex-direction: column; gap: 0.5mm; font-size: 10px; }
-        .label-field { display: flex; justify-content: space-between; align-items: baseline; width: 100%; }
-        .label-bold { font-weight: bold; }
+
+        /* --- YAZDIRMA STİLLERİ - GÜNCELLENDİ --- */
+        .print-label {
+            width: 80mm; 
+            height: 40mm; 
+            background: white;
+            border: none; 
+            box-sizing: border-box;
+            padding: 4mm; /* Padding artırıldı */
+            font-family: Arial, sans-serif;
+            color: black;
+            line-height: 1.3; /* Satır yüksekliği ayarlandı */
+            display: none; 
+            overflow: hidden;
+            flex-direction: column; 
+            justify-content: space-between;
+        }
+        .label-top-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 2mm;
+        }
+        .label-logo-section img {
+            height: 12mm; 
+            width: auto;
+            object-fit: contain;
+        }
+        .label-main-title {
+            font-size: 20px; /* Boyut artırıldı */
+            font-weight: bold;
+            text-align: right; 
+            flex-grow: 1;
+        }
+        .label-content {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5mm; /* Alanlar arası boşluk artırıldı */
+        }
+        .label-field {
+            display: flex;
+            justify-content: space-between; 
+            align-items: baseline; 
+            width: 100%;
+            border-bottom: 1px solid #f0f0f0;
+            padding-bottom: 1mm;
+        }
+        .label-field .label-bold {
+            font-size: 14px; /* Boyut artırıldı */
+            font-weight: bold;
+            margin-right: 2mm; 
+            color: #333;
+        }
+        .label-field span:not(.label-bold) {
+            font-size: 16px; /* Değerlerin font boyutu artırıldı */
+            font-weight: bold;
+        }
+        #print-customer { 
+            font-size: 18px !important; /* Daha da büyük ve önemli */
+            font-weight: bold;
+        }
+        /* --- YAZDIRMA STİLLERİ SONU --- */
+
         .creator-info { font-size: 11px; color: #6c757d; margin-top: 10px; padding-top: 10px; border-top: 1px solid #f0f0f0; grid-column: 1 / -1; }
         .success-message, .error-message { padding: 15px; border-radius: 10px; text-align: center; font-weight: 600; animation: slideDown 0.5s ease; position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 2000; display: none; }
         .success-message.show, .error-message.show { display: block; }
         @keyframes slideDown { from { top: -100px; opacity: 0; } to { top: 20px; opacity: 1; } }
-        @media print { html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; } body * { visibility: hidden; } .print-label, .print-label * { visibility: visible; } .print-label { position: absolute; left: 0; top: 0; width: 80mm; height: 40mm; display: block !important; } }
+        @media print { 
+            html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; } 
+            body * { visibility: hidden; } 
+            .print-label, .print-label * { visibility: visible; } 
+            .print-label { position: absolute; left: 0; top: 0; width: 80mm; height: 40mm; display: flex !important; } 
+        }
         .filter-controls { margin-bottom: 20px; border: 1px solid #e9ecef; border-radius: 10px; background: #f8f9fa; overflow: hidden; }
         .filter-header { display: flex; justify-content: space-between; align-items: center; padding: 15px; cursor: pointer; font-weight: 600; }
         .filter-collapsible-content { max-height: 0; padding: 0 15px; overflow: hidden; transition: max-height 0.4s ease-out, padding 0.4s ease-out; }
@@ -259,7 +320,6 @@
         let isFirebaseInitialized = false;
         let currentLanguage = localStorage.getItem('language') || 'tr';
 
-        // Orijinal `translations` objesi ve diğer fonksiyonlar buraya kopyalandı
         const translations = {
             en: { pageTitle: "Hair Extension Repair Tracking", headerSubtitle: "Cloud-supported professional repair tracking system", connecting: "🔄 Connecting...", connected: "✔️ Connected", configError: "❌ Configuration Error", connectionError: "❌ Connection Error", navNewRecord: "➕ New Record", navRecords: "📋 Records", formFirstName: "First Name", formLastName: "Last Name", formPhone: "Phone", formPhoneExample: "Example: +90 553 528 0908 or 5535280908", formRepairDateInput: "Date Received for Repair", formTerminDateInput: "Deadline", formQuantity: "Number of Extensions", formUnitPrice: "Repair Price per Unit (₺)", formHasSet: "Will it be a Set?", formSetYes: "Yes", formSetNo: "No", formNotes: "Notes", formNotesPlaceholder: "Write your additional notes here...", formPhoto: "Photo", formAddPhoto: "Add Photo", formTapCamera: "Tap to open camera", photoPreviewAlt: "[Photo Preview]", btnAdd: "➕ Add", adding: "Adding...", uploadingPhoto: "Uploading photo...", addingRecord: "Adding record...", filterOptions: "Filter Options", filterStartDate: "Start Date", filterEndDate: "End Date", filterSearchNamePhone: "Search Name or Phone", filterSearchPlaceholder: "Name or phone number...", filterButton: "Filter", emptyStateWaitingFirebase: "Waiting for Firebase connection", loadingRecords: "Loading records...", couldNotLoadRecords: "Could not load records.", noRecordsFound: "No records found matching your filters.", recordCardArrivalDateLabel: "Arrival:", recordCardDeadlineLabel: "Deadline:", recordCardPhone: "Phone", recordCardQuantity: "Quantity", recordCardSet: "Set", recordCardTotalPrice: "Total Price", recordCardNotesLabel: "Notes", recordCardCompletedQuantity: "Completed Quantity", recordCardCompletionDate: "Completion Date", recordCardCompletedPhoto: "Completed Photo", recordCardCompletionNotes: "Completion Notes", recordCardCallStatusLabel: "Call Status", callStatusNotCalled: "Not Called", callStatusCalled: "Called", btnCall: "Call", calling: "Calling...", notSpecified: "Not specified", notCalculated: "Not calculated", hairExtensionPhotoAlt: "[Hair Extension Photo]", completedHairPhotoAlt: "[Completed Hair Photo]", photoLoadError: "Photo could not be loaded", btnLabel: "Label", btnDelete: "Delete", largeViewAlt: "[Large View]", printModalTitle: "🖨️ Print Label", printModalSubtitle: "80x40mm label will be printed", btnClose: "Close", btnPrint: "🖨️ Print", printLabelTitle: "EXTENSION REPAIR", printLabelCustomer: "CUSTOMER:", printLabelPhone: "PHONE:", printLabelQuantity: "QUANTITY:", printLabelTerminDate: "DEADLINE:", repairNotCompletedYet: "Repair not completed yet.", confirmDeleteTitle: "Delete Record?", confirmDeleteMsg: "Are you sure you want to delete this record? This action cannot be undone.", btnCancel: "Cancel", btnYesDelete: "Yes, Delete", createdBy: "Created by" },
             tr: { pageTitle: "Kaynak Saç Tamir Takip", headerSubtitle: "Bulut destekli profesyonel tamir takip sistemi", connecting: "🔄 Bağlanıyor...", connected: "✔️ Bağlandı", configError: "❌ Yapılandırma Hatası", connectionError: "❌ Bağlantı Hatası", navNewRecord: "➕ Yeni Kayıt", navRecords: "📋 Kayıtlar", formFirstName: "İsim", formLastName: "Soyisim", formPhone: "Telefon", formPhoneExample: "Örnek: +90 553 528 0908 veya 5535280908", formRepairDateInput: "Tamire Verilen Tarih", formTerminDateInput: "Termin Tarihi", formQuantity: "Kaynak Adedi", formUnitPrice: "Adet Tamir Fiyatı (₺)", formHasSet: "Takım Olacak mı?", formSetYes: "Evet", formSetNo: "Hayır", formNotes: "Notlar", formNotesPlaceholder: "Ek notlarınızı buraya yazın...", formPhoto: "Fotoğraf", formAddPhoto: "Fotoğraf Ekle", formTapCamera: "Dokunarak kamera aç", photoPreviewAlt: "[Fotoğraf Önizlemesi]", btnAdd: "➕ Ekle", adding: "Ekleniyor...", uploadingPhoto: "Fotoğraf yükleniyor...", addingRecord: "Kayıt ekleniyor...", filterOptions: "Filtreleme Seçenekleri", filterStartDate: "Başlangıç Tarihi", filterEndDate: "Bitiş Tarihi", filterSearchNamePhone: "İsim veya Telefon Ara", filterSearchPlaceholder: "İsim veya telefon numarası...", filterButton: "Filtrele", emptyStateWaitingFirebase: "Firebase bağlantısı bekleniyor", loadingRecords: "Kayıtlar yükleniyor...", couldNotLoadRecords: "Kayıtlar yüklenemedi.", noRecordsFound: "Filtrelerinize uygun kayıt bulunamadı.", recordCardArrivalDateLabel: "Geliş T.:", recordCardDeadlineLabel: "Termin T.:", recordCardPhone: "Telefon", recordCardQuantity: "Adet", recordCardSet: "Takım", recordCardTotalPrice: "Toplam Fiyat", recordCardNotesLabel: "Notlar", recordCardCompletedQuantity: "Çıkan Adet", recordCardCompletionDate: "Tamamlanma Tarihi", recordCardCompletedPhoto: "Tamamlanan Fotoğraf", recordCardCompletionNotes: "Tamamlama Notları", recordCardCallStatusLabel: "Arama Durumu", callStatusNotCalled: "Aranmadı", callStatusCalled: "Arandı", btnCall: "Ara", calling: "Aranıyor...", notSpecified: "Belirtilmemiş", notCalculated: "Hesaplanmadı", hairExtensionPhotoAlt: "[Kaynak Saç Fotoğrafı]", completedHairPhotoAlt: "[Tamamlanmış Saç Fotoğrafı]", photoLoadError: "Fotoğraf yüklenemedi", btnLabel: "Etiket", btnDelete: "Sil", largeViewAlt: "[Büyük Görünüm]", printModalTitle: "🖨️ Etiket Yazdır", printModalSubtitle: "80x40mm etiket yazdırılacak", btnClose: "Kapat", btnPrint: "🖨️ Yazdır", printLabelTitle: "KAYNAK TAMİR", printLabelCustomer: "MÜŞTERİ:", printLabelPhone: "TELEFON:", printLabelQuantity: "ADET:", printLabelTerminDate: "TERMİN TAR:", repairNotCompletedYet: "Tamir henüz tamamlanmadı.", confirmDeleteTitle: "Kaydı Sil?", confirmDeleteMsg: "Bu kaydı silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.", btnCancel: "İptal", btnYesDelete: "Evet, Sil", createdBy: "Oluşturan" }
@@ -377,7 +437,6 @@
             const deadlineDate = record.returnDate ? new Date(record.returnDate).toLocaleDateString(locale) : lang.notSpecified;
             const creatorEmail = record.createdBy ? record.createdBy.email : 'Bilinmiyor';
 
-            // HTML template'i orijinaldeki gibi detaylı olacak şekilde yeniden oluşturuluyor.
             card.innerHTML = `
                 <div class="record-header">
                     <div class="record-info-left">
@@ -403,7 +462,6 @@
                     </div>
                 </div>
                 <div class="record-collapsible-content">
-                    <!-- Detaylı içerik... -->
                     ${record.photoURL ? `<img src="${record.photoURL}" class="record-photo" onclick="openPhotoModal('${record.photoURL}', event)">` : ''}
                     <div class="creator-info">${lang.createdBy}: ${creatorEmail}</div>
                     <div class="record-actions">
@@ -430,7 +488,6 @@
             }
         }
         
-        // Etiket yazdırma ve diğer tüm orijinal fonksiyonlar...
         function setLanguage(lang) { /* ... */ }
         function updateUIText() { /* ... */ }
         function showSection(id) { document.querySelectorAll('.section').forEach(s=>s.classList.remove('active')); document.getElementById(id+'-section').classList.add('active'); if(id==='list') applyFilters(); }
@@ -446,7 +503,7 @@
         function closePrintModal() { document.getElementById('print-modal').style.display='none'; }
         function printLabel() { if(!currentRecordForPrint) return; const r = currentRecordForPrint; document.getElementById('print-customer').textContent = `${r.firstName} ${r.lastName}`; document.getElementById('print-phone').textContent = r.phone; document.getElementById('print-quantity').textContent = r.quantity; document.getElementById('print-delivery').textContent = new Date(r.returnDate).toLocaleDateString(); window.print(); }
         function showMessage(msg, type, duration=4000) { const el=document.createElement('div'); el.className=`${type}-message`; el.textContent=msg; document.body.appendChild(el); el.classList.add('show'); setTimeout(() => { el.classList.remove('show'); setTimeout(() => el.remove(), 500) }, duration); }
-        function t(key, isAlert) { return translations[currentLanguage][key] || key; } // Basitleştirilmiş çeviri fonksiyonu
+        function t(key, isAlert) { return translations[currentLanguage][key] || key; }
 
     </script>
 </body>
