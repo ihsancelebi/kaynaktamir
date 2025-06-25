@@ -6,53 +6,20 @@
     <title>Giriş Yap - Kaynak Saç Tamir Takip</title>
     <link rel="icon" href="iconios.png" type="image/png">
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            padding: 20px;
-        }
-        .login-container {
-            max-width: 400px;
-            width: 100%;
-            background: white;
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            text-align: center;
-        }
-        #login-logo {
-            width: 180px;
-            height: 60px;
-            margin: 0 auto 20px auto;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-mask-image: url(logo.svg);
-            mask-image: url(logo.svg);
-            -webkit-mask-size: contain;
-            mask-size: contain;
-            -webkit-mask-repeat: no-repeat;
-            mask-repeat: no-repeat;
-            -webkit-mask-position: center;
-            mask-position: center;
-        }
+        body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
+        .login-container { max-width: 400px; width: 100%; background: white; padding: 40px; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); text-align: center; }
+        #login-logo { width: 180px; height: 60px; margin: 0 auto 20px auto; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-mask-image: url(logo.svg); mask-image: url(logo.svg); -webkit-mask-size: contain; mask-size: contain; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; -webkit-mask-position: center; mask-position: center; }
         .login-container h1 { margin-bottom: 10px; color: #333; }
         .login-container p { margin-bottom: 30px; color: #6c757d; }
         .form-group { margin-bottom: 20px; text-align: left; }
         .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #555; }
-        .form-group input { width: 100%; padding: 15px; border: 2px solid #e9ecef; border-radius: 10px; font-size: 16px; transition: all 0.3s ease; }
-        .form-group input:focus { outline: none; border-color: #007bff; box-shadow: 0 0 0 3px rgba(0,123,255,0.1); }
-        .btn { background: linear-gradient(45deg, #007bff, #0056b3); color: white; border: none; padding: 15px 30px; border-radius: 25px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; width: 100%; margin-bottom: 10px; }
-        .btn:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(0,123,255,0.3); }
+        .form-group input { width: 100%; padding: 15px; border: 2px solid #e9ecef; border-radius: 10px; font-size: 16px; }
+        .btn { background: linear-gradient(45deg, #007bff, #0056b3); color: white; border: none; padding: 15px 30px; border-radius: 25px; font-size: 16px; font-weight: 600; cursor: pointer; width: 100%; margin-bottom: 10px; }
         .btn-secondary { background: #6c757d; }
-        .btn-secondary:hover { box-shadow: 0 10px 25px rgba(108,117,125,0.3); }
-        .error-message { padding: 15px; border-radius: 10px; margin-top: 20px; text-align: center; font-weight: 600; background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; display: none; }
+        .error-message { padding: 15px; border-radius: 10px; margin-top: 20px; font-weight: 600; background: #f8d7da; color: #721c24; display: none; }
     </style>
 </head>
 <body>
-
     <div class="login-container">
         <div id="login-logo"></div>
         <h1>Hoş Geldiniz!</h1>
@@ -71,7 +38,6 @@
             <div id="error-message" class="error-message"></div>
         </div>
     </div>
-
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
     <script>
@@ -80,49 +46,33 @@
              authDomain: "kaynak-sac-tamir.firebaseapp.com",
              projectId: "kaynak-sac-tamir",
              messagingSenderId: "503655162792",
-             appId: "1:503655162792:web:faad92041850490b92f39d",
-             measurementId: "G-N8B2V6RQET" 
+             appId: "1:503655162792:web:faad92041850490b92f39d"
         };
-
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
-
+        auth.onAuthStateChanged(user => {
+            if (user) { window.location.href = 'index.html'; }
+        });
         const emailInput = document.getElementById('email');
         const passwordInput = document.getElementById('password');
         const loginBtn = document.getElementById('login-btn');
         const registerBtn = document.getElementById('register-btn');
         const errorDiv = document.getElementById('error-message');
-
-        auth.onAuthStateChanged(user => {
-            if (user) {
-                window.location.href = 'index.html'; 
-            }
-        });
-
-        const displayError = (message) => {
-            errorDiv.textContent = message;
-            errorDiv.style.display = 'block';
-        };
-
+        const displayError = (message) => { errorDiv.textContent = message; errorDiv.style.display = 'block'; };
         loginBtn.addEventListener('click', () => {
             const email = emailInput.value.trim();
             const password = passwordInput.value;
             if (!email || !password) { displayError("E-posta ve şifre alanları boş bırakılamaz."); return; }
-            auth.signInWithEmailAndPassword(email, password).catch(error => {
-                let message = "E-posta veya şifre hatalı.";
-                displayError(message);
-            });
+            auth.signInWithEmailAndPassword(email, password).catch(error => displayError("E-posta veya şifre hatalı."));
         });
-        
         registerBtn.addEventListener('click', () => {
             const email = emailInput.value.trim();
             const password = passwordInput.value;
             if (!email || !password) { displayError("E-posta ve şifre alanları boş bırakılamaz."); return; }
             if (password.length < 6) { displayError("Şifre en az 6 karakter olmalıdır."); return; }
             auth.createUserWithEmailAndPassword(email, password).catch(error => {
-                let message = "Kayıt sırasında bir hata oluştu.";
-                if (error.code === 'auth/email-already-in-use') { message = "Bu e-posta adresi zaten kullanılıyor."; }
-                displayError(message);
+                let msg = error.code === 'auth/email-already-in-use' ? "Bu e-posta zaten kullanılıyor." : "Kayıt hatası.";
+                displayError(msg);
             });
         });
     </script>
