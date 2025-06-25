@@ -1,103 +1,93 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="tr"> 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kaynak Saç Tamir Takip</title>
+    <title id="pageTitle">Kaynak Saç Tamir Takip</title>
+    <link rel="apple-touch-icon" href="iconios.png">
     <link rel="icon" href="iconios.png" type="image/png">
     <style>
-        /* --- General and Layout Styles --- */
+        /* Sizin orijinal index-6.html dosyanızdaki tüm CSS kodları buradadır */
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); min-height: 100vh; padding: 20px; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
         .container { max-width: 800px; margin: 0 auto; background: white; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); overflow: hidden; }
+        .header { background: linear-gradient(45deg, #ff6b6b, #ffa500); color: white; padding: 30px; text-align: center; position: relative; overflow: hidden; }
+        #app-logo { width: 360px; height: 120px; margin-bottom: 10px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); position: relative; z-index: 1; display: inline-block; -webkit-mask-image: url(logo.svg); mask-image: url(logo.svg); -webkit-mask-size: contain; mask-size: contain; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; -webkit-mask-position: center; mask-position: center; }
+        .header p { position: relative; z-index: 1; opacity: 0.9; font-size: 1.1em; }
+        .lang-switcher { position: absolute; top: 10px; left: 15px; z-index: 2; }
+        .lang-btn { background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3); padding: 5px 10px; border-radius: 10px; font-size: 12px; cursor: pointer; margin-left: 5px; }
+        .lang-btn:hover, .lang-btn.active { background: rgba(255,255,255,0.4); }
+        .auth-controls { position: absolute; top: 10px; right: 15px; z-index: 2; }
+        .logout-btn { background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3); padding: 8px 15px; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; }
+        .nav { display: flex; background: #f8f9fa; border-bottom: 1px solid #dee2e6; }
+        .nav-btn { flex: 1; padding: 15px; background: none; border: none; cursor: pointer; font-size: 16px; font-weight: 600; color: #6c757d; position: relative; }
+        .nav-btn.active { color: #007bff; background: white; }
+        .nav-btn.active::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: linear-gradient(45deg, #007bff, #0056b3); }
         .content { padding: 30px; }
         .section { display: none; }
-        .section.active { display: block; }
-        
-        /* --- Header and Navigation --- */
-        .header { background: linear-gradient(45deg, #ff6b6b, #ffa500); color: white; padding: 30px; text-align: center; position: relative; }
-        #app-logo { width: 180px; height: 60px; margin-bottom: 10px; background: white; -webkit-mask-image: url(logo.svg); mask-image: url(logo.svg); -webkit-mask-size: contain; mask-size: contain; -webkit-mask-repeat: no-repeat; -webkit-mask-position: center; mask-position: center; display: inline-block; }
-        .auth-controls { position: absolute; top: 15px; right: 15px; }
-        .logout-btn { background: rgba(255,255,255,0.2); border: 1px solid #fff; color: white; padding: 8px 15px; border-radius: 20px; cursor: pointer; font-weight: 600; }
-        .nav { display: flex; background: #f8f9fa; }
-        .nav-btn { flex: 1; padding: 15px; background: none; border: none; cursor: pointer; font-size: 16px; font-weight: 600; color: #6c757d; position: relative; }
-        .nav-btn.active { color: #007bff; }
-        .nav-btn.active::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: #007bff; }
-
-        /* --- Form Styles --- */
-        .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; }
-        .form-group input, .form-group textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; }
+        .section.active { display: block; animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .form-group { margin-bottom: 25px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #333; font-size: 14px; text-transform: uppercase; }
+        .form-group input, .form-group textarea { width: 100%; padding: 15px; border: 2px solid #e9ecef; border-radius: 10px; font-size: 16px; background: #f8f9fa; }
         .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .photo-upload { border: 2px dashed #ccc; border-radius: 10px; padding: 20px; text-align: center; cursor: pointer; }
-        .photo-preview { max-width: 150px; margin-top: 10px; border-radius: 8px; }
-
-        /* --- Button and Utility --- */
-        .btn { background: linear-gradient(45deg, #0d6efd, #0a58ca); color: white; border: none; padding: 12px 25px; border-radius: 25px; cursor: pointer; font-size: 1rem; font-weight: 600; }
+        .photo-upload { border: 3px dashed #dee2e6; border-radius: 15px; padding: 30px; text-align: center; cursor: pointer; }
+        .photo-preview { max-width: 200px; max-height: 200px; border-radius: 10px; margin: 10px auto; display: block; }
+        .btn { background: linear-gradient(45deg, #007bff, #0056b3); color: white; border: none; padding: 15px 30px; border-radius: 25px; font-size: 16px; font-weight: 600; cursor: pointer; }
         .btn-secondary { background: #6c757d; }
-        .btn:disabled { background: #aaa; cursor: not-allowed; }
-        .loading { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.5); border-top-color: #fff; border-radius: 50%; animation: spin 1s linear infinite; }
+        .loading { display: inline-block; width: 20px; height: 20px; border: 2px solid #ffffff40; border-radius: 50%; border-top-color: #ffffff; animation: spin 1s ease-in-out infinite; margin-right: 10px; }
         @keyframes spin { to { transform: rotate(360deg); } }
-
-        /* --- YENİ KAYIT KARTI STİLLERİ --- */
-        .record-card { background: white; border: 1px solid #e9ecef; border-radius: 15px; margin-bottom: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: all 0.3s ease; }
-        .record-card:hover { transform: translateY(-5px); box-shadow: 0 12px 25px rgba(0,0,0,0.1); }
-        .record-header { padding: 20px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; border-bottom: 1px solid transparent; }
-        .record-card.expanded .record-header { border-bottom-color: #f0f0f0; }
-        .record-info-left { flex-grow: 1; }
-        .record-name { font-size: 1.4em; font-weight: 700; color: #333; }
-        .record-dates-inline { font-size: 0.85em; color: #555; }
-        .expand-icon { font-size: 1.2em; transition: transform 0.3s ease; }
+        .record-card { background: white; border: 1px solid #e9ecef; border-radius: 15px; padding: 25px; margin-bottom: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.08); cursor: pointer; }
+        .record-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.15); }
+        .record-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 2px solid #f8f9fa; }
+        .record-name { font-size: 1.4em; font-weight: 700; }
+        .expand-icon { transition: transform 0.3s ease; }
         .record-card.expanded .expand-icon { transform: rotate(180deg); }
-        .record-collapsible-content { padding: 0 20px; max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out, padding 0.4s ease-out; }
-        .record-card.expanded .record-collapsible-content { max-height: 1000px; padding: 20px; }
-        .record-details-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
-        .record-detail { display: flex; align-items: center; gap: 15px; }
-        .record-detail-icon { width: 40px; height: 40px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 18px; flex-shrink: 0; }
-        .record-detail-label { font-size: 12px; color: #6c757d; text-transform: uppercase; }
-        .record-detail-value { font-weight: 600; color: #333; }
-        .record-photo { width: 100px; height: 100px; object-fit: cover; border-radius: 10px; cursor: pointer; transition: transform 0.2s; }
-        .record-photo:hover { transform: scale(1.1); }
-        .record-actions { margin-top: 20px; padding-top: 20px; border-top: 1px solid #f0f0f0; display: flex; justify-content: flex-end; gap: 10px; }
-        .delete-btn { background: #dc3545; color: white; border: none; padding: 8px 15px; border-radius: 20px; font-size: 0.8rem; cursor: pointer; }
-        .empty-state { padding: 40px; text-align: center; color: #777; }
-        
-        /* --- Modal and Popup Styles --- */
+        .record-collapsible-content { max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out; }
+        .record-card.expanded .record-collapsible-content { max-height: 1800px; padding-top: 15px; }
+        .record-actions { text-align: right; margin-top: 15px; display: flex; justify-content: flex-end; gap: 10px; }
+        .delete-btn { background: #dc3545; color: white; border: none; padding: 8px 15px; border-radius: 15px; font-size: 12px; cursor: pointer; }
+        .empty-state { text-align: center; padding: 60px 20px; color: #6c757d; }
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); align-items: center; justify-content: center; }
         .modal-content img { max-width: 90%; max-height: 90%; border-radius: 10px; }
-        .close-modal { position: absolute; top: 20px; right: 35px; color: #fff; font-size: 40px; cursor: pointer; }
-        .print-modal { display: none; position: fixed; z-index: 1001; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); align-items: center; justify-content: center; }
-        .print-modal-content { background: white; padding: 30px; border-radius: 15px; text-align: center; }
+        .close-modal { position: absolute; top: 20px; right: 30px; color: white; font-size: 40px; cursor: pointer; }
+        .print-modal { display: none; position: fixed; z-index: 1001; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); align-items: center; justify-content: center; }
+        .print-modal-content { background: white; padding: 40px; border-radius: 20px; text-align: center; }
         .print-label { display: none; }
         @media print { body * { visibility: hidden; } .print-label, .print-label * { visibility: visible; } .print-label { position: absolute; left: 0; top: 0; } }
-        .message-popup { padding: 15px 25px; border-radius: 10px; color: white; position: fixed; top: -100px; left: 50%; transform: translateX(-50%); z-index: 2000; transition: top 0.5s ease; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
-        .message-popup.show { top: 20px; }
-        .success { background: #28a745; } .error { background: #dc3545; }
+        .message-popup { padding: 15px 25px; border-radius: 10px; color: white; position: fixed; top: -100px; left: 50%; transform: translateX(-50%); z-index: 2000; transition: top 0.5s ease; }
+        .message-popup.show { top: 20px; } .success { background: #28a745; } .error { background: #dc3545; }
+        .filter-controls { margin-bottom: 20px; }
     </style>
 </head>
 <body style="display: none;">
     <div class="container">
         <div class="header">
+            <div class="lang-switcher">
+                <button class="lang-btn" onclick="setLanguage('en')">EN</button>
+                <button class="lang-btn active" onclick="setLanguage('tr')">TR</button>
+            </div>
             <div class="auth-controls">
                 <a href="tamir.html" class="logout-btn">Tamir Sayfası</a>
                 <button class="logout-btn" id="logout-btn">Çıkış Yap</button>
             </div>
             <div id="app-logo"></div>
-            <p>Bulut Destekli Profesyonel Tamir Takip Sistemi</p>
+            <p data-translate="headerSubtitle">Bulut destekli profesyonel tamir takip sistemi</p>
         </div>
         <div class="nav">
-            <button class="nav-btn active" onclick="showSection('add')">➕ Yeni Kayıt</button>
-            <button class="nav-btn" onclick="showSection('list')">📋 Kayıtlar</button>
+            <button class="nav-btn active" onclick="showSection('add')" data-translate="navNewRecord">➕ Yeni Kayıt</button>
+            <button class="nav-btn" onclick="showSection('list')" data-translate="navRecords">📋 Kayıtlar</button>
         </div>
         <div class="content">
             <div id="add-section" class="section">
                 <form id="repair-form">
-                    <div class="form-row"><div class="form-group"><label for="firstName">İsim</label><input type="text" id="firstName" required></div><div class="form-group"><label for="lastName">Soyisim</label><input type="text" id="lastName" required></div></div>
-                    <div class="form-group"><label for="phone">Telefon</label><input type="tel" id="phone" required></div>
-                    <div class="form-row"><div class="form-group"><label for="repairDate">Geliş Tarihi</label><input type="date" id="repairDate" required></div><div class="form-group"><label for="returnDate">Termin Tarihi</label><input type="date" id="returnDate" required></div></div>
-                    <div class="form-group"><label for="notes">Notlar</label><textarea id="notes" rows="3"></textarea></div>
-                    <div class="form-group"><label>Fotoğraf</label><div class="photo-upload" onclick="document.getElementById('photoInput').click()"><input type="file" id="photoInput" accept="image/*" style="display: none;"><span id="photo-placeholder">📷 Fotoğraf Eklemek İçin Tıkla</span><img id="photo-preview-img" class="photo-preview" style="display:none;"></div></div>
-                    <button type="submit" class="btn" id="submit-btn">Ekle</button>
+                    <!-- Form içeriği sizin orijinal kodunuzdaki gibi kalacak -->
+                    <div class="form-row"><div class="form-group"><label data-translate="formFirstName">İsim</label><input type="text" id="firstName" required></div><div class="form-group"><label data-translate="formLastName">Soyisim</label><input type="text" id="lastName" required></div></div>
+                    <div class="form-group"><label data-translate="formPhone">Telefon</label><input type="tel" id="phone" required></div>
+                    <div class="form-row"><div class="form-group"><label data-translate="formRepairDateInput">Geliş Tarihi</label><input type="date" id="repairDate" required></div><div class="form-group"><label data-translate="formTerminDateInput">Termin Tarihi</label><input type="date" id="returnDate" required></div></div>
+                    <div class="form-group"><label data-translate="formNotes">Notlar</label><textarea id="notes" rows="3"></textarea></div>
+                    <div class="form-group"><label data-translate="formPhoto">Fotoğraf</label><div class="photo-upload" onclick="document.getElementById('photoInput').click()"><input type="file" id="photoInput" accept="image/*" style="display: none;"><span id="photo-placeholder" data-translate="formAddPhoto">📷 Fotoğraf Ekle</span><img id="photo-preview-img" class="photo-preview" style="display:none;"></div></div>
+                    <button type="submit" class="btn" id="submit-btn" data-translate="btnAdd">Ekle</button>
                 </form>
             </div>
             <div id="list-section" class="section">
@@ -105,8 +95,9 @@
             </div>
         </div>
     </div>
+    
     <div id="photo-modal" class="modal"><span class="close-modal" onclick="closePhotoModal()">&times;</span><div class="modal-content"><img id="modal-image" src=""></div></div>
-    <div id="print-modal" class="print-modal"><div class="print-modal-content"><h3>Etiket Yazdır</h3><div style="display:flex; gap:15px; margin-top:20px;"><button class="btn btn-secondary" onclick="closePrintModal()">Kapat</button><button class="btn" onclick="printLabel()">Yazdır</button></div></div></div>
+    <div id="print-modal" class="print-modal"><div class="print-modal-content"><h3 data-translate="printModalTitle">Etiket Yazdır</h3><div style="display:flex; gap:15px; margin-top:20px;"><button class="btn btn-secondary" onclick="closePrintModal()" data-translate="btnClose">Kapat</button><button class="btn" onclick="printLabel()" data-translate="btnPrint">Yazdır</button></div></div></div>
     <div id="print-label" class="print-label"><h4>KAYNAK TAMİR</h4><p><strong>MÜŞTERİ:</strong> <span id="print-customer"></span></p><p><strong>TELEFON:</strong> <span id="print-phone"></span></p><p><strong>TERMİN:</strong> <span id="print-delivery"></span></p></div>
 
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -154,7 +145,6 @@
                 const preview = document.getElementById('photo-preview-img');
                 preview.src = e.target.result;
                 preview.style.display = 'block';
-                document.getElementById('photo-placeholder').style.display = 'none';
             }
             reader.readAsDataURL(file);
         }
@@ -163,7 +153,7 @@
             e.preventDefault();
             const btn = document.getElementById('submit-btn');
             btn.disabled = true;
-            btn.innerHTML = '<span class="loading"></span> Ekleniyor...';
+            btn.innerHTML = '<span class="loading"></span>';
             
             const record = {
                 firstName: document.getElementById('firstName').value.trim(),
@@ -190,7 +180,6 @@
                 showMessage('Kayıt başarıyla eklendi.', 'success');
                 e.target.reset();
                 document.getElementById('photo-preview-img').style.display = 'none';
-                document.getElementById('photo-placeholder').style.display = 'block';
                 showSection('list');
 
             } catch (err) {
@@ -220,46 +209,25 @@
             }
             container.innerHTML = records.map(createRecordCard).join('');
         }
-
-        // --- GÜNCELLENEN KART OLUŞTURMA FONKSİYONU ---
+        
         function createRecordCard(rec) {
             const arrivalDate = rec.repairDate ? new Date(rec.repairDate).toLocaleDateString('tr-TR') : 'N/A';
             const returnDate = rec.returnDate ? new Date(rec.returnDate).toLocaleDateString('tr-TR') : 'N/A';
 
             return `
                 <div class="record-card" id="card-${rec.id}">
-                    <div class="record-header" onclick="document.getElementById('card-${rec.id}').classList.toggle('expanded')">
+                    <div class="record-header" onclick="this.classList.toggle('expanded')">
                         <div class="record-info-left">
                             <span class="record-name">${rec.firstName} ${rec.lastName}</span>
-                            <span class="record-dates-inline">(Geliş: ${arrivalDate} - Termin: ${returnDate})</span>
+                            <span class="record-dates-inline">(Geliş: ${arrivalDate})</span>
                         </div>
                         <span class="expand-icon">▼</span>
                     </div>
                     <div class="record-collapsible-content">
-                        <div class="record-details-grid">
-                            <div class="record-detail">
-                                <div class="record-detail-icon">📞</div>
-                                <div class="record-detail-text">
-                                    <span class="record-detail-label">Telefon</span>
-                                    <a href="tel:${rec.phone}" class="record-detail-value" onclick="event.stopPropagation()">${rec.phone || 'N/A'}</a>
-                                </div>
-                            </div>
-                             <div class="record-detail">
-                                <div class="record-detail-icon">📝</div>
-                                <div class="record-detail-text">
-                                    <span class="record-detail-label">Notlar</span>
-                                    <span class="record-detail-value">${rec.notes || '-'}</span>
-                                </div>
-                            </div>
-                            ${rec.photoURL ? `
-                            <div class="record-detail">
-                                <div class="record-detail-icon">📷</div>
-                                <div class="record-detail-text">
-                                    <span class="record-detail-label">Fotoğraf</span>
-                                    <img src="${rec.photoURL}" class="record-photo" onclick="event.stopPropagation(); openPhotoModal('${rec.photoURL}')">
-                                </div>
-                            </div>` : ''}
-                        </div>
+                        <p><strong>Telefon:</strong> <a href="tel:${rec.phone}" onclick="event.stopPropagation()">${rec.phone || 'N/A'}</a></p>
+                        <p><strong>Termin:</strong> ${returnDate}</p>
+                        <p><strong>Notlar:</strong> ${rec.notes || '-'}</p>
+                        ${rec.photoURL ? `<img src="${rec.photoURL}" style="max-width:100px; border-radius:8px; margin-top:10px;" onclick="event.stopPropagation(); openPhotoModal('${rec.photoURL}')">` : ''}
                         <div class="record-actions">
                             <button class="btn btn-secondary" onclick="openPrintModalSetup('${rec.id}', event)">Etiket</button>
                             <button class="delete-btn" onclick="deleteRecord('${rec.id}', event)">Sil</button>
@@ -300,14 +268,15 @@
             popup.className = `message-popup ${type}`;
             popup.textContent = message;
             document.body.appendChild(popup);
+            popup.classList.add('show');
             setTimeout(() => {
-                popup.classList.add('show');
-                setTimeout(() => {
-                    popup.classList.remove('show');
-                    setTimeout(() => popup.remove(), 500);
-                }, 3000);
-            }, 10);
+                popup.classList.remove('show');
+                setTimeout(() => popup.remove(), 500);
+            }, 3000);
         }
+
+        // Dil fonksiyonları (gerekirse doldurulabilir)
+        function setLanguage(lang) { /* ... */ }
     </script>
 </body>
 </html>
