@@ -1,76 +1,534 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <!-- Mevcut head içeriği -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kaynak Saç Tamir Tamamlandı</title>
+    <link rel="apple-touch-icon" href="iconios.png">
     <style>
-        /* Giriş formu stilleri (index-6.html ile aynı) */
-        .login-container {
-            /* ... index-6.html'deki giriş formu stilleri ... */
+        /* General styling for the entire page */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
         }
         
-        .user-info {
-            /* ... index-6.html'deki kullanıcı bilgisi stilleri ... */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            flex-direction: column;
+            color: #555;
+            font-size: 1.2em;
         }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+            display: none; /* Initially hidden */
+        }
+
+        /* Header section styling */
+        .header {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            padding: 20px 30px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .user-info {
+            font-size: 12px;
+            text-align: left;
+        }
+        
+        .auth-actions button, .auth-actions a {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 5px 10px;
+            border-radius: 10px;
+            font-size: 12px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin-left: 5px;
+            transition: background 0.3s ease;
+        }
+        
+        .auth-actions button:hover, .auth-actions a:hover {
+             background: rgba(255,255,255,0.4);
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        /* Content area styling */
+        .content {
+            padding: 30px;
+        }
+
+        .pending-repairs {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 1.8em;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .search-controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 25px;
+            font-size: 16px;
+        }
+
+        .filter-btn {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .filter-btn.active {
+            background: linear-gradient(45deg, #20c997, #17a2b8);
+        }
+
+        .repair-card {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            max-height: 105px;
+            overflow: hidden;
+            transition: max-height 0.4s ease-in-out;
+        }
+        
+        .repair-card.expanded {
+            max-height: 2000px;
+        }
+
+        .repair-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .customer-name {
+            font-size: 1.4em;
+            font-weight: 700;
+        }
+
+        .repair-status {
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .status-pending { background: #fff3cd; color: #856404; }
+        .status-completed { background: #d4edda; color: #155724; }
+        
+        .expand-icon { font-size: 1.5em; transition: transform 0.3s ease-in-out; }
+        .repair-card.expanded .expand-icon { transform: rotate(180deg); }
+
+        .completion-form {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 15px;
+        }
+        
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; }
+        .form-group input, .form-group textarea { width: 100%; padding: 12px; border: 2px solid #e9ecef; border-radius: 8px; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        
+        .photo-upload { border: 3px dashed #dee2e6; border-radius: 12px; padding: 25px; text-align: center; cursor: pointer; }
+        .photo-preview { max-width: 150px; max-height: 150px; border-radius: 8px; margin-top: 10px; display: none; }
+        
+        .btn { background: linear-gradient(45deg, #28a745, #20c997); color: white; border: none; padding: 12px 25px; border-radius: 25px; cursor: pointer; }
+        .btn-secondary { background: #6c757d; }
+        .btn:disabled { background: #ccc; cursor: not-allowed; }
+        .action-buttons { display: flex; gap: 10px; justify-content: flex-end; margin-top: 15px; }
+        
+        .loading { display: inline-block; width: 16px; height: 16px; border: 2px solid #ffffff40; border-radius: 50%; border-top-color: #ffffff; animation: spin 1s ease-in-out infinite; margin-right: 8px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        .empty-state { text-align: center; padding: 60px 20px; color: #6c757d; }
+        
+        .success-message, .error-message { padding: 15px; border-radius: 10px; text-align: center; font-weight: 600; position: fixed; top: -100px; left: 50%; transform: translateX(-50%); z-index: 2000; min-width: 300px; opacity: 0; transition: top 0.5s ease, opacity 0.5s ease; }
+        .success-message { background: linear-gradient(45deg, #28a745, #20c997); color: white; }
+        .error-message { background: linear-gradient(45deg, #dc3545, #c82333); color: white; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Giriş formu -->
-        <div id="login-container" class="login-container">
-            <!-- ... index-6.html'deki giriş formu içeriği ... -->
-        </div>
-        
-        <!-- Uygulama içeriği -->
-        <div id="app-content" class="hidden">
-            <div class="header">
-                <div class="language-selector">
-                    <!-- Mevcut dil seçici -->
-                </div>
-                <div class="user-info">
-                    <span id="user-email"></span>
-                    <button class="logout-btn" onclick="logout()" data-tr="Çıkış Yap" data-en="Logout">Çıkış Yap</button>
-                </div>
-                <div class="connection-status" id="connection-status">
-                    <!-- Bağlantı durumu -->
-                </div>
-                <!-- Diğer header içeriği -->
-            </div>
-            <!-- Diğer uygulama içeriği -->
-        </div>
+
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="loading" style="width: 50px; height: 50px; border-width: 5px; border-top-color: #764ba2;"></div>
+        <p style="margin-top: 20px;">Oturum kontrol ediliyor...</p>
     </div>
 
-    <script>
-        // index-6.html'deki kullanıcı yönetim kodunun aynısı
-        // (initializeFirebase, auth işlemleri, Firestore filtreleme)
+    <div class="container" id="main-container">
+        <div class="header">
+            <div class="header-top">
+                <div class="user-info" id="user-info-display"></div>
+                <div class="auth-actions">
+                    <a href="index.html">Yeni Kayıt Sayfası</a>
+                    <button onclick="logout()">Çıkış Yap</button>
+                </div>
+            </div>
+            <h1>🔧 Tamir Tamamlandı Formu</h1>
+            <p>Tamamlanan tamirler için detay girişi ve fotoğraf yükleme</p>
+        </div>
         
-        // Kayıtları yükleme fonksiyonunu güncelle
-        function loadRepairs() {
-            // ... mevcut kod ...
-            
-            // Sadece kullanıcının kendi kayıtlarını yükle
-            db.collection('repairs')
-                .where('userId', '==', currentUser.uid)
-                .orderBy('createdAt', 'desc')
-                .onSnapshot(snapshot => {
-                    // ... mevcut kod ...
+        <div class="content">
+            <div class="pending-repairs">
+                <h2 class="section-title">🛠️ Bekleyen Tamirler</h2>
+                <div class="search-controls">
+                    <input type="text" id="searchInput" class="search-input" placeholder="Müşteri adı veya telefon ile ara...">
+                    <button class="filter-btn active" onclick="filterRepairs('all')">Tümü</button>
+                    <button class="filter-btn" onclick="filterRepairs('pending')">Bekleyen</button>
+                    <button class="filter-btn" onclick="filterRepairs('completed')">Tamamlanan</button>
+                </div>
+                <div id="repairs-container"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Firebase SDK'ları -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+    <script>
+        // Global variables
+        let db = null;
+        let auth = null;
+        let currentUser = null;
+        let allRepairs = [];
+        let filteredRepairs = [];
+        let currentFilter = 'all';
+        let isFirebaseInitialized = false;
+
+        // Firebase ve Imgur yapılandırması
+        const firebaseConfig = {
+             apiKey: "AIzaSyCsy1AAiRE8HCCt4HEAcz7Sh9AM6sQt4FQ", 
+             authDomain: "kaynak-sac-tamir.firebaseapp.com",
+             projectId: "kaynak-sac-tamir",
+             messagingSenderId: "503655162792",
+             appId: "1:503655162792:web:faad92041850490b92f39d",
+             measurementId: "G-N8B2V6RQET" 
+        };
+        const IMGUR_CLIENT_ID = '82ab37b38a1850a';
+
+        // Sayfa yüklendiğinde çalışacak ana fonksiyon
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                if (!firebase.apps.length) {
+                    firebase.initializeApp(firebaseConfig);
+                }
+                auth = firebase.auth();
+                db = firebase.firestore();
+                isFirebaseInitialized = true;
+
+                auth.onAuthStateChanged(user => {
+                    const loadingOverlay = document.getElementById('loading-overlay');
+                    const mainContainer = document.getElementById('main-container');
+
+                    if (user) {
+                        currentUser = user;
+                        loadingOverlay.style.display = 'none';
+                        mainContainer.style.display = 'block';
+                        initializeApp();
+                    } else {
+                        window.location.href = 'login.html';
+                    }
                 });
+            } catch (error) {
+                console.error("Firebase başlatma hatası:", error);
+                document.getElementById('loading-overlay').innerHTML = 'Hata: Uygulama başlatılamadı.';
+            }
+        });
+
+        // Uygulamayı başlatan fonksiyon
+        function initializeApp() {
+            document.getElementById('user-info-display').innerHTML = `<span>Hoş geldin, <strong>${currentUser.email}</strong></span>`;
+            document.getElementById('searchInput').addEventListener('input', handleSearch);
+            loadRepairs();
+        }
+
+        // Çıkış yapma fonksiyonu
+        function logout() {
+            auth.signOut().catch(error => {
+                console.error('Çıkış yaparken hata oluştu', error);
+            });
         }
         
-        // Tamir tamamlama fonksiyonunu güncelle
-        async function completeRepair(repairId) {
-            // ... mevcut kod ...
+        // Tamir kayıtlarını yükle
+        function loadRepairs() {
+            if (!isFirebaseInitialized) return;
+            const container = document.getElementById('repairs-container');
+            container.innerHTML = `<div class="empty-state">Yükleniyor...</div>`;
+
+            db.collection('repairs').orderBy('createdAt', 'desc').onSnapshot(snapshot => {
+                allRepairs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                applyCurrentFilter();
+            }, error => {
+                console.error("Hata:", error);
+                container.innerHTML = `<div class="empty-state">Veriler yüklenemedi.</div>`;
+            });
+        }
+        
+        // Filtreleme
+        function filterRepairs(filterType) {
+            currentFilter = filterType;
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            applyCurrentFilter();
+        }
+
+        function applyCurrentFilter() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+            filteredRepairs = allRepairs.filter(repair => {
+                const matchesSearch = !searchTerm ||
+                    `${repair.firstName || ''} ${repair.lastName || ''}`.toLowerCase().includes(searchTerm) ||
+                    (repair.phone || '').toLowerCase().includes(searchTerm);
+                
+                const isCompleted = repair.status === 'completed';
+                const matchesStatus = currentFilter === 'all' ||
+                    (currentFilter === 'pending' && !isCompleted) ||
+                    (currentFilter === 'completed' && isCompleted);
+                    
+                return matchesSearch && matchesStatus;
+            });
+            displayRepairs();
+        }
+
+        function handleSearch() {
+            applyCurrentFilter();
+        }
+        
+        // Kayıtları ekranda göster
+        function displayRepairs() {
+            const container = document.getElementById('repairs-container');
+            container.innerHTML = '';
             
-            // Kaydın kullanıcıya ait olduğunu doğrula
-            const repairRef = db.collection('repairs').doc(repairId);
-            const doc = await repairRef.get();
-            
-            if (!doc.exists || doc.data().userId !== currentUser.uid) {
-                showMessage(t('accessDenied'), 'error');
+            if (filteredRepairs.length === 0) {
+                container.innerHTML = `<div class="empty-state">Filtreye uygun kayıt bulunamadı.</div>`;
                 return;
             }
             
-            // ... mevcut tamamlama kodu ...
+            filteredRepairs.forEach(repair => {
+                const card = createRepairCard(repair);
+                container.appendChild(card);
+            });
         }
+        
+        // Tamir kartı oluştur
+        function createRepairCard(repair) {
+            const card = document.createElement('div');
+            const isCompleted = repair.status === 'completed';
+            card.className = `repair-card ${isCompleted ? 'completed' : ''}`;
+            card.addEventListener('click', (e) => {
+                 if (e.target.closest('button, input, textarea, .photo-upload')) return;
+                 card.classList.toggle('expanded');
+            });
+
+            card.innerHTML = `
+                <div class="repair-header">
+                    <div>
+                        <div class="customer-name">${repair.firstName || ''} ${repair.lastName || ''}</div>
+                        <div class="customer-phone">${repair.phone || ''}</div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <div class="repair-status ${isCompleted ? 'status-completed' : 'status-pending'}">
+                            ${isCompleted ? 'Tamamlandı' : 'Bekliyor'}
+                        </div>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                </div>
+                ${!isCompleted ? `
+                <div class="completion-form" id="form-${repair.id}">
+                    <h4>Tamir Tamamlandı Bilgileri</h4>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Çıkan Kaynak Adedi *</label>
+                            <input type="number" id="completed-quantity-${repair.id}" min="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Tamamlanma Tarihi *</label>
+                            <input type="date" id="completion-date-${repair.id}" value="${new Date().toISOString().substring(0, 10)}" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Tamamlama Notları</label>
+                        <textarea id="completion-notes-${repair.id}"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Tamamlanan Saç Fotoğrafı *</label>
+                        <div class="photo-upload" onclick="document.getElementById('photo-input-${repair.id}').click()">
+                            <input type="file" id="photo-input-${repair.id}" accept="image/*" style="display: none;">
+                            <div id="photo-placeholder-${repair.id}">📸 Fotoğraf Ekle</div>
+                            <img id="photo-preview-${repair.id}" class="photo-preview">
+                        </div>
+                    </div>
+                    <div class="action-buttons">
+                        <button type="button" class="btn btn-secondary" onclick="event.stopPropagation(); this.closest('.repair-card').classList.remove('expanded');">İptal</button>
+                        <button type="button" class="btn" onclick="completeRepair('${repair.id}', event)" id="complete-btn-${repair.id}">Tamamla</button>
+                    </div>
+                </div>
+                ` : `
+                 <div style="padding-top:15px;">
+                    <p><strong>Tamamlayan:</strong> ${repair.completedBy ? repair.completedBy.email : 'Bilinmiyor'}</p>
+                    <p><strong>Çıkan Adet:</strong> ${repair.completedQuantity}</p>
+                 </div>
+                `}
+            `;
+
+            if (!isCompleted) {
+                 setTimeout(() => {
+                    const photoInput = document.getElementById(`photo-input-${repair.id}`);
+                    if (photoInput) {
+                        photoInput.addEventListener('change', (e) => handlePhotoInputChange(e, repair.id));
+                    }
+                }, 0);
+            }
+
+            return card;
+        }
+
+        function handlePhotoInputChange(event, repairId) {
+            const file = event.target.files[0];
+            const previewImg = document.getElementById(`photo-preview-${repairId}`);
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    previewImg.src = e.target.result;
+                    previewImg.style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Tamiri tamamlama
+        async function completeRepair(repairId, event) {
+            event.stopPropagation();
+            if (!isFirebaseInitialized) return;
+
+            const completedQuantity = document.getElementById(`completed-quantity-${repairId}`).value;
+            const completionDate = document.getElementById(`completion-date-${repairId}`).value;
+            const completionNotes = document.getElementById(`completion-notes-${repairId}`).value.trim();
+            const photoInput = document.getElementById(`photo-input-${repairId}`);
+            
+            if (!completedQuantity || !completionDate || !photoInput.files[0]) {
+                showMessage('Lütfen yıldızlı alanları doldurun.', 'error');
+                return;
+            }
+
+            const completeBtn = document.getElementById(`complete-btn-${repairId}`);
+            completeBtn.disabled = true;
+            completeBtn.innerHTML = `<div class="loading"></div> Tamamlanıyor...`;
+
+            try {
+                const photoURL = await uploadPhotoToImgur(photoInput.files[0]);
+                
+                await db.collection('repairs').doc(repairId).update({
+                    completedQuantity: parseInt(completedQuantity),
+                    completionDate: completionDate,
+                    completionNotes: completionNotes,
+                    completedPhotoURL: photoURL,
+                    completedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    status: 'completed',
+                    completedBy: { // Tamamlayan kullanıcı bilgisi
+                        uid: currentUser.uid,
+                        email: currentUser.email
+                    }
+                });
+                
+                showMessage('Tamir başarıyla tamamlandı!', 'success');
+                // Liste onSnapshot ile otomatik güncellenecek
+                
+            } catch (error) {
+                console.error("Hata:", error);
+                showMessage(`Tamir tamamlanamadı: ${error.message}`, 'error');
+            } finally {
+                completeBtn.disabled = false;
+                completeBtn.innerHTML = 'Tamamla';
+            }
+        }
+
+        async function uploadPhotoToImgur(file) {
+            const formData = new FormData();
+            formData.append('image', file);
+            const response = await fetch('https://api.imgur.com/3/image', {
+                method: 'POST',
+                headers: { 'Authorization': `Client-ID ${IMGUR_CLIENT_ID}` },
+                body: formData
+            });
+            if (!response.ok) throw new Error('Imgur yükleme hatası');
+            const data = await response.json();
+            return data.data.link;
+        }
+
+        function showMessage(message, type = 'success', duration = 4000) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = type === 'success' ? 'success-message' : 'error-message';
+            messageDiv.textContent = message;
+            document.body.appendChild(messageDiv);
+            setTimeout(() => {
+                messageDiv.style.top = '20px';
+                messageDiv.style.opacity = '1';
+            }, 10);
+            setTimeout(() => {
+                messageDiv.style.opacity = '0';
+                messageDiv.style.top = '-100px';
+                setTimeout(() => messageDiv.remove(), 500);
+            }, duration);
+        }
+
     </script>
 </body>
 </html>
