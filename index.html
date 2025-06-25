@@ -1,282 +1,274 @@
 <!DOCTYPE html>
-<html lang="tr"> 
+<html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="pageTitle">Kaynak Saç Tamir Takip</title>
-    <link rel="apple-touch-icon" href="iconios.png">
-    <link rel="icon" href="iconios.png" type="image/png">
+    <!-- Mevcut head içeriği -->
     <style>
-        /* Sizin orijinal index-6.html dosyanızdaki tüm CSS kodları buradadır */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
-        .container { max-width: 800px; margin: 0 auto; background: white; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); overflow: hidden; }
-        .header { background: linear-gradient(45deg, #ff6b6b, #ffa500); color: white; padding: 30px; text-align: center; position: relative; overflow: hidden; }
-        #app-logo { width: 360px; height: 120px; margin-bottom: 10px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); position: relative; z-index: 1; display: inline-block; -webkit-mask-image: url(logo.svg); mask-image: url(logo.svg); -webkit-mask-size: contain; mask-size: contain; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; -webkit-mask-position: center; mask-position: center; }
-        .header p { position: relative; z-index: 1; opacity: 0.9; font-size: 1.1em; }
-        .lang-switcher { position: absolute; top: 10px; left: 15px; z-index: 2; }
-        .lang-btn { background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3); padding: 5px 10px; border-radius: 10px; font-size: 12px; cursor: pointer; margin-left: 5px; }
-        .lang-btn:hover, .lang-btn.active { background: rgba(255,255,255,0.4); }
-        .auth-controls { position: absolute; top: 10px; right: 15px; z-index: 2; }
-        .logout-btn { background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3); padding: 8px 15px; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; }
-        .nav { display: flex; background: #f8f9fa; border-bottom: 1px solid #dee2e6; }
-        .nav-btn { flex: 1; padding: 15px; background: none; border: none; cursor: pointer; font-size: 16px; font-weight: 600; color: #6c757d; position: relative; }
-        .nav-btn.active { color: #007bff; background: white; }
-        .nav-btn.active::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: linear-gradient(45deg, #007bff, #0056b3); }
-        .content { padding: 30px; }
-        .section { display: none; }
-        .section.active { display: block; animation: fadeIn 0.5s ease; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .form-group { margin-bottom: 25px; }
-        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #333; font-size: 14px; text-transform: uppercase; }
-        .form-group input, .form-group textarea { width: 100%; padding: 15px; border: 2px solid #e9ecef; border-radius: 10px; font-size: 16px; background: #f8f9fa; }
-        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .photo-upload { border: 3px dashed #dee2e6; border-radius: 15px; padding: 30px; text-align: center; cursor: pointer; }
-        .photo-preview { max-width: 200px; max-height: 200px; border-radius: 10px; margin: 10px auto; display: block; }
-        .btn { background: linear-gradient(45deg, #007bff, #0056b3); color: white; border: none; padding: 15px 30px; border-radius: 25px; font-size: 16px; font-weight: 600; cursor: pointer; }
-        .btn-secondary { background: #6c757d; }
-        .loading { display: inline-block; width: 20px; height: 20px; border: 2px solid #ffffff40; border-radius: 50%; border-top-color: #ffffff; animation: spin 1s ease-in-out infinite; margin-right: 10px; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .record-card { background: white; border: 1px solid #e9ecef; border-radius: 15px; padding: 25px; margin-bottom: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.08); cursor: pointer; }
-        .record-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.15); }
-        .record-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 2px solid #f8f9fa; }
-        .record-name { font-size: 1.4em; font-weight: 700; }
-        .expand-icon { transition: transform 0.3s ease; }
-        .record-card.expanded .expand-icon { transform: rotate(180deg); }
-        .record-collapsible-content { max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out; }
-        .record-card.expanded .record-collapsible-content { max-height: 1800px; padding-top: 15px; }
-        .record-actions { text-align: right; margin-top: 15px; display: flex; justify-content: flex-end; gap: 10px; }
-        .delete-btn { background: #dc3545; color: white; border: none; padding: 8px 15px; border-radius: 15px; font-size: 12px; cursor: pointer; }
-        .empty-state { text-align: center; padding: 60px 20px; color: #6c757d; }
-        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); align-items: center; justify-content: center; }
-        .modal-content img { max-width: 90%; max-height: 90%; border-radius: 10px; }
-        .close-modal { position: absolute; top: 20px; right: 30px; color: white; font-size: 40px; cursor: pointer; }
-        .print-modal { display: none; position: fixed; z-index: 1001; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); align-items: center; justify-content: center; }
-        .print-modal-content { background: white; padding: 40px; border-radius: 20px; text-align: center; }
-        .print-label { display: none; }
-        @media print { body * { visibility: hidden; } .print-label, .print-label * { visibility: visible; } .print-label { position: absolute; left: 0; top: 0; } }
-        .message-popup { padding: 15px 25px; border-radius: 10px; color: white; position: fixed; top: -100px; left: 50%; transform: translateX(-50%); z-index: 2000; transition: top 0.5s ease; }
-        .message-popup.show { top: 20px; } .success { background: #28a745; } .error { background: #dc3545; }
-        .filter-controls { margin-bottom: 20px; }
+        /* Yeni eklenen giriş formu stilleri */
+        .login-container {
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .login-container h2 {
+            margin-bottom: 20px;
+            color: #764ba2;
+        }
+        
+        .login-form .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        
+        .login-form input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        
+        .login-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+        }
+        
+        .login-footer {
+            margin-top: 20px;
+            font-size: 14px;
+        }
+        
+        .user-info {
+            position: absolute;
+            top: 10px;
+            right: 100px;
+            background: rgba(255,255,255,0.2);
+            padding: 8px 15px;
+            border-radius: 15px;
+            font-size: 12px;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-info span {
+            margin-right: 10px;
+        }
+        
+        .logout-btn {
+            background: rgba(255,255,255,0.3);
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 11px;
+        }
+        
+        .hidden {
+            display: none;
+        }
     </style>
 </head>
-<body style="display: none;">
+<body>
     <div class="container">
-        <div class="header">
-            <div class="lang-switcher">
-                <button class="lang-btn" onclick="setLanguage('en')">EN</button>
-                <button class="lang-btn active" onclick="setLanguage('tr')">TR</button>
+        <!-- Giriş formu (giriş yapılmamışsa gösterilecek) -->
+        <div id="login-container" class="login-container">
+            <h2 data-translate="loginTitle">Kaynak Saç Tamir Takip Sistemi</h2>
+            <form id="login-form" class="login-form">
+                <div class="form-group">
+                    <label data-translate="loginEmail">E-posta</label>
+                    <input type="email" id="login-email" required>
+                </div>
+                <div class="form-group">
+                    <label data-translate="loginPassword">Şifre</label>
+                    <input type="password" id="login-password" required>
+                </div>
+                <button type="submit" class="login-btn" data-translate="loginButton">Giriş Yap</button>
+            </form>
+            <div class="login-footer">
+                <p data-translate="loginFooter">Hesabınız yok mu? <a href="#" id="register-link" data-translate="registerLink">Kayıt Ol</a></p>
             </div>
-            <div class="auth-controls">
-                <a href="tamir.html" class="logout-btn">Tamir Sayfası</a>
-                <button class="logout-btn" id="logout-btn">Çıkış Yap</button>
-            </div>
-            <div id="app-logo"></div>
-            <p data-translate="headerSubtitle">Bulut destekli profesyonel tamir takip sistemi</p>
         </div>
-        <div class="nav">
-            <button class="nav-btn active" onclick="showSection('add')" data-translate="navNewRecord">➕ Yeni Kayıt</button>
-            <button class="nav-btn" onclick="showSection('list')" data-translate="navRecords">📋 Kayıtlar</button>
-        </div>
-        <div class="content">
-            <div id="add-section" class="section">
-                <form id="repair-form">
-                    <!-- Form içeriği sizin orijinal kodunuzdaki gibi kalacak -->
-                    <div class="form-row"><div class="form-group"><label data-translate="formFirstName">İsim</label><input type="text" id="firstName" required></div><div class="form-group"><label data-translate="formLastName">Soyisim</label><input type="text" id="lastName" required></div></div>
-                    <div class="form-group"><label data-translate="formPhone">Telefon</label><input type="tel" id="phone" required></div>
-                    <div class="form-row"><div class="form-group"><label data-translate="formRepairDateInput">Geliş Tarihi</label><input type="date" id="repairDate" required></div><div class="form-group"><label data-translate="formTerminDateInput">Termin Tarihi</label><input type="date" id="returnDate" required></div></div>
-                    <div class="form-group"><label data-translate="formNotes">Notlar</label><textarea id="notes" rows="3"></textarea></div>
-                    <div class="form-group"><label data-translate="formPhoto">Fotoğraf</label><div class="photo-upload" onclick="document.getElementById('photoInput').click()"><input type="file" id="photoInput" accept="image/*" style="display: none;"><span id="photo-placeholder" data-translate="formAddPhoto">📷 Fotoğraf Ekle</span><img id="photo-preview-img" class="photo-preview" style="display:none;"></div></div>
-                    <button type="submit" class="btn" id="submit-btn" data-translate="btnAdd">Ekle</button>
-                </form>
+        
+        <!-- Uygulama içeriği (giriş yapıldıktan sonra gösterilecek) -->
+        <div id="app-content" class="hidden">
+            <div class="header">
+                <div class="lang-switcher">
+                    <!-- Mevcut dil seçici -->
+                </div>
+                <div class="user-info">
+                    <span id="user-email"></span>
+                    <button class="logout-btn" onclick="logout()" data-translate="logoutButton">Çıkış Yap</button>
+                </div>
+                <div class="connection-status" id="connection-status">
+                    <!-- Bağlantı durumu -->
+                </div>
+                <!-- Diğer header içeriği -->
             </div>
-            <div id="list-section" class="section">
-                <div id="records-container"></div>
-            </div>
+            <!-- Diğer uygulama içeriği -->
         </div>
     </div>
-    
-    <div id="photo-modal" class="modal"><span class="close-modal" onclick="closePhotoModal()">&times;</span><div class="modal-content"><img id="modal-image" src=""></div></div>
-    <div id="print-modal" class="print-modal"><div class="print-modal-content"><h3 data-translate="printModalTitle">Etiket Yazdır</h3><div style="display:flex; gap:15px; margin-top:20px;"><button class="btn btn-secondary" onclick="closePrintModal()" data-translate="btnClose">Kapat</button><button class="btn" onclick="printLabel()" data-translate="btnPrint">Yazdır</button></div></div></div>
-    <div id="print-label" class="print-label"><h4>KAYNAK TAMİR</h4><p><strong>MÜŞTERİ:</strong> <span id="print-customer"></span></p><p><strong>TELEFON:</strong> <span id="print-phone"></span></p><p><strong>TERMİN:</strong> <span id="print-delivery"></span></p></div>
 
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
     <script>
-        const firebaseConfig = { apiKey: "AIzaSyCsy1AAiRE8HCCt4HEAcz7Sh9AM6sQt4FQ", authDomain: "kaynak-sac-tamir.firebaseapp.com", projectId: "kaynak-sac-tamir", messagingSenderId: "503655162792", appId: "1:503655162792:web:faad92041850490b92f39d" };
-        const IMGUR_CLIENT_ID = '82ab37b38a1850a'; 
-        let db, auth, currentUser, allRecords = [], currentRecordForPrint = null;
-
-        document.addEventListener('DOMContentLoaded', () => {
-            firebase.initializeApp(firebaseConfig);
-            auth = firebase.auth();
-            db = firebase.firestore();
-            auth.onAuthStateChanged(user => {
-                if (user) {
-                    currentUser = user;
-                    document.body.style.display = 'block';
-                    initializeApp();
-                } else { window.location.href = 'login.html'; }
-            });
-        });
-
-        function initializeApp() {
-            document.getElementById('logout-btn').addEventListener('click', () => auth.signOut());
-            document.getElementById('repair-form').addEventListener('submit', handleFormSubmit);
-            document.getElementById('photoInput').addEventListener('change', handlePhotoInputChange);
-            document.getElementById('repairDate').valueAsDate = new Date();
-            showSection('add');
+        // Firebase Auth modülünü ekle
+        document.write('<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"><\/script>');
+        
+        // Global değişkenler
+        let auth = null;
+        let currentUser = null;
+        
+        // Firebase başlatma fonksiyonuna auth ekle
+        function initializeFirebase() {
+            // ... mevcut kod ...
+            
+            try {
+                // ... mevcut kod ...
+                
+                // Auth modülünü başlat
+                auth = firebase.auth();
+                db = firebase.firestore();
+                
+                // Auth durum değişikliklerini dinle
+                auth.onAuthStateChanged(user => {
+                    if (user) {
+                        // Kullanıcı giriş yaptı
+                        currentUser = user;
+                        document.getElementById('user-email').textContent = user.email;
+                        document.getElementById('login-container').classList.add('hidden');
+                        document.getElementById('app-content').classList.remove('hidden');
+                        
+                        // Uygulama içeriğini başlat
+                        initApp();
+                    } else {
+                        // Kullanıcı çıkış yaptı
+                        document.getElementById('login-container').classList.remove('hidden');
+                        document.getElementById('app-content').classList.add('hidden');
+                    }
+                });
+                
+                // ... mevcut kod ...
+            } catch (error) {
+                // ... mevcut kod ...
+            }
         }
         
-        function showSection(id) {
-            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-            document.getElementById(id + '-section').classList.add('active');
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            document.querySelector(`.nav-btn[onclick="showSection('${id}')"]`).classList.add('active');
-            if (id === 'list') loadRecords();
+        // Uygulama başlatma
+        function initApp() {
+            // Mevcut uygulama başlatma kodunu buraya taşı
+            // Örneğin: showSection('add');
         }
-
-        function handlePhotoInputChange(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = e => {
-                const preview = document.getElementById('photo-preview-img');
-                preview.src = e.target.result;
-                preview.style.display = 'block';
-            }
-            reader.readAsDataURL(file);
-        }
-
-        async function handleFormSubmit(e) {
+        
+        // Giriş formu işleme
+        document.getElementById('login-form').addEventListener('submit', async function(e) {
             e.preventDefault();
-            const btn = document.getElementById('submit-btn');
-            btn.disabled = true;
-            btn.innerHTML = '<span class="loading"></span>';
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            
+            try {
+                await auth.signInWithEmailAndPassword(email, password);
+            } catch (error) {
+                showMessage(t('loginError') + error.message, 'error');
+            }
+        });
+        
+        // Kayıt bağlantısı
+        document.getElementById('register-link').addEventListener('click', function(e) {
+            e.preventDefault();
+            const email = prompt(t('registerEmailPrompt'));
+            if (email) {
+                const password = prompt(t('registerPasswordPrompt'));
+                if (password) {
+                    registerUser(email, password);
+                }
+            }
+        });
+        
+        // Kullanıcı kayıt fonksiyonu
+        async function registerUser(email, password) {
+            try {
+                await auth.createUserWithEmailAndPassword(email, password);
+                showMessage(t('registerSuccess'), 'success');
+            } catch (error) {
+                showMessage(t('registerError') + error.message, 'error');
+            }
+        }
+        
+        // Çıkış fonksiyonu
+        function logout() {
+            auth.signOut();
+        }
+        
+        // Firestore kayıt işlemlerini güncelle
+        async function handleFormSubmit(event) {
+            // ... mevcut kod ...
             
             const record = {
-                firstName: document.getElementById('firstName').value.trim(),
-                lastName: document.getElementById('lastName').value.trim(),
-                phone: document.getElementById('phone').value.trim(),
-                repairDate: document.getElementById('repairDate').value,
-                returnDate: document.getElementById('returnDate').value,
-                notes: document.getElementById('notes').value.trim(),
-                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                status: 'pending'
+                // ... mevcut alanlar ...
+                userId: currentUser.uid // Kullanıcı ID'si ekle
             };
-
-            try {
-                const photoFile = document.getElementById('photoInput').files[0];
-                if (photoFile) {
-                    const formData = new FormData();
-                    formData.append('image', photoFile);
-                    const res = await fetch('https://api.imgur.com/3/image', { method: 'POST', headers: { 'Authorization': `Client-ID ${IMGUR_CLIENT_ID}` }, body: formData });
-                    const data = await res.json();
-                    if (data.success) record.photoURL = data.data.link;
-                }
-                
-                await db.collection('repairs').add(record);
-                showMessage('Kayıt başarıyla eklendi.', 'success');
-                e.target.reset();
-                document.getElementById('photo-preview-img').style.display = 'none';
-                showSection('list');
-
-            } catch (err) {
-                showMessage('Hata: ' + err.message, 'error');
-            } finally {
-                btn.disabled = false;
-                btn.textContent = 'Ekle';
+            
+            // ... mevcut kod ...
+        }
+        
+        // Kayıtları yükleme fonksiyonunu güncelle
+        function loadRecords(startDateFilter = '', endDateFilter = '', searchTerm = '') {
+            // ... mevcut kod ...
+            
+            // Sadece kullanıcının kendi kayıtlarını yükle
+            db.collection('repairs')
+                .where('userId', '==', currentUser.uid)
+                .orderBy('createdAt', 'desc')
+                .onSnapshot(snapshot => {
+                    // ... mevcut kod ...
+                });
+        }
+        
+        // Çeviri güncellemeleri
+        const translations = {
+            // ... mevcut çeviriler ...
+            en: {
+                // ... mevcut çeviriler ...
+                loginTitle: "Hair Extension Repair Tracking System",
+                loginEmail: "Email",
+                loginPassword: "Password",
+                loginButton: "Login",
+                loginFooter: "Don't have an account? ",
+                registerLink: "Register",
+                logoutButton: "Logout",
+                registerEmailPrompt: "Enter your email address:",
+                registerPasswordPrompt: "Enter your password:",
+                registerSuccess: "Registration successful!",
+                registerError: "Registration failed: ",
+                loginError: "Login failed: "
+            },
+            tr: {
+                // ... mevcut çeviriler ...
+                loginTitle: "Kaynak Saç Tamir Takip Sistemi",
+                loginEmail: "E-posta",
+                loginPassword: "Şifre",
+                loginButton: "Giriş Yap",
+                loginFooter: "Hesabınız yok mu? ",
+                registerLink: "Kayıt Ol",
+                logoutButton: "Çıkış Yap",
+                registerEmailPrompt: "E-posta adresinizi girin:",
+                registerPasswordPrompt: "Şifrenizi girin:",
+                registerSuccess: "Kayıt başarılı!",
+                registerError: "Kayıt işlemi başarısız: ",
+                loginError: "Giriş başarısız: "
             }
-        }
-
-        function loadRecords() {
-            const container = document.getElementById('records-container');
-            container.innerHTML = `<div class="empty-state">Yükleniyor...</div>`;
-            db.collection('repairs').orderBy('createdAt', 'desc').onSnapshot(snapshot => {
-                allRecords = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                displayRecords(allRecords);
-            }, error => {
-                container.innerHTML = `<div class="empty-state">Hata: ${error.message}</div>`;
-            });
-        }
-
-        function displayRecords(records) {
-            const container = document.getElementById('records-container');
-            if (!records.length) {
-                container.innerHTML = `<div class="empty-state">Hiç kayıt bulunamadı.</div>`;
-                return;
-            }
-            container.innerHTML = records.map(createRecordCard).join('');
-        }
-        
-        function createRecordCard(rec) {
-            const arrivalDate = rec.repairDate ? new Date(rec.repairDate).toLocaleDateString('tr-TR') : 'N/A';
-            const returnDate = rec.returnDate ? new Date(rec.returnDate).toLocaleDateString('tr-TR') : 'N/A';
-
-            return `
-                <div class="record-card" id="card-${rec.id}">
-                    <div class="record-header" onclick="this.classList.toggle('expanded')">
-                        <div class="record-info-left">
-                            <span class="record-name">${rec.firstName} ${rec.lastName}</span>
-                            <span class="record-dates-inline">(Geliş: ${arrivalDate})</span>
-                        </div>
-                        <span class="expand-icon">▼</span>
-                    </div>
-                    <div class="record-collapsible-content">
-                        <p><strong>Telefon:</strong> <a href="tel:${rec.phone}" onclick="event.stopPropagation()">${rec.phone || 'N/A'}</a></p>
-                        <p><strong>Termin:</strong> ${returnDate}</p>
-                        <p><strong>Notlar:</strong> ${rec.notes || '-'}</p>
-                        ${rec.photoURL ? `<img src="${rec.photoURL}" style="max-width:100px; border-radius:8px; margin-top:10px;" onclick="event.stopPropagation(); openPhotoModal('${rec.photoURL}')">` : ''}
-                        <div class="record-actions">
-                            <button class="btn btn-secondary" onclick="openPrintModalSetup('${rec.id}', event)">Etiket</button>
-                            <button class="delete-btn" onclick="deleteRecord('${rec.id}', event)">Sil</button>
-                        </div>
-                    </div>
-                </div>`;
-        }
-        
-        async function deleteRecord(id, event) {
-            event.stopPropagation();
-            if (confirm('Bu kaydı silmek istediğinizden emin misiniz?')) {
-                try {
-                    await db.collection('repairs').doc(id).delete();
-                    showMessage('Kayıt silindi.', 'success');
-                } catch (error) { showMessage('Silinemedi: ' + error.message, 'error'); }
-            }
-        }
-
-        function openPhotoModal(url) { document.getElementById('modal-image').src = url; document.getElementById('photo-modal').style.display = 'flex'; }
-        function closePhotoModal() { document.getElementById('photo-modal').style.display = 'none'; }
-        
-        function openPrintModalSetup(id, event) {
-            event.stopPropagation();
-            currentRecordForPrint = allRecords.find(r => r.id === id);
-            if (currentRecordForPrint) { document.getElementById('print-modal').style.display = 'flex'; }
-        }
-        function closePrintModal() { document.getElementById('print-modal').style.display = 'none'; }
-        function printLabel() {
-            if (!currentRecordForPrint) return;
-            document.getElementById('print-customer').textContent = `${currentRecordForPrint.firstName} ${currentRecordForPrint.lastName}`;
-            document.getElementById('print-phone').textContent = currentRecordForPrint.phone;
-            document.getElementById('print-delivery').textContent = new Date(currentRecordForPrint.returnDate).toLocaleDateString('tr-TR');
-            window.print();
-        }
-        
-        function showMessage(message, type) {
-            const popup = document.createElement('div');
-            popup.className = `message-popup ${type}`;
-            popup.textContent = message;
-            document.body.appendChild(popup);
-            popup.classList.add('show');
-            setTimeout(() => {
-                popup.classList.remove('show');
-                setTimeout(() => popup.remove(), 500);
-            }, 3000);
-        }
-
-        // Dil fonksiyonları (gerekirse doldurulabilir)
-        function setLanguage(lang) { /* ... */ }
+        };
     </script>
 </body>
 </html>
