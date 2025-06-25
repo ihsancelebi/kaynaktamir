@@ -4,76 +4,49 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kaynak Saç Tamir Tamamlandı</title>
-    <link rel="apple-touch-icon" href="iconios.png">
+    <link rel="icon" href="iconios.png" type="image/png">
     <style>
-       /* CSS kodları uzun olduğu için buraya eklenmedi, mevcut stilinizi koruyabilirsiniz. */
-       /* Eğer stil kodlarınızda da sorun olduğunu düşünüyorsanız belirtin, ekleyebilirim. */
-         * { margin: 0; padding: 0; box-sizing: border-box; } body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; } .container { max-width: 900px; margin: 0 auto; background: white; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); overflow: hidden; } .header { background: linear-gradient(45deg, #28a745, #20c997); color: white; padding: 30px; text-align: center; position: relative; } .header h1 { font-size: 2.5em; margin-bottom: 10px; } .header p { opacity: 0.9; } .language-selector { position: absolute; top: 10px; left: 15px; } .auth-controls { position: absolute; top: 10px; right: 15px; display: flex; gap: 10px; align-items: center; } .logout-btn { background: rgba(255,255,255,0.2); border: 1px solid #fff; color: white; padding: 8px 12px; border-radius: 20px; cursor: pointer; } .content { padding: 30px; } .section-title { font-size: 1.8em; margin-bottom: 20px; text-align: center; } .search-controls { display: flex; gap: 15px; margin-bottom: 20px; } .search-input { flex: 1; padding: 12px; border: 2px solid #e9ecef; border-radius: 25px; } .filter-btn { background: #28a745; color: white; border: none; padding: 12px 20px; border-radius: 25px; cursor: pointer; } .filter-btn.active { background: #17a2b8; } .repair-card { background: white; border: 2px solid #e9ecef; border-radius: 15px; padding: 25px; margin-bottom: 20px; cursor: pointer; max-height: 105px; overflow: hidden; transition: max-height 0.4s ease-in-out; } .repair-card.expanded { max-height: 2000px; } .repair-header { display: flex; justify-content: space-between; align-items: center; } .customer-name { font-size: 1.4em; font-weight: 700; } .repair-status { padding: 8px 15px; border-radius: 20px; font-size: 12px; } .status-pending { background: #fff3cd; color: #856404; } .status-completed { background: #d4edda; color: #155724; } .repair-details { margin-top: 15px; border-top: 1px solid #eee; padding-top: 15px; } .completion-form { background: #f8f9fa; border-radius: 12px; padding: 20px; margin-top: 15px; } .form-group { margin-bottom: 20px; } .form-group label { display: block; margin-bottom: 8px; font-weight: 600; } .form-group input, .form-group textarea { width: 100%; padding: 12px; border: 2px solid #e9ecef; border-radius: 8px; } .photo-upload { border: 3px dashed #dee2e6; border-radius: 12px; padding: 25px; text-align: center; cursor: pointer; } .photo-preview { max-width: 150px; border-radius: 8px; margin-top: 10px; } .btn { background: linear-gradient(45deg, #28a745, #20c997); color: white; border: none; padding: 12px 25px; border-radius: 25px; font-size: 14px; cursor: pointer; } .btn-secondary { background: #6c757d; } .loading { display: inline-block; width: 16px; height: 16px; border: 2px solid #ffffff40; border-radius: 50%; border-top-color: #ffffff; animation: spin 1s ease-in-out infinite; margin-right: 8px; } @keyframes spin { to { transform: rotate(360deg); } } .success-message, .error-message, .info-message { padding: 15px; border-radius: 10px; position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 2000; color: white; } .success-message { background: #28a745; } .error-message { background: #dc3545; } .info-message { background: #17a2b8; } .empty-state { text-align: center; padding: 60px 20px; color: #6c757d; } .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); align-items: center; justify-content: center; } .modal img { max-width: 90%; max-height: 90%; } .close-modal { position: absolute; top: 20px; right: 30px; color: white; font-size: 40px; cursor: pointer; }
+        * { margin: 0; padding: 0; box-sizing: border-box; } body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; } .container { max-width: 900px; margin: 0 auto; background: white; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); overflow: hidden; } .header { background: linear-gradient(45deg, #28a745, #20c997); color: white; padding: 30px; text-align: center; position: relative; } .header h1 { font-size: 2.5em; } .auth-controls { position: absolute; top: 10px; right: 15px; display: flex; gap: 10px; align-items: center; } .logout-btn { background: rgba(255,255,255,0.2); border: 1px solid #fff; color: white; padding: 8px 12px; border-radius: 20px; cursor: pointer; } .content { padding: 30px; } .section-title { font-size: 1.8em; margin-bottom: 20px; text-align: center; } .search-controls { display: flex; gap: 15px; margin-bottom: 20px; } .search-input { flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 25px; } .filter-btn { background: #28a745; color: white; border: none; padding: 12px 20px; border-radius: 25px; cursor: pointer; } .filter-btn.active { background: #17a2b8; } .repair-card { background: #fff; border: 1px solid #eee; border-radius: 15px; padding: 20px; margin-bottom: 20px; cursor: pointer; max-height: 105px; overflow: hidden; transition: max-height 0.4s ease; } .repair-card.expanded { max-height: 2000px; } .repair-header { display: flex; justify-content: space-between; align-items: center; } .customer-name { font-size: 1.4em; font-weight: 700; } .repair-status { padding: 8px 15px; border-radius: 20px; font-size: 12px; } .status-pending { background: #fff3cd; color: #856404; } .status-completed { background: #d4edda; color: #155724; } .repair-details { margin-top: 15px; border-top: 1px solid #eee; padding-top: 15px; } .completion-form { background: #f8f9fa; border-radius: 12px; padding: 20px; margin-top: 15px; } .form-group { margin-bottom: 20px; } .form-group label { display: block; margin-bottom: 8px; font-weight: 600; } .form-group input, .form-group textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; } .photo-upload { border: 2px dashed #ccc; border-radius: 10px; padding: 20px; text-align: center; cursor: pointer; } .photo-preview { max-width: 150px; border-radius: 8px; margin-top: 10px; } .btn { background: #28a745; color: white; border: none; padding: 12px 25px; border-radius: 25px; cursor: pointer; } .loading { display: inline-block; width: 16px; height: 16px; border: 2px solid #ffffff40; border-radius: 50%; border-top-color: #ffffff; animation: spin 1s linear infinite; margin-right: 8px; } @keyframes spin { to { transform: rotate(360deg); } } .success-message, .error-message { padding: 15px; border-radius: 10px; color: white; position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 2000; } .success-message { background: #28a745; } .error-message { background: #dc3545; } .empty-state { text-align: center; padding: 40px; color: #777; }
     </style>
 </head>
 <body style="display: none;">
     <div class="container">
         <div class="header">
-            <div class="language-selector">
-                <button class="language-btn active" onclick="changeLanguage('tr')">TR</button>
-                <button class="language-btn" onclick="changeLanguage('en')">EN</button>
-            </div>
              <div class="auth-controls">
                 <a href="index.html" style="color:white; text-decoration: none; background: rgba(255,255,255,0.2); padding: 8px 12px; border-radius: 20px;">Ana Sayfa</a>
                 <button class="logout-btn" id="logout-btn">Çıkış Yap</button>
             </div>
             <h1>🔧 Tamir Tamamlandı Formu</h1>
-            <p>Tamamlanan tamirler için detay girişi ve fotoğraf yükleme</p>
         </div>
-        
         <div class="content">
-            <div class="pending-repairs">
-                <h2 class="section-title">🛠️ Bekleyen Tamirler</h2>
-                <div class="search-controls">
-                    <input type="text" id="searchInput" class="search-input" placeholder="Müşteri adı veya telefon ile ara...">
-                    <button class="filter-btn active" onclick="filterRepairs('all')">Tümü</button>
-                    <button class="filter-btn" onclick="filterRepairs('pending')">Bekleyen</button>
-                    <button class="filter-btn" onclick="filterRepairs('completed')">Tamamlanan</button>
-                </div>
-                <div id="repairs-container"><div class="empty-state">Yükleniyor...</div></div>
+            <h2 class="section-title">🛠️ Bekleyen Tamirler</h2>
+            <div class="search-controls">
+                <input type="text" id="searchInput" class="search-input" placeholder="Müşteri adı veya telefon ile ara...">
+                <button class="filter-btn active" onclick="filterRepairs('all')">Tümü</button>
+                <button class="filter-btn" onclick="filterRepairs('pending')">Bekleyen</button>
+                <button class="filter-btn" onclick="filterRepairs('completed')">Tamamlanan</button>
             </div>
+            <div id="repairs-container"><div class="empty-state">Yükleniyor...</div></div>
         </div>
     </div>
-    
-    <div id="photo-modal" class="modal">
-        <span class="close-modal" onclick="closePhotoModal()">&times;</span>
-        <img id="modal-image" src="">
-    </div>
-
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
     <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyCsy1AAiRE8HCCt4HEAcz7Sh9AM6sQt4FQ", 
-            authDomain: "kaynak-sac-tamir.firebaseapp.com",
-            projectId: "kaynak-sac-tamir",
-            messagingSenderId: "503655162792",
-            appId: "1:503655162792:web:faad92041850490b92f39d",
-            measurementId: "G-N8B2V6RQET" 
-        };
+        const firebaseConfig = { apiKey: "AIzaSyCsy1AAiRE8HCCt4HEAcz7Sh9AM6sQt4FQ", authDomain: "kaynak-sac-tamir.firebaseapp.com", projectId: "kaynak-sac-tamir", messagingSenderId: "503655162792", appId: "1:503655162792:web:faad92041850490b92f39d" };
         const IMGUR_CLIENT_ID = '82ab37b38a1850a';
-
         let db, auth, currentUser, allRepairs = [], currentFilter = 'all';
 
         document.addEventListener('DOMContentLoaded', () => {
             firebase.initializeApp(firebaseConfig);
             auth = firebase.auth();
             db = firebase.firestore();
-
             auth.onAuthStateChanged(user => {
                 if (user) {
                     currentUser = user;
                     document.body.style.display = 'block';
                     initializeApp();
-                } else {
-                    window.location.href = 'login.html';
-                }
+                } else { window.location.href = 'login.html'; }
             });
         });
 
@@ -84,15 +57,11 @@
         }
 
         function loadRepairs() {
-            const container = document.getElementById('repairs-container');
-            container.innerHTML = `<div class="empty-state">Yükleniyor...</div>`;
-
-            // .where() koşulu kaldırıldı, tüm kayıtlar çekilecek
             db.collection('repairs').orderBy('createdAt', 'desc').onSnapshot(snapshot => {
                 allRepairs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 filterRepairs(currentFilter); 
             }, error => {
-                container.innerHTML = `<div class="empty-state">Veriler yüklenemedi: ${error.message}</div>`;
+                document.getElementById('repairs-container').innerHTML = `<div class="empty-state">Hata: ${error.message}</div>`;
             });
         }
 
@@ -100,13 +69,10 @@
             currentFilter = status;
             document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelector(`.filter-btn[onclick="filterRepairs('${status}')"]`).classList.add('active');
-            
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            
             const filtered = allRepairs.filter(rec => {
                 const name = `${rec.firstName} ${rec.lastName}`.toLowerCase();
-                const phone = rec.phone || '';
-                const matchesSearch = !searchTerm || name.includes(searchTerm) || phone.includes(searchTerm);
+                const matchesSearch = !searchTerm || name.includes(searchTerm) || (rec.phone || '').includes(searchTerm);
                 const isCompleted = rec.status === 'completed';
                 const matchesStatus = status === 'all' || (status === 'pending' && !isCompleted) || (status === 'completed' && isCompleted);
                 return matchesSearch && matchesStatus;
@@ -115,122 +81,63 @@
         }
 
         function displayRepairs(records) {
-             const container = document.getElementById('repairs-container');
-            if (records.length === 0) {
-                container.innerHTML = `<div class="empty-state">Gösterilecek kayıt bulunamadı.</div>`;
+            const container = document.getElementById('repairs-container');
+            if (!records.length) {
+                container.innerHTML = `<div class="empty-state">Kayıt bulunamadı.</div>`;
                 return;
             }
-            container.innerHTML = records.map(rec => createRepairCard(rec)).join('');
-        }
-
-        function createRepairCard(rec) {
-            const isCompleted = rec.status === 'completed';
-            return `
-                <div class="repair-card ${isCompleted ? 'completed' : ''}" onclick="event.currentTarget.classList.toggle('expanded')">
+            container.innerHTML = records.map(rec => `
+                <div class="repair-card ${rec.status === 'completed' ? 'completed' : ''}" onclick="this.classList.toggle('expanded')">
                     <div class="repair-header">
-                        <div class="customer-info">
-                            <div class="customer-name">${rec.firstName} ${rec.lastName}</div>
-                            <div class="customer-phone">📞 ${rec.phone}</div>
-                        </div>
-                        <div class="repair-status ${isCompleted ? 'status-completed' : 'status-pending'}">${isCompleted ? 'Tamamlandı' : 'Bekliyor'}</div>
+                        <span class="customer-name">${rec.firstName} ${rec.lastName}</span>
+                        <span class="repair-status ${rec.status === 'completed' ? 'status-completed' : 'status-pending'}">${rec.status}</span>
                     </div>
                     <div class="repair-details">
-                        ${!isCompleted ? `
+                        ${rec.status !== 'completed' ? `
                         <div class="completion-form">
-                            <h4>Tamir Tamamlandı</h4>
-                            <div class="form-group"><label>Çıkan Adet</label><input type="number" id="completed-quantity-${rec.id}" required></div>
-                            <div class="form-group"><label>Tamamlanma Tarihi</label><input type="date" id="completion-date-${rec.id}" required></div>
-                            <div class="form-group"><label>Notlar</label><textarea id="completion-notes-${rec.id}"></textarea></div>
-                            <div class="form-group">
-                                <label>Tamamlanan Saç Fotoğrafı</label>
-                                <div class="photo-upload" onclick="document.getElementById('photo-input-${rec.id}').click()">
-                                    <input type="file" id="photo-input-${rec.id}" accept="image/*" style="display:none;" onchange="previewPhoto('${rec.id}', event)">
-                                    <span id="photo-placeholder-${rec.id}">Fotoğraf eklemek için dokun</span>
-                                    <img id="photo-preview-${rec.id}" class="photo-preview" style="display:none;">
-                                </div>
-                            </div>
-                            <button class="btn" onclick="completeRepair('${rec.id}', event)">✅ Tamamla</button>
-                        </div>
-                        ` : `<div><p>Bu tamir ${rec.completionDate || ''} tarihinde tamamlandı. Çıkan adet: ${rec.completedQuantity || 'N/A'}</p></div>`}
+                            <div class="form-group"><label>Çıkan Adet</label><input type="number" id="qty-${rec.id}"></div>
+                            <div class="form-group"><label>Tamamlanma Tarihi</label><input type="date" id="date-${rec.id}"></div>
+                            <button class="btn" onclick="completeRepair('${rec.id}', event)">Tamamla</button>
+                        </div>` : `<p>Bu kayıt tamamlandı.</p>`}
                     </div>
-                </div>
-            `;
-        }
-        
-        function previewPhoto(id, event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = e => {
-                document.getElementById(`photo-preview-${id}`).src = e.target.result;
-                document.getElementById(`photo-preview-${id}`).style.display = 'block';
-                document.getElementById(`photo-placeholder-${id}`).style.display = 'none';
-            }
-            reader.readAsDataURL(file);
+                </div>`).join('');
         }
 
         async function completeRepair(id, event) {
             event.stopPropagation();
             const btn = event.target;
             btn.disabled = true;
-            btn.innerHTML = '<div class="loading"></div> Tamamlanıyor...';
-
-            const completedQuantity = document.getElementById(`completed-quantity-${id}`).value;
-            const completionDate = document.getElementById(`completion-date-${id}`).value;
-            const completionNotes = document.getElementById(`completion-notes-${id}`).value;
-            const photoFile = document.getElementById(`photo-input-${id}`).files[0];
-
-            if (!completedQuantity || !completionDate) {
-                showMessage('Lütfen çıkan adet ve tarihi girin.', 'error');
+            btn.innerHTML = '<span class="loading"></span>';
+            const data = {
+                completedQuantity: parseInt(document.getElementById(`qty-${id}`).value),
+                completionDate: document.getElementById(`date-${id}`).value,
+                status: 'completed'
+            };
+            if (!data.completedQuantity || !data.completionDate) {
+                showMessage('Lütfen tüm alanları doldurun.', 'error');
                 btn.disabled = false;
-                btn.innerHTML = '✅ Tamamla';
+                btn.innerHTML = 'Tamamla';
                 return;
             }
-
             try {
-                const updateData = {
-                    completedQuantity: parseInt(completedQuantity),
-                    completionDate,
-                    completionNotes,
-                    status: 'completed'
-                };
-
-                if (photoFile) {
-                    const formData = new FormData();
-                    formData.append('image', photoFile);
-                    const response = await fetch('https://api.imgur.com/3/image', {
-                        method: 'POST',
-                        headers: { 'Authorization': `Client-ID ${IMGUR_CLIENT_ID}` },
-                        body: formData
-                    });
-                    const data = await response.json();
-                    if (data.success) updateData.completedPhotoURL = data.data.link;
-                }
-
-                await db.collection('repairs').doc(id).update(updateData);
-                showMessage('Tamir başarıyla tamamlandı!', 'success');
-            } catch (error) {
-                showMessage('İşlem başarısız: ' + error.message, 'error');
+                await db.collection('repairs').doc(id).update(data);
+                showMessage('Tamir tamamlandı!', 'success');
+            } catch (err) {
+                showMessage('Hata: ' + err.message, 'error');
                 btn.disabled = false;
-                btn.innerHTML = '✅ Tamamla';
+                btn.innerHTML = 'Tamamla';
             }
         }
         
         let msgTimeout;
         function showMessage(message, type = 'success') {
             const el = document.createElement('div');
-            el.className = type === 'success' ? 'success-message' : (type === 'error' ? 'error-message' : 'info-message');
+            el.className = type === 'success' ? 'success-message' : 'error-message';
             el.textContent = message;
             document.body.appendChild(el);
             clearTimeout(msgTimeout);
-            msgTimeout = setTimeout(() => el.remove(), 4000);
+            msgTimeout = setTimeout(() => el.remove(), 3000);
         }
-
-        // Diğer fonksiyonlar (dil, modal vs.)
-        function changeLanguage(lang) { /* ... */ }
-        function openPhotoModal(url) { /* ... */ }
-        function closePhotoModal() { /* ... */ }
-
     </script>
 </body>
 </html>
